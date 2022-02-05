@@ -7,7 +7,7 @@ onready var sprite = $sprite
 
 const TILE_SIZE: int = 16
 
-var SPEED: float = 1
+var speed: float = 1
 var target_position: Vector2
 var facing_direction: Vector2
 
@@ -24,8 +24,7 @@ func move():
 
     # Perform movement
     var movement_direction = position.direction_to(target_position)
-    facing_direction = movement_direction
-    position += movement_direction * SPEED
+    position += movement_direction * speed
 
     # Check if actor has reached their target position
     if position == target_position:
@@ -39,6 +38,7 @@ func move():
 func try_find_next_target(input_direction: Vector2):
     if is_moving_between_tiles() or input_direction == Vector2.ZERO:
         return
+    facing_direction = input_direction
     var desired_target_position = position + (input_direction * TILE_SIZE) 
     if map.is_tile_free(desired_target_position):
         target_position = desired_target_position
@@ -52,6 +52,7 @@ func update_sprite():
     else:
         sprite.play("side")
     sprite.flip_h = facing_direction == Vector2.LEFT
+    sprite.speed_scale = speed
 
     if target_position == Vector2.ZERO:
         sprite.stop()

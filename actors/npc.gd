@@ -12,14 +12,16 @@ enum Path {
 }
 
 export var path = []
+export var dialog: String = ""
 
 var _path = []
 var path_index: int = 0
 var path_timer: float = 0
 
 func _ready():
-    SPEED = 0.5
+    add_to_group("npcs")
     parse_path()
+    speed = 0.5
 
 func parse_path():
     _path.append([Path.MOVE, position])

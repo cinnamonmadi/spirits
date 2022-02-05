@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://tileset.png" type="Texture" id=1]
 [ext_resource path="res://actors/tris.tscn" type="PackedScene" id=2]
 [ext_resource path="res://map.gd" type="Script" id=3]
 [ext_resource path="res://actors/npc.tscn" type="PackedScene" id=4]
+[ext_resource path="res://ui/dialog.tscn" type="PackedScene" id=5]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 16, 16, 0, 16, 0, 0, 16, 0 )
@@ -112,3 +113,7 @@ position = Vector2( 16, 16 )
 [node name="NPC" parent="." instance=ExtResource( 4 )]
 position = Vector2( 112, 32 )
 path = [ "left,2", "down,3", "face,left", "wait,0.5", "face,right", "wait,0.5", "up,3", "right,2" ]
+dialog = "I'm going searching for wild mushrooms!"
+
+[node name="dialog" parent="." instance=ExtResource( 5 )]
+visible = false

@@ -19,7 +19,10 @@ var next_char_timer: float
 var state = State.CLOSED
 
 func _ready():
-    open("Hello friend how are you doing this is some dialog and let's see how it performs?")
+    visible = false
+
+func is_open() -> bool:
+    return state != State.CLOSED
 
 func load_lines(text: String):
     lines = []
@@ -30,12 +33,11 @@ func load_lines(text: String):
     while words.size() != 0:
         var next_word = words[0]
         words.remove(0)
-        print(next_word)
         # Check if the word has a newline at the end of it
         var endline_after_word = next_word.ends_with("\n")
         if endline_after_word:
             # Remove the newline character so we don't add it to the rows
-            next_word = next_word.substr(0, next_word.index("\n"))
+            next_word = next_word.substr(0, next_word.find("\n"))
         # Add a space between words if needed
         if next_line[next_line_row].length() != 0:
             next_word = " " + next_word
@@ -56,7 +58,6 @@ func load_lines(text: String):
 
         # Insert the word
         next_line[next_line_row] += next_word
-        print(next_line)
 
         # And finally, if we had a newline in the word, that means we should end this line here
         if endline_after_word:
@@ -68,7 +69,6 @@ func load_lines(text: String):
 
 func open(text: String):
     load_lines(text)
-    print(lines)
     pop_next_line()
     visible = true
     state = State.READING
@@ -110,8 +110,6 @@ func progress():
         state = State.WAITING
 
 func _process(delta):
-    if Input.is_action_just_pressed("action"):
-        progress()
     if state == State.CLOSED or state == State.WAITING:
         return
     elif state == State.READING:
