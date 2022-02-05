@@ -8,6 +8,22 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Area2D",
+"class": "Actor",
+"language": "GDScript",
+"path": "res://actors/actor.gd"
+}, {
+"base": "Actor",
+"class": "NPC",
+"language": "GDScript",
+"path": "res://actors/npc.gd"
+} ]
+_global_script_class_icons={
+"Actor": "",
+"NPC": ""
+}
+
 [application]
 
 config/name="spirits"
