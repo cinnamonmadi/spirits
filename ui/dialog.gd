@@ -9,7 +9,7 @@ enum State {
 }
 
 const ROW_CHAR_LEN: int = 18
-const DIALOG_SPEED: float = (4 / 60.0)
+var DIALOG_SPEED: float = (4 / 60.0)
 
 var lines = []
 var current_line = []
@@ -17,12 +17,23 @@ var current_row = 0
 var next_char_timer: float
 
 var state = State.CLOSED
+var keep_open = false
 
 func _ready():
-    visible = false
+    hide()
+
+func hide():
+    if keep_open:
+        rows[0].text = ""
+        rows[1].text = ""
+    else:
+        visible = false
 
 func is_open() -> bool:
     return state != State.CLOSED
+
+func is_waiting() -> bool:
+    return state == State.WAITING
 
 func load_lines(text: String):
     lines = []
@@ -73,8 +84,14 @@ func open(text: String):
     visible = true
     state = State.READING
 
+func open_empty():
+    rows[0].text = ""
+    rows[1].text = ""
+    visible = true
+    state = State.WAITING
+
 func close():
-    visible = false
+    hide()
     state = State.CLOSED
 
 func pop_next_line():
