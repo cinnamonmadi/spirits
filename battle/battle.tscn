@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://ui/dialog.tscn" type="PackedScene" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=3]
 [ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=4]
 [ext_resource path="res://battle/platform.png" type="Texture" id=5]
+[ext_resource path="res://ui/battle_actions.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ui/move_select.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/move_info.tscn" type="PackedScene" id=8]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
@@ -17,19 +20,21 @@ __meta__ = {
 }
 
 [node name="platform_left" type="Sprite" parent="."]
-position = Vector2( 48, 112 )
+position = Vector2( 48, 104 )
 texture = ExtResource( 5 )
 
 [node name="platform_right" type="Sprite" parent="."]
-position = Vector2( 112, 64 )
+position = Vector2( 112, 52 )
 texture = ExtResource( 5 )
 
 [node name="familiar_enemy" type="Sprite" parent="."]
-position = Vector2( 112, 48 )
+position = Vector2( 112, 32 )
 texture = ExtResource( 4 )
+region_enabled = true
+region_rect = Rect2( 0, 0, 50, 25 )
 
 [node name="familiar_player" type="Sprite" parent="."]
-position = Vector2( 48, 104 )
+position = Vector2( 48, 88 )
 texture = ExtResource( 4 )
 
 [node name="dialog" parent="." instance=ExtResource( 1 )]
@@ -74,9 +79,9 @@ text = "MP: 20/20"
 
 [node name="player_health" type="Control" parent="."]
 margin_left = 72.0
-margin_top = 88.0
+margin_top = 76.0
 margin_right = 152.0
-margin_bottom = 112.0
+margin_bottom = 100.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -109,3 +114,19 @@ margin_bottom = 24.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "MP: 20/20"
+
+[node name="battle_actions" parent="." instance=ExtResource( 6 )]
+margin_left = 48.0
+margin_top = 100.0
+margin_right = 160.0
+margin_bottom = 144.0
+
+[node name="move_select" parent="." instance=ExtResource( 7 )]
+margin_left = 54.0
+margin_top = 100.0
+margin_right = 160.0
+margin_bottom = 144.0
+
+[node name="move_info" parent="." instance=ExtResource( 8 )]
+margin_top = 78.0
+margin_bottom = 104.0

@@ -1,0 +1,87 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/choice_menu.gd" type="Script" id=2]
+[ext_resource path="res://ui/frame.png" type="Texture" id=3]
+[ext_resource path="res://ui/cursor.png" type="Texture" id=4]
+
+[node name="battle_actions" type="NinePatchRect"]
+margin_right = 112.0
+margin_bottom = 44.0
+texture = ExtResource( 3 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choices" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="col_1" type="Control" parent="choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="choice_1" type="Label" parent="choices/col_1"]
+margin_left = 16.0
+margin_top = 14.0
+margin_right = 56.0
+margin_bottom = 22.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "Fight"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choice_2" type="Label" parent="choices/col_1"]
+margin_left = 16.0
+margin_top = 30.0
+margin_right = 48.0
+margin_bottom = 38.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "Item"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="col_2" type="Control" parent="choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="choice_3" type="Label" parent="choices/col_2"]
+margin_left = 70.0
+margin_top = 14.0
+margin_right = 102.0
+margin_bottom = 22.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "FMLR"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choice_4" type="Label" parent="choices/col_2"]
+margin_left = 70.0
+margin_top = 30.0
+margin_right = 94.0
+margin_bottom = 38.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "Run"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Sprite" parent="."]
+position = Vector2( 6, 5 )
+texture = ExtResource( 4 )
+offset = Vector2( 2.5, 3.5 )

@@ -1,0 +1,83 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://ui/choice_menu.gd" type="Script" id=1]
+[ext_resource path="res://ui/font.tres" type="DynamicFont" id=2]
+[ext_resource path="res://ui/frame.png" type="Texture" id=3]
+[ext_resource path="res://ui/cursor.png" type="Texture" id=4]
+
+[node name="move_select" type="NinePatchRect"]
+margin_right = 106.0
+margin_bottom = 44.0
+texture = ExtResource( 3 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choices" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="col_1" type="Control" parent="choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="choice_1" type="Label" parent="choices/col_1"]
+margin_left = 16.0
+margin_top = 7.0
+margin_right = 96.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "SKULL BASH"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choice_2" type="Label" parent="choices/col_1"]
+margin_left = 16.0
+margin_top = 15.0
+margin_right = 64.0
+margin_bottom = 23.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "TACKLE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choice_3" type="Label" parent="choices/col_1"]
+margin_left = 16.0
+margin_top = 23.0
+margin_right = 56.0
+margin_bottom = 31.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "EMBER"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choice_4" type="Label" parent="choices/col_1"]
+margin_left = 16.0
+margin_top = 31.0
+margin_right = 88.0
+margin_bottom = 39.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "WATER GUN"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Sprite" parent="."]
+position = Vector2( 6, 5 )
+texture = ExtResource( 4 )
+offset = Vector2( 2.5, 3.5 )

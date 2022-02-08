@@ -78,11 +78,18 @@ func load_lines(text: String):
     if next_line != ["", ""]:
         lines.append(next_line)
 
-func open(text: String):
-    load_lines(text)
+func _open():
     pop_next_line()
     visible = true
     state = State.READING
+
+func open_with(set_lines):
+    lines = set_lines
+    _open()
+
+func open(text: String):
+    load_lines(text)
+    _open()
 
 func open_empty():
     rows[0].text = ""
