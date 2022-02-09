@@ -1,6 +1,7 @@
 extends Actor
 
 onready var dialog = get_parent().find_node("dialog")
+onready var director = get_node("/root/Director")
 
 enum State {
     MOVING,
@@ -13,7 +14,13 @@ const input_direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector
 var input_direction: Vector2
 var state = State.MOVING
 
+var rng
+var steps_to_battle = -1
+
 func _ready():
+    rng = RandomNumberGenerator.new()
+    rng.randomize()
+    steps_to_battle = rng.randi_range(10, 20)
     input_direction = Vector2.ZERO
 
 func handle_input():
@@ -50,6 +57,8 @@ func try_interact():
             break
 
 func _physics_process(_delta):
+    if paused:
+        return
     handle_input()
     if state == State.MOVING:
         move()
@@ -72,3 +81,12 @@ func update_sprite():
     elif input_direction != Vector2.ZERO and target_position == Vector2.ZERO:
         # If the player is walking up against a wall, play the walk animation in slow motion
         sprite.speed_scale = 0.5
+
+func handle_reached_target():
+    steps_to_battle -= 1
+    if steps_to_battle <= 0:
+        steps_to_battle = rng.randi_range(10, 20)
+
+        input_direction = Vector2.ZERO
+
+        director.start_battle()

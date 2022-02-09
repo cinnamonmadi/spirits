@@ -30,8 +30,6 @@ texture = ExtResource( 5 )
 [node name="familiar_enemy" type="Sprite" parent="."]
 position = Vector2( 112, 32 )
 texture = ExtResource( 4 )
-region_enabled = true
-region_rect = Rect2( 0, 0, 50, 25 )
 
 [node name="familiar_player" type="Sprite" parent="."]
 position = Vector2( 48, 88 )

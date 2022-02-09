@@ -11,7 +11,10 @@ var speed: float = 1
 var target_position: Vector2
 var facing_direction: Vector2
 
+var paused: bool = false
+
 func _ready():
+    add_to_group("actors")
     target_position = Vector2.ZERO
     map.reserve_tile(position)
 
@@ -34,6 +37,11 @@ func move():
         map.reserve_tile(position)
 
         target_position = Vector2.ZERO
+        handle_reached_target()
+
+# Hack to be overriden by the player
+func handle_reached_target():
+    pass
 
 func try_find_next_target(input_direction: Vector2):
     if is_moving_between_tiles() or input_direction == Vector2.ZERO:

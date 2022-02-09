@@ -1,6 +1,6 @@
 extends Node2D
 
-# onready var familiar = preload("res://battle/familiar.gd")
+onready var director = get_node("/root/Director")
 
 onready var enemy_health = $enemy_health
 onready var enemy_name_label = $enemy_health/label_name
@@ -269,21 +269,16 @@ func _process(delta):
             update_healthbars(percent_complete)
     elif state == State.FAINT:
         timer -= delta
-        var percent: float
         if timer <= 0:
-            percent = 1
-        else:
-            percent = 1 - (timer / FAINT_DURATION)
-        if turns[current_turn] == "player":
-            enemy_sprite.position.y = enemy_sprite_position.y + ((enemy_sprite.texture.get_size().y * (1 - percent)) / 2)
-            enemy_sprite.region_rect.size.y = int(enemy_sprite.texture.get_size().y * (1 - percent))
-            if percent != 1:
-                enemy_sprite.position.y = enemy_sprite_position.y + (enemy_sprite.region_rect.size.y / 2)
-        elif turns[current_turn] == "enemy":
-            player_sprite.position.y = player_sprite_position.y + (player_sprite.texture.get_size().y * percent)
-            player_sprite.region_rect.size.y = int(player_sprite.texture.get_size().y * percent)
+            if turns[current_turn] == "player":
+                enemy_sprite.visible = false
+            elif turns[current_turn] == "enemy":
+                player_sprite.visible = false
         if timer <= 0 and Input.is_action_just_pressed("action") and dialog.is_waiting():
             set_state(State.ANNOUNCE_WINNER)
+    elif state == State.ANNOUNCE_WINNER:
+        if Input.is_action_just_pressed("action") and dialog.is_waiting():
+            director.end_battle()
 
 func setup_execute_move():
     player_old_hp = player_familiar.health
