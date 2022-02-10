@@ -57,8 +57,6 @@ func try_interact():
             break
 
 func _physics_process(_delta):
-    if paused:
-        return
     handle_input()
     if state == State.MOVING:
         move()

@@ -48,8 +48,6 @@ func parse_path():
 
 
 func _physics_process(delta):
-    if paused:
-        return 
     update_path(delta)
     update_sprite()
 

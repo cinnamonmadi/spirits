@@ -11,10 +11,7 @@ var speed: float = 1
 var target_position: Vector2
 var facing_direction: Vector2
 
-var paused: bool = false
-
 func _ready():
-    add_to_group("actors")
     target_position = Vector2.ZERO
     map.reserve_tile(position)
 
