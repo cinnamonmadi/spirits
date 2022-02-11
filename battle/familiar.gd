@@ -27,6 +27,7 @@ const MOVE_INFO = {
 # Stats
 var species: String
 var nickname: String = ""
+var type: String
 var level: int
 var experience: int
 
@@ -39,6 +40,7 @@ var max_mana: int
 var attack: int
 var defense: int
 var speed: int
+var focus: int
 
 var moves = []
 

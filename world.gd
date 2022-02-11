@@ -35,7 +35,7 @@ func set_state(new_state):
         set_paused(true)
         pause_menu.open()
     elif state == State.PARTY_MENU:
-        party_menu.open(director.player_familiars)
+        party_menu.open()
 
 func _process(_delta):
     if state == State.WORLD and Input.is_action_just_pressed("menu"):
@@ -47,8 +47,8 @@ func _process(_delta):
         elif action == "SPIRITS":
             set_state(State.PARTY_MENU)
     elif state == State.PARTY_MENU:
-        var _action = party_menu.check_for_input()
-        if Input.is_action_just_pressed("back"):
+        party_menu.check_for_input()
+        if party_menu.is_closed():
             set_state(State.PAUSE_MENU)
 
 func init_start_battle():

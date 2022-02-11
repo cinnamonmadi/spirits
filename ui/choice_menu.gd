@@ -11,11 +11,15 @@ var choices = [] # Will be a 2D array of all the option labels
 var remember_cursor_position = false
 
 func _ready():
+    reset()
+
+func reset():
     var choices_tree_item = $choices
     for column in choices_tree_item.get_children():
         var new_column = []
         for label in column.get_children():
-            new_column.append(label)
+            if label.visible:
+                new_column.append(label)
         choices.append(new_column)
     set_cursor_position()
 

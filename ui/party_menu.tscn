@@ -1,9 +1,11 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/choice_menu.gd" type="Script" id=2]
 [ext_resource path="res://ui/party_menu.gd" type="Script" id=3]
 [ext_resource path="res://ui/cursor.png" type="Texture" id=4]
+[ext_resource path="res://ui/party_select_menu.tscn" type="PackedScene" id=5]
+[ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=6]
 
 [node name="party_menu" type="ColorRect"]
 margin_right = 160.0
@@ -14,6 +16,7 @@ __meta__ = {
 }
 
 [node name="choice_menu" type="NinePatchRect" parent="."]
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 2 )
@@ -243,3 +246,221 @@ __meta__ = {
 position = Vector2( 6, 5 )
 texture = ExtResource( 4 )
 offset = Vector2( 2.5, 3.5 )
+
+[node name="select_menu" parent="." instance=ExtResource( 5 )]
+visible = false
+margin_left = 80.0
+margin_top = 114.0
+margin_right = 160.0
+margin_bottom = 144.0
+
+[node name="summary" type="Control" parent="."]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 4.0
+margin_right = 58.0
+margin_bottom = 12.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "SPHYNX"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="level" type="Label" parent="summary"]
+margin_left = 70.0
+margin_top = 4.0
+margin_right = 118.0
+margin_bottom = 12.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "LVL 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="type" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 12.0
+margin_right = 90.0
+margin_bottom = 20.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "FIRE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="health" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 24.0
+margin_right = 82.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HP 20/20"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="mana" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 32.0
+margin_right = 82.0
+margin_bottom = 40.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "MP 10/=10"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="attack" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 44.0
+margin_right = 82.0
+margin_bottom = 52.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "ATTACK 20"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="defense" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 52.0
+margin_right = 90.0
+margin_bottom = 60.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "DEFENSE 20"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="speed" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 60.0
+margin_right = 82.0
+margin_bottom = 68.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "SPEED 20"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="focus" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 68.0
+margin_right = 82.0
+margin_bottom = 76.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "FOCUS 20"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="move_1" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 78.0
+margin_right = 146.0
+margin_bottom = 86.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "EMBER / FIRE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="details" type="Label" parent="summary/move_1"]
+margin_top = 8.0
+margin_right = 136.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "POWER 60 COST 5MP"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="move_2" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 94.0
+margin_right = 106.0
+margin_bottom = 102.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "EMBER (FIRE)"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="details" type="Label" parent="summary/move_2"]
+margin_top = 8.0
+margin_right = 136.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "POWER:60 COST:5MP"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="move_3" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 110.0
+margin_right = 106.0
+margin_bottom = 118.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "EMBER (FIRE)"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="details" type="Label" parent="summary/move_3"]
+margin_top = 8.0
+margin_right = 136.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "POWER:60 COST:5MP"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="move_4" type="Label" parent="summary"]
+margin_left = 10.0
+margin_top = 126.0
+margin_right = 106.0
+margin_bottom = 134.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "EMBER (FIRE)"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="details" type="Label" parent="summary/move_4"]
+margin_top = 8.0
+margin_right = 136.0
+margin_bottom = 16.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "POWER:60 COST:5MP"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="sprite" type="Sprite" parent="summary"]
+position = Vector2( 128, 44 )
+texture = ExtResource( 6 )
