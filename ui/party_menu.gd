@@ -6,6 +6,7 @@ onready var list = $choice_menu
 onready var list_choices = $choice_menu/choices/col_1.get_children()
 onready var select_menu = $select_menu
 onready var summary = $summary
+onready var switch_cursor = $switch_cursor
 
 enum State {
     CLOSED,
@@ -18,14 +19,21 @@ enum State {
 var state = State.LIST
 var chosen_index: int = -1
 
+# Switch variables
+const SWITCH_CURSOR_FLICKER_DURATION: float = 0.3
+var switch_cursor_timer: float
+
 func _ready():
-    set_state(State.CLOSED)
+    close()
 
 func is_closed():
     return state == State.CLOSED
 
 func open():
     set_state(State.LIST)
+
+func close():
+    set_state(State.CLOSED)
 
 func open_list():
     for choice in list_choices:
@@ -49,6 +57,7 @@ func set_state(new_state):
 
     summary.visible = false
     select_menu.close()
+    switch_cursor.visible = false
 
     state = new_state
 
@@ -62,6 +71,10 @@ func set_state(new_state):
     elif state == State.SUMMARY:
         close_list()
         open_summary()
+    elif state == State.SWITCH:
+        switch_cursor.position = list.cursor.position
+        switch_cursor.visible = true
+        switch_cursor_timer = SWITCH_CURSOR_FLICKER_DURATION
 
 func open_summary():
     var familiar = director.player_familiars[chosen_index]
@@ -120,3 +133,23 @@ func check_for_input():
             if chosen_index == -1:
                 chosen_index = director.player_familiars.size() - 1
             set_state(State.SUMMARY)
+    elif state == State.SWITCH:
+        if Input.is_action_just_pressed("back"):
+            set_state(State.LIST)
+            return
+        var action = list.check_for_input()
+        if action == "":
+            return
+        var switch_with_index = list.cursor_position.y
+        if chosen_index != switch_with_index:
+            var temp_familiar = director.player_familiars[chosen_index]
+            director.player_familiars[chosen_index] = director.player_familiars[switch_with_index]
+            director.player_familiars[switch_with_index] = temp_familiar
+        set_state(State.LIST)
+
+func _process(delta):
+    if state == State.SWITCH:
+        switch_cursor_timer -= delta
+        if switch_cursor_timer <= 0:
+            switch_cursor.visible = not switch_cursor.visible
+            switch_cursor_timer = SWITCH_CURSOR_FLICKER_DURATION

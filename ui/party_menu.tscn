@@ -464,3 +464,7 @@ __meta__ = {
 [node name="sprite" type="Sprite" parent="summary"]
 position = Vector2( 128, 44 )
 texture = ExtResource( 6 )
+
+[node name="switch_cursor" type="Sprite" parent="."]
+texture = ExtResource( 4 )
+offset = Vector2( 2.5, 3.5 )
