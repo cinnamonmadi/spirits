@@ -11,9 +11,17 @@ var speed: float = 1
 var target_position: Vector2
 var facing_direction: Vector2
 
+var paused: bool = false
+
 func _ready():
+    add_to_group("pausables")
     target_position = Vector2.ZERO
     map.reserve_tile(position)
+
+func set_paused(value: bool):
+    paused = value
+    if paused:
+        sprite.stop()
 
 func is_moving_between_tiles() -> bool:
     return target_position != Vector2.ZERO

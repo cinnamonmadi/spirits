@@ -1,7 +1,7 @@
 extends Actor
 
+onready var world = get_parent()
 onready var dialog = get_parent().find_node("dialog")
-onready var director = get_node("/root/Director")
 
 enum State {
     MOVING,
@@ -57,6 +57,8 @@ func try_interact():
             break
 
 func _physics_process(_delta):
+    if paused:
+        return
     handle_input()
     if state == State.MOVING:
         move()
@@ -86,5 +88,4 @@ func handle_reached_target():
         steps_to_battle = rng.randi_range(10, 20)
 
         input_direction = Vector2.ZERO
-
-        director.start_battle()
+        world.init_start_battle()

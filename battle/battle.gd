@@ -37,7 +37,6 @@ enum State {
 
 var state = State.SPRITES_ENTERING
 var enemy_familiar
-var player_familiar
 var timer: float
 
 const SCREEN_WIDTH = 160
@@ -74,15 +73,6 @@ var rand = RandomNumberGenerator.new()
 func _ready():
     rand.randomize()
 
-    player_sprite.region_enabled = true
-    player_sprite.region_rect = Rect2(0, 0, player_sprite.texture.get_size().x, player_sprite.texture.get_size().y)
-    enemy_sprite.region_enabled = true
-    enemy_sprite.region_rect = Rect2(0, 0, enemy_sprite.texture.get_size().x, enemy_sprite.texture.get_size().y)
-
-    dialog.keep_open = true
-    dialog.DIALOG_SPEED = (1.0 / 60)
-    dialog.open_empty()
-
     enemy_familiar = Familiar.new()
     enemy_familiar.species = "SPHYNX"
     enemy_familiar.moves = ["SPOOK", "TAUNT", "EMBER", "BASK"]
@@ -91,27 +81,22 @@ func _ready():
     enemy_familiar.mana = 10
     enemy_familiar.max_mana = 10
 
-    player_familiar = Familiar.new()
-    player_familiar.species = "SPHYNX"
-    player_familiar.nickname = "Beerus"
-    player_familiar.moves = ["SPOOK", "TAUNT", "EMBER", "BASK"]
-    player_familiar.health = 30
-    player_familiar.max_health = 30
-    player_familiar.mana = 10
-    player_familiar.max_mana = 10
+    dialog.keep_open = true
+    dialog.DIALOG_SPEED = (1.0 / 60)
+    dialog.open_empty()
 
-    setup()
-
-func setup():
     enemy_sprite.texture = load(enemy_familiar.get_portrait_path())
     enemy_name_label.text = enemy_familiar.get_display_name()
 
-    player_sprite.texture = load(player_familiar.get_portrait_path())
-    player_name_label.text = player_familiar.get_display_name()
+    player_sprite.texture = load(director.player_familiars[0].get_portrait_path())
+    player_name_label.text = director.player_familiars[0].get_display_name()
 
     update_healthbars(0.0)
-
     set_state(State.SPRITES_ENTERING)
+
+func start(player_party, enemy):
+    director.player_familiars = player_party
+    enemy_familiar = enemy
 
 func set_state(new_state):
     state = new_state
@@ -135,7 +120,7 @@ func set_state(new_state):
         dialog.open("A wild " + enemy_familiar.get_display_name() + " appeared!")
     elif state == State.CALLOUT_FAMILIAR:
         enemy_health.visible = true
-        dialog.open("Go! " + player_familiar.get_display_name() + "!")
+        dialog.open("Go! " + director.player_familiars[0].get_display_name() + "!")
     elif state == State.SUMMON_FAMILIAR:
         timer = 1.0
     elif state == State.CHOOSE_ACTION:
@@ -143,12 +128,12 @@ func set_state(new_state):
         battle_actions.open()
     elif state == State.CHOOSE_MOVE:
         dialog.open_empty()
-        move_select.set_labels([player_familiar.moves])
+        move_select.set_labels([director.player_familiars[0].moves])
         move_select.open()
         open_move_info(move_select.select())
     elif state == State.ANNOUNCE_MOVE:
         if turns[current_turn] == "player":
-            dialog.open_with([[player_familiar.get_display_name(), "used " + player_chosen_move]])
+            dialog.open_with([[director.player_familiars[0].get_display_name(), "used " + player_chosen_move]])
         elif turns[current_turn] == "enemy":
             dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "used " + enemy_chosen_move]])
     elif state == State.ANIMATE_MOVE:
@@ -163,7 +148,7 @@ func set_state(new_state):
         if turns[current_turn] == "player":
             dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "fainted!"]])
         elif turns[current_turn] == "enemy":
-            dialog.open_with([[player_familiar.get_display_name(), "fainted!"]])
+            dialog.open_with([[director.player_familiars[0].get_display_name(), "fainted!"]])
     elif state == State.ANNOUNCE_WINNER:
         if turns[current_turn] == "player":
             dialog.open("You win!")
@@ -187,15 +172,15 @@ func update_bar(bar_label, prefix, old_value, new_value, max_value, percent_comp
     bar_label.text = prefix + String(value) + "/" + String(max_value)
 
 func update_healthbars(percent_complete=0.0):
-    update_bar(player_health_label, "HP: ", player_old_hp, player_familiar.health, player_familiar.max_health, percent_complete)
-    update_bar(player_mana_label, "MP: ", player_old_mp, player_familiar.mana, player_familiar.max_mana, percent_complete)
+    update_bar(player_health_label, "HP: ", player_old_hp, director.player_familiars[0].health, director.player_familiars[0].max_health, percent_complete)
+    update_bar(player_mana_label, "MP: ", player_old_mp, director.player_familiars[0].mana, director.player_familiars[0].max_mana, percent_complete)
     update_bar(enemy_health_label, "HP: ", enemy_old_hp, enemy_familiar.health, enemy_familiar.max_health, percent_complete)
     update_bar(enemy_mana_label, "MP: ", enemy_old_mp, enemy_familiar.mana, enemy_familiar.max_mana, percent_complete)
 
 func setup_turn(player_move: String):
     player_chosen_move = player_move
     enemy_chosen_move = enemy_familiar.moves[rand.randi_range(0, 3)]
-    if player_familiar.speed >= enemy_familiar.speed:
+    if director.player_familiars[0].speed >= enemy_familiar.speed:
         turns = ["player", "enemy"]
     else:
         turns = ["enemy", "player"]
@@ -281,18 +266,18 @@ func _process(delta):
             director.end_battle()
 
 func setup_execute_move():
-    player_old_hp = player_familiar.health
-    player_old_mp = player_familiar.mana
+    player_old_hp = director.player_familiars[0].health
+    player_old_mp = director.player_familiars[0].mana
     enemy_old_hp = enemy_familiar.health
     enemy_old_mp = enemy_familiar.mana
 
     if turns[current_turn] == "player":
-        player_familiar.use_move(player_chosen_move, enemy_familiar)
+        director.player_familiars[0].use_move(player_chosen_move, enemy_familiar)
     elif turns[current_turn] == "enemy":
-        enemy_familiar.use_move(enemy_chosen_move, player_familiar)
+        enemy_familiar.use_move(enemy_chosen_move, director.player_familiars[0])
 
 func evaluate_move():
-    if (turns[current_turn] == "player" and enemy_familiar.health == 0) or (turns[current_turn] == "enemy" and player_familiar.health == 0):
+    if (turns[current_turn] == "player" and enemy_familiar.health == 0) or (turns[current_turn] == "enemy" and director.player_familiars[0].health == 0):
         set_state(State.FAINT)
         return
 

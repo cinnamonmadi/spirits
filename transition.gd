@@ -8,7 +8,7 @@ var counter: int = FLASH_COUNT
 var finished: bool = false
 
 func _ready():
-    pass 
+    pause_mode = Node.PAUSE_MODE_PROCESS
 
 func _process(delta):
     if finished:

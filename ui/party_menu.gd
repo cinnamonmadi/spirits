@@ -4,6 +4,7 @@ onready var choice_menu = $choice_menu
 onready var choices = $choice_menu/choices/col_1.get_children()
 
 func _ready():
+    close()
     visible = false
 
 func open(familiars):
