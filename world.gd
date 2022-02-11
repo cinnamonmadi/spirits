@@ -35,7 +35,7 @@ func set_state(new_state):
         set_paused(true)
         pause_menu.open()
     elif state == State.PARTY_MENU:
-        party_menu.open()
+        party_menu.open(false)
 
 func _process(_delta):
     if state == State.WORLD and Input.is_action_just_pressed("menu"):

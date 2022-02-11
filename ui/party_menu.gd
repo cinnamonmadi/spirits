@@ -18,6 +18,11 @@ enum State {
 
 var state = State.LIST
 var chosen_index: int = -1
+# Battle mode determines how the menu behaves in a fight. 
+# It's almost exactly the same, except that the SWITCH command will always swap out your current
+# fighter and then close the menu, rather than serving as a way to rearrange the list
+var battle_mode: bool = false 
+var battle_switch_index: int = -1
 
 # Switch variables
 const SWITCH_CURSOR_FLICKER_DURATION: float = 0.3
@@ -29,7 +34,9 @@ func _ready():
 func is_closed():
     return state == State.CLOSED
 
-func open():
+func open(in_battle_mode: bool):
+    battle_mode = in_battle_mode
+    battle_switch_index = -1
     set_state(State.LIST)
 
 func close():
@@ -43,7 +50,7 @@ func open_list():
         list_choices[i].find_node("level").text = "LVL " + String(director.player_familiars[i].level)
         list_choices[i].find_node("health").text = "HP:" + String(director.player_familiars[i].health) + "/" + String(director.player_familiars[i].max_health) + " MP:" + String(director.player_familiars[i].mana) + "/" + String(director.player_familiars[i].max_mana)
         list_choices[i].visible = true
-    list.reset()
+    list.reset_choices()
     list.open()
 
 func close_list():
@@ -68,6 +75,13 @@ func set_state(new_state):
         open_list()
     elif state == State.SELECTED:
         select_menu.open()
+        # Don't show the switch option for the first familiar if in battle
+        if battle_mode and chosen_index == 0:
+            select_menu.choices[0][1].visible = false
+            select_menu.reset_choices()
+        else:
+            select_menu.choices[0][1].visible = true
+            select_menu.reset_choices()
     elif state == State.SUMMARY:
         close_list()
         open_summary()
@@ -120,7 +134,11 @@ func check_for_input():
         if action == "SUMMARY":
             set_state(State.SUMMARY)
         elif action == "SWITCH":
-            set_state(State.SWITCH)
+            if battle_mode:
+                battle_switch_index = chosen_index
+                close()
+            else:
+                set_state(State.SWITCH)
     elif state == State.SUMMARY:
         if Input.is_action_just_pressed("back"):
             set_state(State.LIST)
@@ -142,9 +160,7 @@ func check_for_input():
             return
         var switch_with_index = list.cursor_position.y
         if chosen_index != switch_with_index:
-            var temp_familiar = director.player_familiars[chosen_index]
-            director.player_familiars[chosen_index] = director.player_familiars[switch_with_index]
-            director.player_familiars[switch_with_index] = temp_familiar
+            director.player_switch_familiars(chosen_index, switch_with_index)
         set_state(State.LIST)
 
 func _process(delta):

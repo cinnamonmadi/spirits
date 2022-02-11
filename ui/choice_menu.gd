@@ -7,20 +7,31 @@ const input_directions = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 
 var cursor_position = Vector2.ZERO # Uses a Vector2 in case there are columns as well as rows
 var choices = [] # Will be a 2D array of all the option labels
+var column_sizes = []
+var num_columns = 0
 
 var remember_cursor_position = false
 
 func _ready():
-    reset()
-
-func reset():
     var choices_tree_item = $choices
+    choices = []
     for column in choices_tree_item.get_children():
         var new_column = []
         for label in column.get_children():
-            if label.visible:
-                new_column.append(label)
+            new_column.append(label)
         choices.append(new_column)
+    reset_choices()
+
+func reset_choices():
+    column_sizes = []
+    num_columns = 0
+    for x in range(0, choices.size()):
+        num_columns += 1
+        column_sizes.append(0)
+        for y in range(0, choices[x].size()):
+            if not choices[x][y].visible:
+                continue
+            column_sizes[x] += 1
     set_cursor_position()
 
 func set_labels(values):
@@ -42,8 +53,8 @@ func set_cursor_position():
     
 # Input should be a single-direction unit vector, although I suppose the code should work even if it isn't
 func navigate(input_direction: Vector2):
-    cursor_position.x = int(cursor_position.x + input_direction.x) % choices.size()
-    cursor_position.y = int(cursor_position.y + input_direction.y) % choices[cursor_position.x].size()
+    cursor_position.x = int(cursor_position.x + input_direction.x) % num_columns
+    cursor_position.y = int(cursor_position.y + input_direction.y) % column_sizes[cursor_position.x]
     set_cursor_position()
 
 func select():

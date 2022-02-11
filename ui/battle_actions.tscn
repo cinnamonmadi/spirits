@@ -36,7 +36,7 @@ margin_right = 56.0
 margin_bottom = 22.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "Fight"
+text = "FIGHT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -48,7 +48,7 @@ margin_right = 48.0
 margin_bottom = 38.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "Item"
+text = "ITEM"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -56,27 +56,30 @@ __meta__ = {
 [node name="col_2" type="Control" parent="choices"]
 margin_right = 40.0
 margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="choice_3" type="Label" parent="choices/col_2"]
-margin_left = 70.0
+margin_left = 66.0
 margin_top = 14.0
-margin_right = 102.0
+margin_right = 106.0
 margin_bottom = 22.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "FMLR"
+text = "PARTY"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="choice_4" type="Label" parent="choices/col_2"]
-margin_left = 70.0
+margin_left = 66.0
 margin_top = 30.0
-margin_right = 94.0
+margin_right = 90.0
 margin_bottom = 38.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "Run"
+text = "RUN"
 __meta__ = {
 "_edit_use_anchors_": false
 }

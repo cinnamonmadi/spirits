@@ -19,14 +19,17 @@ onready var dialog = $dialog
 onready var battle_actions = $battle_actions
 onready var move_select = $move_select
 onready var move_info = $move_info
+onready var party_menu = $party_menu
 
 enum State {
     SPRITES_ENTERING,
     ANNOUNCE_OPPONENT,
     CALLOUT_FAMILIAR,
+    CALLBACK_FAMILIAR,
     SUMMON_FAMILIAR,
     CHOOSE_ACTION,
     CHOOSE_MOVE,
+    PARTY_MENU,
     ANNOUNCE_MOVE,
     ANIMATE_MOVE,
     EXECUTE_MOVE,
@@ -99,11 +102,17 @@ func start(player_party, enemy):
     enemy_familiar = enemy
 
 func set_state(new_state):
+    if state == State.CALLOUT_FAMILIAR:
+        player_sprite.texture = load(director.player_familiars[0].get_portrait_path())
+        player_sprite.visible = true
+        player_health.visible = true
+
     state = new_state
 
     battle_actions.close()
     move_select.close()
     move_info.close()
+    party_menu.close()
 
     if state == State.SPRITES_ENTERING:
         player_sprite.visible = false
@@ -121,6 +130,9 @@ func set_state(new_state):
     elif state == State.CALLOUT_FAMILIAR:
         enemy_health.visible = true
         dialog.open("Go! " + director.player_familiars[0].get_display_name() + "!")
+    elif state == State.CALLBACK_FAMILIAR:
+        player_sprite.visible = false
+        dialog.open(director.player_familiars[0].get_display_name() + "! Come back!")
     elif state == State.SUMMON_FAMILIAR:
         timer = 1.0
     elif state == State.CHOOSE_ACTION:
@@ -131,6 +143,8 @@ func set_state(new_state):
         move_select.set_labels([director.player_familiars[0].moves])
         move_select.open()
         open_move_info(move_select.select())
+    elif state == State.PARTY_MENU:
+        party_menu.open(true)
     elif state == State.ANNOUNCE_MOVE:
         if turns[current_turn] == "player":
             dialog.open_with([[director.player_familiars[0].get_display_name(), "used " + player_chosen_move]])
@@ -202,16 +216,20 @@ func _process(delta):
     elif state == State.CALLOUT_FAMILIAR:
         if dialog.is_waiting():
             set_state(State.SUMMON_FAMILIAR)
+    elif state == State.CALLBACK_FAMILIAR:
+        if dialog.is_waiting():
+            director.player_switch_familiars(0, party_menu.battle_switch_index)
+            set_state(State.CALLOUT_FAMILIAR)
     elif state == State.SUMMON_FAMILIAR:
         timer -= delta
         if timer <= 0:
-            player_sprite.visible = true
-            player_health.visible = true
             set_state(State.CHOOSE_ACTION)
     elif state == State.CHOOSE_ACTION:
         var action = battle_actions.check_for_input()
-        if action == "Fight":
+        if action == "FIGHT":
             set_state(State.CHOOSE_MOVE)
+        elif action == "PARTY":
+            set_state(State.PARTY_MENU)
     elif state == State.CHOOSE_MOVE:
         if Input.is_action_just_pressed("back"):
             set_state(State.CHOOSE_ACTION)
@@ -222,6 +240,14 @@ func _process(delta):
             else:
                 setup_turn(move)
                 set_state(State.ANNOUNCE_MOVE)
+    elif state == State.PARTY_MENU:
+        party_menu.check_for_input()
+        if party_menu.is_closed():
+            # Check if the player actually switched familiars
+            if party_menu.battle_switch_index != -1:
+                set_state(State.CALLBACK_FAMILIAR)
+            else:
+                set_state(State.CHOOSE_ACTION)
     elif state == State.ANNOUNCE_MOVE:
         if dialog.is_waiting():
             set_state(State.ANIMATE_MOVE)
