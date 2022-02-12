@@ -36,6 +36,12 @@ func _ready():
     var root = get_tree().get_root()
     world_instance = root.get_child(root.get_child_count() - 1)
 
+func is_player_wiped():
+    for familiar in player_familiars:
+        if familiar.health > 0:
+            return false
+    return true
+
 func player_switch_familiars(index_a, index_b):
     var temp_familiar = player_familiars[index_a]
     player_familiars[index_a] = player_familiars[index_b]
@@ -61,6 +67,7 @@ func finish_start_battle():
     state = State.BATTLE
 
 func end_battle():
+    print("hello")
     var root = get_tree().get_root()
     battle_instance.free()
     root.add_child(world_instance)

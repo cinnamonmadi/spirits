@@ -20,6 +20,7 @@ onready var battle_actions = $battle_actions
 onready var move_select = $move_select
 onready var move_info = $move_info
 onready var party_menu = $party_menu
+onready var runaway_choices = $runaway_choices
 
 enum State {
     SPRITES_ENTERING,
@@ -35,6 +36,8 @@ enum State {
     EXECUTE_MOVE,
     EVALUATE,
     FAINT,
+    PROMPT_ESCAPE,
+    OPTIONS_ESCAPE,
     ANNOUNCE_WINNER
 }
 
@@ -88,22 +91,22 @@ func _ready():
     dialog.DIALOG_SPEED = (1.0 / 60)
     dialog.open_empty()
 
-    enemy_sprite.texture = load(enemy_familiar.get_portrait_path())
-    enemy_name_label.text = enemy_familiar.get_display_name()
-
-    player_sprite.texture = load(director.player_familiars[0].get_portrait_path())
-    player_name_label.text = director.player_familiars[0].get_display_name()
+    # This check will not be needed eventually, but for developing, let's check to make sure the player even has a familiar living
+    if director.is_player_wiped():
+        set_state(State.ANNOUNCE_WINNER)
+    else:
+        if director.player_familiars[0].health <= 0:
+            for i in range(1, director.player_familiars.size()):
+                if director.player_familiars[i].health > 0:
+                    director.player_switch_familiars(0, i)
+                    break
 
     update_healthbars(0.0)
     set_state(State.SPRITES_ENTERING)
 
-func start(player_party, enemy):
-    director.player_familiars = player_party
-    enemy_familiar = enemy
-
 func set_state(new_state):
     if state == State.CALLOUT_FAMILIAR:
-        player_sprite.texture = load(director.player_familiars[0].get_portrait_path())
+        init_healthbars()
         player_sprite.visible = true
         player_health.visible = true
 
@@ -113,6 +116,7 @@ func set_state(new_state):
     move_select.close()
     move_info.close()
     party_menu.close()
+    runaway_choices.close()
 
     if state == State.SPRITES_ENTERING:
         player_sprite.visible = false
@@ -132,6 +136,7 @@ func set_state(new_state):
         dialog.open("Go! " + director.player_familiars[0].get_display_name() + "!")
     elif state == State.CALLBACK_FAMILIAR:
         player_sprite.visible = false
+        player_health.visible = false
         dialog.open(director.player_familiars[0].get_display_name() + "! Come back!")
     elif state == State.SUMMON_FAMILIAR:
         timer = 1.0
@@ -163,6 +168,10 @@ func set_state(new_state):
             dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "fainted!"]])
         elif turns[current_turn] == "enemy":
             dialog.open_with([[director.player_familiars[0].get_display_name(), "fainted!"]])
+    elif state == State.PROMPT_ESCAPE:
+        dialog.open("Will you change familiars?")
+    elif state == State.OPTIONS_ESCAPE:
+        runaway_choices.open()
     elif state == State.ANNOUNCE_WINNER:
         if turns[current_turn] == "player":
             dialog.open("You win!")
@@ -172,6 +181,15 @@ func set_state(new_state):
 func open_move_info(move: String):
     var move_info_values = Familiar.MOVE_INFO[move]
     move_info.open(move_info_values["type"], String(move_info_values["cost"]) + " MP")
+
+func init_healthbars():
+    enemy_sprite.texture = load(enemy_familiar.get_portrait_path())
+    enemy_name_label.text = enemy_familiar.get_display_name()
+
+    player_sprite.texture = load(director.player_familiars[0].get_portrait_path())
+    player_name_label.text = director.player_familiars[0].get_display_name()
+
+    update_healthbars(0)
 
 func update_bar(bar_label, prefix, old_value, new_value, max_value, percent_complete):
     var value: int
@@ -245,9 +263,19 @@ func _process(delta):
         if party_menu.is_closed():
             # Check if the player actually switched familiars
             if party_menu.battle_switch_index != -1:
-                set_state(State.CALLBACK_FAMILIAR)
+                # Skip the callback familiar if your familiar is already dead
+                if director.player_familiars[0].health <= 0:
+                    director.player_switch_familiars(0, party_menu.battle_switch_index)
+                    set_state(State.CALLOUT_FAMILIAR)
+                else:
+                    set_state(State.CALLBACK_FAMILIAR)
             else:
-                set_state(State.CHOOSE_ACTION)
+                # If familiar is dead, return to prompt escape selection
+                if director.player_familiars[0].health <= 0:
+                    set_state(State.PROMPT_ESCAPE)
+                # Otherwise return to choose action screen
+                else:
+                    set_state(State.CHOOSE_ACTION)
     elif state == State.ANNOUNCE_MOVE:
         if dialog.is_waiting():
             set_state(State.ANIMATE_MOVE)
@@ -283,12 +311,28 @@ func _process(delta):
         if timer <= 0:
             if turns[current_turn] == "player":
                 enemy_sprite.visible = false
+                enemy_health.visible = false
             elif turns[current_turn] == "enemy":
                 player_sprite.visible = false
+                player_health.visible = false
         if timer <= 0 and Input.is_action_just_pressed("action") and dialog.is_waiting():
-            set_state(State.ANNOUNCE_WINNER)
+            if turns[current_turn] == "enemy" and not director.is_player_wiped():
+                set_state(State.PROMPT_ESCAPE)
+            else:
+                set_state(State.ANNOUNCE_WINNER)
+    elif state == State.PROMPT_ESCAPE:
+        if dialog.is_waiting() and Input.is_action_just_pressed("action"):
+            set_state(State.OPTIONS_ESCAPE)
+    elif state == State.OPTIONS_ESCAPE:
+        var action = runaway_choices.check_for_input()
+        if action == "SWITCH":
+            set_state(State.PARTY_MENU)
+        elif action == "RUN":
+            pass
+            # try running
     elif state == State.ANNOUNCE_WINNER:
         if Input.is_action_just_pressed("action") and dialog.is_waiting():
+            print("hey")
             director.end_battle()
 
 func setup_execute_move():
