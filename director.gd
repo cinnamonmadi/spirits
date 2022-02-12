@@ -62,7 +62,6 @@ func start_battle():
 func finish_start_battle():
     var root = get_tree().get_root()
     root.remove_child(world_instance)
-    root.remove_child(transition_instance)
     transition_instance.queue_free()
     battle_instance = battle_scene.instance()
     root.add_child(battle_instance)
@@ -70,7 +69,6 @@ func finish_start_battle():
 
 func end_battle():
     var root = get_tree().get_root()
-    root.remove_child(battle_instance)
     battle_instance.queue_free()
     root.add_child(world_instance)
     world_instance.set_paused(false)

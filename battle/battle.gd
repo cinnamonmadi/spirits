@@ -21,6 +21,7 @@ onready var move_select = $move_select
 onready var move_info = $move_info
 onready var party_menu = $party_menu
 onready var runaway_choices = $runaway_choices
+onready var timer = $timer
 
 enum State {
     SPRITES_ENTERING,
@@ -43,7 +44,6 @@ enum State {
 
 var state = State.SPRITES_ENTERING
 var enemy_familiar
-var timer: float
 
 const SCREEN_WIDTH = 160
 
@@ -105,78 +105,16 @@ func _ready():
     set_state(State.SPRITES_ENTERING)
 
 func set_state(new_state):
-    if state == State.CALLOUT_FAMILIAR:
-        init_healthbars()
-        player_sprite.visible = true
-        player_health.visible = true
-
+    close_all()
     state = new_state
+    var state_name = State.keys()[state].to_lower()
+    var state_begin_function = "begin_" + state_name
+    call(state_begin_function)
 
-    battle_actions.close()
-    move_select.close()
-    move_info.close()
-    party_menu.close()
-    runaway_choices.close()
-
-    if state == State.SPRITES_ENTERING:
-        player_sprite.visible = false
-        enemy_health.visible = false
-        player_health.visible = false
-
-        player_sprite_position = player_sprite.position
-        player_sprite_start_x = SCREEN_WIDTH + (player_sprite.texture.get_size().x / 2)
-        enemy_sprite_position = enemy_sprite.position
-        enemy_sprite_start_x = -(enemy_sprite.texture.get_size().x / 2)
-
-        timer = SPRITE_ENTER_DURATION
-    elif state == State.ANNOUNCE_OPPONENT:
-        dialog.open("A wild " + enemy_familiar.get_display_name() + " appeared!")
-    elif state == State.CALLOUT_FAMILIAR:
-        enemy_health.visible = true
-        dialog.open("Go! " + director.player_familiars[0].get_display_name() + "!")
-    elif state == State.CALLBACK_FAMILIAR:
-        player_sprite.visible = false
-        player_health.visible = false
-        dialog.open(director.player_familiars[0].get_display_name() + "! Come back!")
-    elif state == State.SUMMON_FAMILIAR:
-        timer = 1.0
-    elif state == State.CHOOSE_ACTION:
-        dialog.open_empty()
-        battle_actions.open()
-    elif state == State.CHOOSE_MOVE:
-        dialog.open_empty()
-        move_select.set_labels([director.player_familiars[0].moves])
-        move_select.open()
-        open_move_info(move_select.select())
-    elif state == State.PARTY_MENU:
-        party_menu.open(true)
-    elif state == State.ANNOUNCE_MOVE:
-        if turns[current_turn] == "player":
-            dialog.open_with([[director.player_familiars[0].get_display_name(), "used " + player_chosen_move]])
-        elif turns[current_turn] == "enemy":
-            dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "used " + enemy_chosen_move]])
-    elif state == State.ANIMATE_MOVE:
-        timer = ANIMATE_MOVE_DURATION
-    elif state == State.EXECUTE_MOVE:
-        setup_execute_move()
-        timer = EXECUTE_MOVE_DURATION
-    elif state == State.EVALUATE:
-        evaluate_move()
-    elif state == State.FAINT:
-        timer = FAINT_DURATION
-        if turns[current_turn] == "player":
-            dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "fainted!"]])
-        elif turns[current_turn] == "enemy":
-            dialog.open_with([[director.player_familiars[0].get_display_name(), "fainted!"]])
-    elif state == State.PROMPT_ESCAPE:
-        dialog.open("Will you change familiars?")
-    elif state == State.OPTIONS_ESCAPE:
-        runaway_choices.open()
-    elif state == State.ANNOUNCE_WINNER:
-        if turns[current_turn] == "player":
-            dialog.open("You win!")
-        elif turns[current_turn] == "enemy":
-            dialog.open("You lose...")
+func _process(_delta):
+    var state_name = State.keys()[state].to_lower()
+    var state_process_function = "process_" + state_name
+    call(state_process_function)
 
 func open_move_info(move: String):
     var move_info_values = Familiar.MOVE_INFO[move]
@@ -209,7 +147,7 @@ func update_healthbars(percent_complete=0.0):
     update_bar(enemy_health_label, "HP: ", enemy_old_hp, enemy_familiar.health, enemy_familiar.max_health, percent_complete)
     update_bar(enemy_mana_label, "MP: ", enemy_old_mp, enemy_familiar.mana, enemy_familiar.max_mana, percent_complete)
 
-func setup_turn(player_move: String):
+func init_turn(player_move: String):
     player_chosen_move = player_move
     enemy_chosen_move = enemy_familiar.moves[rand.randi_range(0, 3)]
     if director.player_familiars[0].speed >= enemy_familiar.speed:
@@ -218,123 +156,149 @@ func setup_turn(player_move: String):
         turns = ["enemy", "player"]
     current_turn = 0
 
-func _process(delta):
-    if state == State.SPRITES_ENTERING:
-        timer -= delta
-        if timer <= 0:
-            enemy_sprite.position.x = enemy_sprite_position.x
-            player_sprite.position.x = player_sprite_position.x
-            set_state(State.ANNOUNCE_OPPONENT)
-        else:
-            enemy_sprite.position.x = enemy_sprite_start_x + ((enemy_sprite_position.x - enemy_sprite_start_x) * (1 - (timer / SPRITE_ENTER_DURATION)))
-            player_sprite.position.x = player_sprite_start_x - ((player_sprite_start_x - player_sprite_position.x) * (1 - (timer / SPRITE_ENTER_DURATION)))
-    elif state == State.ANNOUNCE_OPPONENT:
-        if dialog.is_waiting() and Input.is_action_just_pressed("action"):
-            set_state(State.CALLOUT_FAMILIAR)
-    elif state == State.CALLOUT_FAMILIAR:
-        if dialog.is_waiting():
-            set_state(State.SUMMON_FAMILIAR)
-    elif state == State.CALLBACK_FAMILIAR:
-        if dialog.is_waiting():
-            director.player_switch_familiars(0, party_menu.battle_switch_index)
-            set_state(State.CALLOUT_FAMILIAR)
-    elif state == State.SUMMON_FAMILIAR:
-        timer -= delta
-        if timer <= 0:
-            set_state(State.CHOOSE_ACTION)
-    elif state == State.CHOOSE_ACTION:
-        var action = battle_actions.check_for_input()
-        if action == "FIGHT":
-            set_state(State.CHOOSE_MOVE)
-        elif action == "PARTY":
-            set_state(State.PARTY_MENU)
-    elif state == State.CHOOSE_MOVE:
-        if Input.is_action_just_pressed("back"):
-            set_state(State.CHOOSE_ACTION)
-        else:
-            var move = move_select.check_for_input()
-            if move == "":
-                open_move_info(move_select.select())
-            else:
-                setup_turn(move)
-                set_state(State.ANNOUNCE_MOVE)
-    elif state == State.PARTY_MENU:
-        party_menu.check_for_input()
-        if party_menu.is_closed():
-            # Check if the player actually switched familiars
-            if party_menu.battle_switch_index != -1:
-                # Skip the callback familiar if your familiar is already dead
-                if director.player_familiars[0].health <= 0:
-                    director.player_switch_familiars(0, party_menu.battle_switch_index)
-                    set_state(State.CALLOUT_FAMILIAR)
-                else:
-                    set_state(State.CALLBACK_FAMILIAR)
-            else:
-                # If familiar is dead, return to prompt escape selection
-                if director.player_familiars[0].health <= 0:
-                    set_state(State.PROMPT_ESCAPE)
-                # Otherwise return to choose action screen
-                else:
-                    set_state(State.CHOOSE_ACTION)
-    elif state == State.ANNOUNCE_MOVE:
-        if dialog.is_waiting():
-            set_state(State.ANIMATE_MOVE)
-    elif state == State.ANIMATE_MOVE:
-        timer -= delta
-        if timer <= 0:
-            if turns[current_turn] == "player":
-                player_sprite.position.x = player_sprite_position.x
-            elif turns[current_turn] == "enemy":
-                enemy_sprite.position.x = enemy_sprite_position.x
-            set_state(State.EXECUTE_MOVE)
-        else:
-            var moving_forward = timer >= (ANIMATE_MOVE_DURATION / 2)
-            var movement_percent: float 
-            if moving_forward:
-                movement_percent = 1 - ((timer - (ANIMATE_MOVE_DURATION / 2)) / (ANIMATE_MOVE_DURATION / 2))
-            else:
-                movement_percent = (timer / (ANIMATE_MOVE_DURATION / 2))
-            if turns[current_turn] == "player":
-                player_sprite.position.x = player_sprite_position.x + (ANIMATE_MOVE_DISTANCE * movement_percent)
-            elif turns[current_turn] == "enemy":
-                enemy_sprite.position.x = enemy_sprite_position.x - (ANIMATE_MOVE_DISTANCE * movement_percent)
-    elif state == State.EXECUTE_MOVE:
-        timer -= delta
-        if timer <= 0:
-            update_healthbars(0)
-            set_state(State.EVALUATE)
-        else:
-            var percent_complete = 1 - (timer / EXECUTE_MOVE_DURATION)
-            update_healthbars(percent_complete)
-    elif state == State.FAINT:
-        timer -= delta
-        if timer <= 0:
-            if turns[current_turn] == "player":
-                enemy_sprite.visible = false
-                enemy_health.visible = false
-            elif turns[current_turn] == "enemy":
-                player_sprite.visible = false
-                player_health.visible = false
-        if timer <= 0 and Input.is_action_just_pressed("action") and dialog.is_waiting():
-            if turns[current_turn] == "enemy" and not director.is_player_wiped():
-                set_state(State.PROMPT_ESCAPE)
-            else:
-                set_state(State.ANNOUNCE_WINNER)
-    elif state == State.PROMPT_ESCAPE:
-        if dialog.is_waiting() and Input.is_action_just_pressed("action"):
-            set_state(State.OPTIONS_ESCAPE)
-    elif state == State.OPTIONS_ESCAPE:
-        var action = runaway_choices.check_for_input()
-        if action == "SWITCH":
-            set_state(State.PARTY_MENU)
-        elif action == "RUN":
-            pass
-            # try running
-    elif state == State.ANNOUNCE_WINNER:
-        if Input.is_action_just_pressed("action") and dialog.is_waiting():
-            director.end_battle()
+func close_all():
+    battle_actions.close()
+    move_select.close()
+    move_info.close()
+    party_menu.close()
+    runaway_choices.close()
 
-func setup_execute_move():
+func begin_sprites_entering():
+    player_health.visible = false
+    enemy_health.visible = false
+    player_sprite.visible = false
+
+    player_sprite_position = player_sprite.position
+    player_sprite_start_x = SCREEN_WIDTH + (player_sprite.texture.get_size().x / 2)
+    enemy_sprite_position = enemy_sprite.position
+    enemy_sprite_start_x = -(enemy_sprite.texture.get_size().x / 2)
+
+    timer.start(SPRITE_ENTER_DURATION)
+
+func process_sprites_entering():
+    var percent_complete: float = 1 - (timer.get_time_left() / SPRITE_ENTER_DURATION)
+    enemy_sprite.position.x = enemy_sprite_start_x + ((enemy_sprite_position.x - enemy_sprite_start_x) * percent_complete)
+    player_sprite.position.x = player_sprite_start_x - ((player_sprite_start_x - player_sprite_position.x) * percent_complete)
+    if timer.is_stopped():
+        enemy_sprite.position.x = enemy_sprite_position.x
+        player_sprite.position.x = player_sprite_position.x
+        enemy_health.visible = true
+        set_state(State.ANNOUNCE_OPPONENT)
+
+func begin_announce_opponent():
+    dialog.open("A wild " + enemy_familiar.get_display_name() + " appeared!")
+
+func process_announce_opponent():
+    if dialog.is_waiting() and Input.is_action_just_pressed("action"):
+        set_state(State.CALLOUT_FAMILIAR)
+
+func begin_callout_familiar():
+    dialog.open("Go! " + director.player_familiars[0].get_display_name() + "!")
+
+func process_callout_familiar():
+    if dialog.is_waiting():
+        init_healthbars()
+        player_sprite.visible = true
+        player_health.visible = true
+        set_state(State.SUMMON_FAMILIAR)
+
+func begin_callback_familiar():
+    player_sprite.visible = false
+    player_health.visible = false
+    dialog.open(director.player_familiars[0].get_display_name() + "! Come back!")
+
+func process_callback_familiar():
+    if dialog.is_waiting():
+        director.player_switch_familiars(0, party_menu.battle_switch_index)
+        set_state(State.CALLOUT_FAMILIAR)
+
+func begin_summon_familiar():
+    timer.start(1.0)
+
+func process_summon_familiar():
+    if timer.is_stopped():
+        set_state(State.CHOOSE_ACTION)
+
+func begin_choose_action():
+    dialog.open_empty()
+    battle_actions.open()
+
+func process_choose_action():
+    var action = battle_actions.check_for_input()
+    if action == "FIGHT":
+        set_state(State.CHOOSE_MOVE)
+    elif action == "PARTY":
+        set_state(State.PARTY_MENU)
+
+func begin_choose_move():
+    dialog.open_empty()
+    move_select.set_labels([director.player_familiars[0].moves])
+    move_select.open()
+    open_move_info(move_select.select())
+
+func process_choose_move():
+    if Input.is_action_just_pressed("back"):
+        set_state(State.CHOOSE_ACTION)
+    else:
+        var move = move_select.check_for_input()
+        if move == "":
+            open_move_info(move_select.select())
+        else:
+            init_turn(move)
+            set_state(State.ANNOUNCE_MOVE)
+
+func begin_party_menu():
+    party_menu.open(true)
+
+func process_party_menu():
+    party_menu.check_for_input()
+    if party_menu.is_closed():
+        # Check if the player actually switched familiars
+        if party_menu.battle_switch_index != -1:
+            # Skip the callback familiar if your familiar is already dead
+            if director.player_familiars[0].health <= 0:
+                director.player_switch_familiars(0, party_menu.battle_switch_index)
+                set_state(State.CALLOUT_FAMILIAR)
+            else:
+                set_state(State.CALLBACK_FAMILIAR)
+        else:
+            # If familiar is dead, return to prompt escape selection
+            if director.player_familiars[0].health <= 0:
+                set_state(State.PROMPT_ESCAPE)
+            # Otherwise return to choose action screen
+            else:
+                set_state(State.CHOOSE_ACTION)
+
+func begin_announce_move():
+    if turns[current_turn] == "player":
+        dialog.open_with([[director.player_familiars[0].get_display_name(), "used " + player_chosen_move]])
+    elif turns[current_turn] == "enemy":
+        dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "used " + enemy_chosen_move]])
+
+func process_announce_move():
+    if dialog.is_waiting():
+        set_state(State.ANIMATE_MOVE)
+
+func begin_animate_move():
+    timer.start(ANIMATE_MOVE_DURATION)
+
+func process_animate_move():
+    var half_duration = ANIMATE_MOVE_DURATION / 2
+    var moving_forward: bool = timer.get_time_left() >= half_duration 
+    var movement_percent: float 
+    if moving_forward:
+        movement_percent = 1 - ((timer.get_time_left() - half_duration) / half_duration)
+    else:
+        movement_percent = timer.get_time_left() / half_duration 
+    if turns[current_turn] == "player":
+        player_sprite.position.x = player_sprite_position.x + (ANIMATE_MOVE_DISTANCE * movement_percent)
+    elif turns[current_turn] == "enemy":
+        enemy_sprite.position.x = enemy_sprite_position.x - (ANIMATE_MOVE_DISTANCE * movement_percent)
+
+    if timer.is_stopped():
+        set_state(State.EXECUTE_MOVE)
+
+func begin_execute_move():
     player_old_hp = director.player_familiars[0].health
     player_old_mp = director.player_familiars[0].mana
     enemy_old_hp = enemy_familiar.health
@@ -345,7 +309,64 @@ func setup_execute_move():
     elif turns[current_turn] == "enemy":
         enemy_familiar.use_move(enemy_chosen_move, director.player_familiars[0])
 
-func evaluate_move():
+    timer.start(EXECUTE_MOVE_DURATION)
+
+func process_execute_move():
+    var percent_complete = timer.get_time_left() / EXECUTE_MOVE_DURATION
+    update_healthbars(percent_complete)
+    if timer.is_stopped():
+        evaluate_fight_status()
+
+func begin_faint():
+    timer.start(FAINT_DURATION)
+    if turns[current_turn] == "player":
+        dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "fainted!"]])
+    elif turns[current_turn] == "enemy":
+        dialog.open_with([[director.player_familiars[0].get_display_name(), "fainted!"]])
+
+func process_faint():
+    if timer.is_stopped():
+        if turns[current_turn] == "player":
+            enemy_sprite.visible = false
+            enemy_health.visible = false
+        elif turns[current_turn] == "enemy":
+            player_sprite.visible = false
+            player_health.visible = false
+    if timer.is_stopped() and dialog.is_waiting() and Input.is_action_just_pressed("action"):
+        if turns[current_turn] == "enemy" and not director.is_player_wiped():
+            set_state(State.PROMPT_ESCAPE)
+        else:
+            set_state(State.ANNOUNCE_WINNER)
+
+func begin_prompt_escape():
+    dialog.open("Will you change familiars?")
+
+func process_prompt_escape():
+    if dialog.is_waiting() and Input.is_action_just_pressed("action"):
+        set_state(State.OPTIONS_ESCAPE)
+
+func begin_options_escape():
+    runaway_choices.open()
+
+func process_options_escape():
+    var action = runaway_choices.check_for_input()
+    if action == "SWITCH":
+        set_state(State.PARTY_MENU)
+    elif action == "RUN":
+        pass
+        # try running
+    
+func begin_announce_winner():
+    if turns[current_turn] == "player":
+        dialog.open("You win!")
+    elif turns[current_turn] == "enemy":
+        dialog.open("You lose...")
+
+func process_announce_winner():
+    if Input.is_action_just_pressed("action") and dialog.is_waiting():
+        director.end_battle()
+
+func evaluate_fight_status():
     if (turns[current_turn] == "player" and enemy_familiar.health == 0) or (turns[current_turn] == "enemy" and director.player_familiars[0].health == 0):
         set_state(State.FAINT)
         return

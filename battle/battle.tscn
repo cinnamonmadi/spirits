@@ -141,3 +141,6 @@ margin_left = 88.0
 margin_top = 70.0
 margin_right = 160.0
 margin_bottom = 100.0
+
+[node name="timer" type="Timer" parent="."]
+one_shot = true
