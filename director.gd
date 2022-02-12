@@ -16,23 +16,15 @@ enum State {
 }
 
 var state = State.WORLD
+var rng = RandomNumberGenerator.new()
 
 func _ready():
-    player_familiars.append(Familiar.new())
-    player_familiars[0].species = "SPHYNX"
-    player_familiars[0].health = 20
-    player_familiars[0].max_health = 20
-    player_familiars[0].mana = 10
-    player_familiars[0].max_mana = 10
-    player_familiars[0].moves = ["SPOOK", "TAUNT", "EMBER", "BASK"]
-    player_familiars.append(Familiar.new())
-    player_familiars[1].species = "OWLBEAR"
-    player_familiars[1].health = 34
-    player_familiars[1].max_health = 40
-    player_familiars[1].mana = 5
-    player_familiars[1].max_mana = 5
-    player_familiars[1].moves = ["SPOOK", "TAUNT", "EMBER", "BASK"]
+    player_familiars.append(Familiar.new("SPHYNX", 5))
+    player_familiars[0].nickname = "Beerus"
+    player_familiars.append(Familiar.new("OWLBEAR", 5))
+    player_familiars[1].nickname = "Deputy"
 
+    rng.randomize()
     var root = get_tree().get_root()
     world_instance = root.get_child(root.get_child_count() - 1)
 

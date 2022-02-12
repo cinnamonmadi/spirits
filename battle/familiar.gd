@@ -1,6 +1,36 @@
 class_name Familiar
 
 # Stat constants
+const SPECIES_INFO = {
+    "SPHYNX": {
+        "health": 50,
+        "mana": 20,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "focus": 20,
+        "moves": [
+            { "level": 1, "move": "SPOOK" },
+            { "level": 1, "move": "EMBER" },
+            { "level": 1, "move": "TAUNT" },
+            { "level": 1, "move": "BASK" },
+        ]
+    },
+    "OWLBEAR": {
+        "health": 50,
+        "mana": 20,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "focus": 20,
+        "moves": [
+            { "level": 1, "move": "SPOOK" },
+            { "level": 1, "move": "EMBER" },
+            { "level": 1, "move": "TAUNT" },
+            { "level": 1, "move": "BASK" },
+        ]
+    }
+}
 const MOVE_INFO = {
     "SPOOK": {
         "type": "GHOST",
@@ -44,6 +74,26 @@ var focus: int
 
 var moves = []
 
+func _init(as_species: String, at_level: int):
+    species = as_species
+    set_level(at_level)
+    health = max_health
+    mana = max_mana
+    for move in SPECIES_INFO[species]["moves"]:
+        moves.append(move["move"])
+        if moves.size() == 4:
+            break
+
+func set_level(value: int):
+    level = value
+    var species_info = SPECIES_INFO[species]
+    max_health = int((species_info["health"] * 2 * level) / 100) + level + 10
+    max_mana = int((species_info["mana"] * 2 * level) / 100) + level + 5
+    attack = int((species_info["attack"] * 2 * level) / 100) + 5
+    defense = int((species_info["defense"] * 2 * level) / 100) + 5
+    speed = int((species_info["speed"] * 2 * level) / 100) + 5
+    focus = int((species_info["focus"] * 2 * level) / 100) + 5
+
 func get_portrait_path() -> String:
     return "res://battle/familiars/" + species.to_lower().replace(" ", "_") + ".png"
 
@@ -54,18 +104,3 @@ func get_display_name() -> String:
     else:
         display_name = nickname
     return display_name
-
-func check_stat_bounds():
-    health = int(max(0, health))
-    health = int(min(max_health, health))
-    mana = int(max(0, mana))
-    mana = int(min(max_mana, mana))
-
-func use_move(move: String, enemy: Familiar):
-    var move_info = MOVE_INFO[move]
-
-    enemy.health -= move_info["power"]
-    mana -= move_info["cost"]
-
-    check_stat_bounds()
-    enemy.check_stat_bounds()

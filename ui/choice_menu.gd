@@ -53,8 +53,16 @@ func set_cursor_position():
     
 # Input should be a single-direction unit vector, although I suppose the code should work even if it isn't
 func navigate(input_direction: Vector2):
-    cursor_position.x = int(cursor_position.x + input_direction.x) % num_columns
-    cursor_position.y = int(cursor_position.y + input_direction.y) % column_sizes[cursor_position.x]
+    cursor_position.x = cursor_position.x + input_direction.x
+    if cursor_position.x < 0:
+        cursor_position.x = num_columns - 1
+    elif cursor_position.x >= num_columns:
+        cursor_position.x = 0
+    cursor_position.y = cursor_position.y + input_direction.y
+    if cursor_position.y < 0:
+        cursor_position.y = column_sizes[cursor_position.x] - 1
+    elif cursor_position.y >= column_sizes[cursor_position.x]:
+        cursor_position.y = 0
     set_cursor_position()
 
 func select():

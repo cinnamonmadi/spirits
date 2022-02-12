@@ -74,18 +74,8 @@ var enemy_old_mp: int = 0
 # Battle faint
 const FAINT_DURATION: float = 1.0
 
-var rand = RandomNumberGenerator.new()
-
 func _ready():
-    rand.randomize()
-
-    enemy_familiar = Familiar.new()
-    enemy_familiar.species = "SPHYNX"
-    enemy_familiar.moves = ["SPOOK", "TAUNT", "EMBER", "BASK"]
-    enemy_familiar.health = 5
-    enemy_familiar.max_health = 5
-    enemy_familiar.mana = 10
-    enemy_familiar.max_mana = 10
+    enemy_familiar = Familiar.new("SPHYNX", 3)
 
     dialog.keep_open = true
     dialog.DIALOG_SPEED = (1.0 / 60)
@@ -149,7 +139,7 @@ func update_healthbars(percent_complete=0.0):
 
 func init_turn(player_move: String):
     player_chosen_move = player_move
-    enemy_chosen_move = enemy_familiar.moves[rand.randi_range(0, 3)]
+    enemy_chosen_move = enemy_familiar.moves[director.rng.randi_range(0, 3)]
     if director.player_familiars[0].speed >= enemy_familiar.speed:
         turns = ["player", "enemy"]
     else:
@@ -244,6 +234,10 @@ func process_choose_move():
         if move == "":
             open_move_info(move_select.select())
         else:
+            var move_info_values = Familiar.MOVE_INFO[move]
+            var can_use_move: bool = director.player_familiars[0].mana >= move_info_values["cost"]
+            if not can_use_move:
+                return
             init_turn(move)
             set_state(State.ANNOUNCE_MOVE)
 
@@ -304,10 +298,26 @@ func begin_execute_move():
     enemy_old_hp = enemy_familiar.health
     enemy_old_mp = enemy_familiar.mana
 
+    var attacker
+    var defender
+    var move
     if turns[current_turn] == "player":
-        director.player_familiars[0].use_move(player_chosen_move, enemy_familiar)
+        attacker = director.player_familiars[0]
+        defender = enemy_familiar
+        move = player_chosen_move
     elif turns[current_turn] == "enemy":
-        enemy_familiar.use_move(enemy_chosen_move, director.player_familiars[0])
+        defender = director.player_familiars[0]
+        attacker = enemy_familiar
+        move = enemy_chosen_move
+
+    var chosen_move_info = Familiar.MOVE_INFO[move]
+
+    var base_damage = int((((2.0 * attacker.level) / 5.0) * chosen_move_info["power"] * (float(attacker.attack) / float(defender.defense))) / 50.0) + 2
+    var random_mod = director.rng.randf_range(0.85, 1.0)
+    var damage = base_damage * random_mod
+
+    defender.health = max(defender.health - damage, 0)
+    attacker.mana = max(attacker.mana - chosen_move_info["cost"], 0)
 
     timer.start(EXECUTE_MOVE_DURATION)
 
