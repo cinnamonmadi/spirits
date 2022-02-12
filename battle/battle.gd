@@ -332,7 +332,6 @@ func _process(delta):
             # try running
     elif state == State.ANNOUNCE_WINNER:
         if Input.is_action_just_pressed("action") and dialog.is_waiting():
-            print("hey")
             director.end_battle()
 
 func setup_execute_move():

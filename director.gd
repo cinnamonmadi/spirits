@@ -61,15 +61,17 @@ func start_battle():
 
 func finish_start_battle():
     var root = get_tree().get_root()
+    root.remove_child(world_instance)
+    root.remove_child(transition_instance)
+    transition_instance.queue_free()
     battle_instance = battle_scene.instance()
     root.add_child(battle_instance)
-    root.remove_child(world_instance)
     state = State.BATTLE
 
 func end_battle():
-    print("hello")
     var root = get_tree().get_root()
-    battle_instance.free()
+    root.remove_child(battle_instance)
+    battle_instance.queue_free()
     root.add_child(world_instance)
     world_instance.set_paused(false)
     state = State.WORLD
