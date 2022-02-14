@@ -5,7 +5,7 @@ class_name Actor
 onready var map = get_parent().find_node("tilemap")
 onready var sprite = $sprite
 
-const TILE_SIZE: int = 16
+const TILE_SIZE: int = 64
 
 var speed: float = 1
 var target_position: Vector2

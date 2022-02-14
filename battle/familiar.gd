@@ -40,17 +40,17 @@ const MOVE_INFO = {
     "EMBER": {
         "type": "FIRE",
         "cost": 3,
-        "power": 10,
+        "power": 60,
     },
     "TAUNT": {
         "type": "NORMAL",
         "cost": 1,
-        "power": 5,
+        "power": 40,
     },
     "BASK": {
         "type": "FIRE",
         "cost": 0,
-        "power": 5,
+        "power": 20,
     }
 }
 
