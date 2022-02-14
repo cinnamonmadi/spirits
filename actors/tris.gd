@@ -19,6 +19,7 @@ enum State {
 var direction: Vector2
 var facing_direction: Vector2
 var speed: float = 128.0
+var speaking_npc = null
 
 var state = State.MOVING
 var paused: bool = false
@@ -81,12 +82,11 @@ func handle_input():
             direction = Vector2.ZERO
             dialog.progress()
             if not dialog.is_open():
+                if speaking_npc != null:
+                    speaking_npc.stop_speaking()
                 state = State.MOVING
 
 func try_interact():
-    if direction != Vector2.ZERO:
-        return
-
     # Disable all scanbox colliders
     for scanbox_collider in interact_scanbox.get_children():
         scanbox_collider.disabled = true
@@ -107,11 +107,10 @@ func try_interact():
     for npc in get_tree().get_nodes_in_group("npcs"):
         if interact_scanbox.overlaps_body(npc):
             if npc.dialog != "":
-                # Make NPC face player
-                for i in range(0, 4):
-                    if facing_direction == direction_vectors[i]:
-                        npc.facing_direction = direction_vectors[(i + 2) % 4]
+                npc.start_speaking(facing_direction)
+                speaking_npc = npc
                 dialog.open(npc.dialog)
+                direction = Vector2.ZERO
                 state = State.DIALOG
             break
     

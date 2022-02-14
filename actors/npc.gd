@@ -18,6 +18,9 @@ var direction: Vector2
 var facing_direction: Vector2
 var speed: float = 64.0
 
+var is_speaking: bool = false
+var old_facing_direction: Vector2
+
 var paused: bool = false
 
 export var path = []
@@ -31,6 +34,18 @@ func _ready():
     add_to_group("npcs")
     add_to_group("pausables")
     parse_path()
+
+func start_speaking(player_direction: Vector2):
+    is_speaking = true
+    old_facing_direction = facing_direction
+    # Face player
+    for i in range(0, 4):
+        if direction_vectors[i] == player_direction:
+            facing_direction = direction_vectors[(i + 2) % 4]
+
+func stop_speaking():
+    is_speaking = false
+    facing_direction = old_facing_direction
 
 func parse_path():
     _path.append([Path.MOVE, position])
@@ -59,7 +74,8 @@ func _physics_process(delta):
     if paused:
         sprite.stop()
         return
-    update_path(delta)
+    if not is_speaking:
+        update_path(delta)
     update_sprite()
 
 func update_path(delta):
@@ -104,16 +120,17 @@ func increment_path():
         path_timer = _path[path_index][1]
 
 func update_sprite():
-    if direction.x == 1:
-        facing_direction = Vector2.RIGHT
-    elif direction.x == -1:
-        facing_direction = Vector2.LEFT
-    elif direction.y == 1:
-        facing_direction = Vector2.DOWN
-    elif direction.y == -1:
-        facing_direction = Vector2.UP
+    if not is_speaking:
+        if direction.x == 1:
+            facing_direction = Vector2.RIGHT
+        elif direction.x == -1:
+            facing_direction = Vector2.LEFT
+        elif direction.y == 1:
+            facing_direction = Vector2.DOWN
+        elif direction.y == -1:
+            facing_direction = Vector2.UP
     var animation_prefix: String
-    if direction == Vector2.ZERO:
+    if is_speaking or direction == Vector2.ZERO:
         animation_prefix = "idle_"
     else:
         animation_prefix = "move_"

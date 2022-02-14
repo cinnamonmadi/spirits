@@ -8,7 +8,7 @@ enum State {
     WAITING
 }
 
-const ROW_CHAR_LEN: int = 18
+const ROW_CHAR_LEN: int = 36
 var DIALOG_SPEED: float = (4 / 60.0)
 
 var lines = []
