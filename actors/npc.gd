@@ -1,15 +1,24 @@
-extends Actor
+extends KinematicBody2D
 
 class_name NPC
 
-const input_direction_names = ["up", "right", "down", "left"]
-const input_direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
+onready var sprite = $sprite
+
+const TILE_SIZE: int = 64
+const direction_names = ["up", "right", "down", "left"]
+const direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 
 enum Path {
     MOVE,
     FACE,
     WAIT,
 }
+
+var direction: Vector2
+var facing_direction: Vector2
+var speed: float = 64.0
+
+var paused: bool = false
 
 export var path = []
 export var dialog: String = ""
@@ -20,8 +29,8 @@ var path_timer: float = 0
 
 func _ready():
     add_to_group("npcs")
+    add_to_group("pausables")
     parse_path()
-    speed = 0.5
 
 func parse_path():
     _path.append([Path.MOVE, position])
@@ -33,22 +42,22 @@ func parse_path():
         var path_value = path_string_parts[1]
 
         if path_command == "face":
-            for i in range(0, input_direction_names.size()):
-                if path_value == input_direction_names[i]:
-                    _path.append([Path.FACE, input_direction_vectors[i]])
+            for i in range(0, direction_names.size()):
+                if path_value == direction_names[i]:
+                    _path.append([Path.FACE, direction_vectors[i]])
         elif path_command == "wait":
             _path.append([Path.WAIT, float(path_value)]) 
         else:
-            for i in range(0, input_direction_names.size()):
-                if path_command == input_direction_names[i]:
-                    var new_path_position = previous_path_position + (input_direction_vectors[i] * TILE_SIZE * int(path_value))
+            for i in range(0, direction_names.size()):
+                if path_command == direction_names[i]:
+                    var new_path_position = previous_path_position + (direction_vectors[i] * TILE_SIZE * int(path_value))
                     _path.append([Path.MOVE, new_path_position])
 
                     previous_path_position = new_path_position
 
-
 func _physics_process(delta):
     if paused:
+        sprite.stop()
         return
     update_path(delta)
     update_sprite()
@@ -61,16 +70,23 @@ func update_path(delta):
 func progress_path(delta):
     var current_path_action = _path[path_index][0]
     if current_path_action == Path.MOVE:
-        move()
-        if not is_moving_between_tiles() and position != _path[path_index][1]:
-            try_find_next_target(position.direction_to(_path[path_index][1]))
+        if position.distance_to(_path[path_index][1]) <= speed * delta:
+            position = _path[path_index][1]
+            direction = Vector2.ZERO
+        else:
+            direction = position.direction_to(_path[path_index][1])
+            var old_position = position
+            var collision = move_and_collide(direction * speed * delta)
+            if collision:
+                position = old_position
+                direction = Vector2.ZERO
     elif current_path_action == Path.WAIT:
         path_timer -= delta
 
 func should_increment_path() -> bool:
     var current_path_action = _path[path_index][0]
     if current_path_action == Path.MOVE:
-        return not is_moving_between_tiles() and position == _path[path_index][1]
+        return direction == Vector2.ZERO and position == _path[path_index][1]
     elif current_path_action == Path.FACE:
         return facing_direction == _path[path_index][1]
     elif current_path_action == Path.WAIT:
@@ -81,8 +97,26 @@ func increment_path():
     path_index = (path_index + 1) % _path.size()
     var current_path_action = _path[path_index][0]
     if current_path_action == Path.MOVE:
-        try_find_next_target(position.direction_to(_path[path_index][1]))
+        pass
     elif current_path_action == Path.FACE:
         facing_direction = _path[path_index][1]
     elif current_path_action == Path.WAIT:
         path_timer = _path[path_index][1]
+
+func update_sprite():
+    if direction.x == 1:
+        facing_direction = Vector2.RIGHT
+    elif direction.x == -1:
+        facing_direction = Vector2.LEFT
+    elif direction.y == 1:
+        facing_direction = Vector2.DOWN
+    elif direction.y == -1:
+        facing_direction = Vector2.UP
+    var animation_prefix: String
+    if direction == Vector2.ZERO:
+        animation_prefix = "idle_"
+    else:
+        animation_prefix = "move_"
+    for index in range(0, 4):
+        if facing_direction == direction_vectors[index]:
+            sprite.play(animation_prefix + direction_names[index])

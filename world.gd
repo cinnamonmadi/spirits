@@ -2,8 +2,8 @@ extends Node2D
 
 onready var director = get_node("/root/Director")
 
-onready var pause_menu = $pause_menu
-onready var party_menu = $party_menu
+onready var pause_menu = $ui/pause_menu
+onready var party_menu = $ui/party_menu
 
 enum State {
     WORLD,
