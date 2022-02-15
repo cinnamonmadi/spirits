@@ -5,9 +5,10 @@
 [ext_resource path="res://ui/battle_menus/move_info.gd" type="Script" id=3]
 
 [node name="move_info" type="NinePatchRect"]
-margin_top = 100.0
-margin_right = 60.0
-margin_bottom = 126.0
+margin_left = 270.0
+margin_top = 188.0
+margin_right = 482.0
+margin_bottom = 240.0
 texture = ExtResource( 1 )
 patch_margin_left = 8
 patch_margin_top = 8
@@ -19,10 +20,10 @@ __meta__ = {
 }
 
 [node name="row_one" type="Label" parent="."]
-margin_left = 6.0
-margin_top = 6.0
-margin_right = 154.0
-margin_bottom = 14.0
+margin_left = 8.0
+margin_top = 12.0
+margin_right = 156.0
+margin_bottom = 28.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "NATURE"
@@ -31,10 +32,10 @@ __meta__ = {
 }
 
 [node name="row_two" type="Label" parent="."]
-margin_left = 6.0
-margin_top = 14.0
-margin_right = 154.0
-margin_bottom = 22.0
+margin_left = 8.0
+margin_top = 28.0
+margin_right = 156.0
+margin_bottom = 44.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "5 MP"

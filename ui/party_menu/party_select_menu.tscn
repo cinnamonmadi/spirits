@@ -2,7 +2,7 @@
 
 [ext_resource path="res://ui/frame.png" type="Texture" id=1]
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=2]
-[ext_resource path="res://ui/choice_menu.gd" type="Script" id=3]
+[ext_resource path="res://ui/choice_menu/choice_menu.gd" type="Script" id=3]
 [ext_resource path="res://ui/cursor.png" type="Texture" id=4]
 
 [node name="select_menu" type="NinePatchRect"]
