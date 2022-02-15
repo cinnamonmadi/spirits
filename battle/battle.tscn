@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://ui/font_12.tres" type="DynamicFont" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://ui/battle_menus/battle_actions.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/battle_menus/move_select.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/battle_menus/move_info.tscn" type="PackedScene" id=8]
+[ext_resource path="res://ui/party_menu/party_menu.tscn" type="PackedScene" id=9]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
@@ -30,7 +31,7 @@ __meta__ = {
 
 [node name="enemy_sprites" type="Control" parent="."]
 margin_left = 216.0
-margin_right = 256.0
+margin_right = 640.0
 margin_bottom = 40.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -64,11 +65,13 @@ __meta__ = {
 }
 
 [node name="1" type="Sprite" parent="player_sprites"]
+visible = false
 position = Vector2( 184, 256 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="2" type="Sprite" parent="player_sprites"]
+visible = false
 position = Vector2( 348, 256 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
@@ -81,6 +84,7 @@ __meta__ = {
 }
 
 [node name="1" type="Label" parent="player_labels"]
+visible = false
 margin_left = 100.0
 margin_top = 320.0
 margin_right = 260.0
@@ -104,6 +108,7 @@ __meta__ = {
 }
 
 [node name="2" type="Label" parent="player_labels"]
+visible = false
 margin_left = 282.0
 margin_top = 320.0
 margin_right = 442.0
@@ -194,6 +199,9 @@ visible = false
 visible = false
 
 [node name="move_info" parent="ui" instance=ExtResource( 8 )]
+visible = false
+
+[node name="party_menu" parent="ui" instance=ExtResource( 9 )]
 visible = false
 
 [node name="timer" type="Timer" parent="."]
