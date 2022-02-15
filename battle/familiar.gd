@@ -70,7 +70,6 @@ var max_mana: int
 var attack: int
 var defense: int
 var speed: int
-var focus: int
 
 var moves = []
 
@@ -92,7 +91,6 @@ func set_level(value: int):
     attack = int((species_info["attack"] * 2 * level) / 100) + 5
     defense = int((species_info["defense"] * 2 * level) / 100) + 5
     speed = int((species_info["speed"] * 2 * level) / 100) + 5
-    focus = int((species_info["focus"] * 2 * level) / 100) + 5
 
 func get_portrait_path() -> String:
     return "res://battle/familiars/" + species.to_lower().replace(" ", "_") + ".png"

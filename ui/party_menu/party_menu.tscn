@@ -2,20 +2,21 @@
 
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=1]
 [ext_resource path="res://ui/choice_menu.gd" type="Script" id=2]
-[ext_resource path="res://ui/party_menu.gd" type="Script" id=3]
+[ext_resource path="res://ui/party_menu/party_menu.gd" type="Script" id=3]
 [ext_resource path="res://ui/cursor.png" type="Texture" id=4]
-[ext_resource path="res://ui/party_select_menu.tscn" type="PackedScene" id=5]
+[ext_resource path="res://ui/party_menu/party_select_menu.tscn" type="PackedScene" id=5]
 [ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=6]
 
 [node name="party_menu" type="ColorRect"]
-margin_right = 160.0
-margin_bottom = 144.0
+margin_right = 640.0
+margin_bottom = 360.0
 script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="choice_menu" type="NinePatchRect" parent="."]
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 2 )
@@ -38,10 +39,10 @@ __meta__ = {
 }
 
 [node name="choice_1" type="Label" parent="choice_menu/choices/col_1"]
-margin_left = 16.0
-margin_top = 6.0
-margin_right = 72.0
-margin_bottom = 14.0
+margin_left = 32.0
+margin_top = 16.0
+margin_right = 128.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -50,9 +51,9 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="choice_menu/choices/col_1/choice_1"]
-margin_left = 88.0
-margin_right = 128.0
-margin_bottom = 8.0
+margin_left = 104.0
+margin_right = 184.0
+margin_bottom = 16.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -61,9 +62,9 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="choice_menu/choices/col_1/choice_1"]
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP:20/20 MP:10/10"
@@ -72,10 +73,10 @@ __meta__ = {
 }
 
 [node name="choice_2" type="Label" parent="choice_menu/choices/col_1"]
-margin_left = 16.0
-margin_top = 22.0
-margin_right = 72.0
-margin_bottom = 30.0
+margin_left = 32.0
+margin_top = 56.0
+margin_right = 128.0
+margin_bottom = 72.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -84,9 +85,9 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="choice_menu/choices/col_1/choice_2"]
-margin_left = 88.0
-margin_right = 128.0
-margin_bottom = 8.0
+margin_left = 104.0
+margin_right = 184.0
+margin_bottom = 16.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -95,9 +96,9 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="choice_menu/choices/col_1/choice_2"]
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP:20/20 MP:10/10"
@@ -106,10 +107,10 @@ __meta__ = {
 }
 
 [node name="choice_3" type="Label" parent="choice_menu/choices/col_1"]
-margin_left = 16.0
-margin_top = 38.0
-margin_right = 64.0
-margin_bottom = 46.0
+margin_left = 32.0
+margin_top = 96.0
+margin_right = 128.0
+margin_bottom = 112.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -118,9 +119,9 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="choice_menu/choices/col_1/choice_3"]
-margin_left = 88.0
-margin_right = 128.0
-margin_bottom = 8.0
+margin_left = 104.0
+margin_right = 184.0
+margin_bottom = 16.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -129,9 +130,9 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="choice_menu/choices/col_1/choice_3"]
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP:20/20 MP:10/10"
@@ -140,10 +141,10 @@ __meta__ = {
 }
 
 [node name="choice_4" type="Label" parent="choice_menu/choices/col_1"]
-margin_left = 16.0
-margin_top = 54.0
-margin_right = 72.0
-margin_bottom = 62.0
+margin_left = 32.0
+margin_top = 136.0
+margin_right = 128.0
+margin_bottom = 152.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -152,9 +153,9 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="choice_menu/choices/col_1/choice_4"]
-margin_left = 88.0
-margin_right = 128.0
-margin_bottom = 8.0
+margin_left = 104.0
+margin_right = 184.0
+margin_bottom = 16.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -163,9 +164,9 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="choice_menu/choices/col_1/choice_4"]
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP:20/20 MP:10/10"
@@ -174,10 +175,10 @@ __meta__ = {
 }
 
 [node name="choice_5" type="Label" parent="choice_menu/choices/col_1"]
-margin_left = 16.0
-margin_top = 70.0
-margin_right = 72.0
-margin_bottom = 78.0
+margin_left = 32.0
+margin_top = 176.0
+margin_right = 128.0
+margin_bottom = 192.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -186,9 +187,9 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="choice_menu/choices/col_1/choice_5"]
-margin_left = 88.0
-margin_right = 128.0
-margin_bottom = 8.0
+margin_left = 104.0
+margin_right = 184.0
+margin_bottom = 16.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -197,9 +198,9 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="choice_menu/choices/col_1/choice_5"]
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP:20/20 MP:10/10"
@@ -208,10 +209,10 @@ __meta__ = {
 }
 
 [node name="choice_6" type="Label" parent="choice_menu/choices/col_1"]
-margin_left = 16.0
-margin_top = 86.0
-margin_right = 72.0
-margin_bottom = 94.0
+margin_left = 32.0
+margin_top = 216.0
+margin_right = 128.0
+margin_bottom = 232.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -220,9 +221,9 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="choice_menu/choices/col_1/choice_6"]
-margin_left = 88.0
-margin_right = 128.0
-margin_bottom = 8.0
+margin_left = 104.0
+margin_right = 184.0
+margin_bottom = 16.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -231,9 +232,9 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="choice_menu/choices/col_1/choice_6"]
-margin_top = 8.0
-margin_right = 152.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP:20/20 MP:10/10"
@@ -248,13 +249,8 @@ offset = Vector2( 2.5, 3.5 )
 
 [node name="select_menu" parent="." instance=ExtResource( 5 )]
 visible = false
-margin_left = 80.0
-margin_top = 114.0
-margin_right = 160.0
-margin_bottom = 144.0
 
 [node name="summary" type="Control" parent="."]
-visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 __meta__ = {
@@ -262,10 +258,10 @@ __meta__ = {
 }
 
 [node name="name" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 4.0
-margin_right = 58.0
-margin_bottom = 12.0
+margin_left = 24.0
+margin_top = 16.0
+margin_right = 120.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPHYNX"
@@ -274,10 +270,10 @@ __meta__ = {
 }
 
 [node name="level" type="Label" parent="summary"]
-margin_left = 70.0
-margin_top = 4.0
-margin_right = 118.0
-margin_bottom = 12.0
+margin_left = 144.0
+margin_top = 16.0
+margin_right = 224.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "LVL 1"
@@ -286,10 +282,10 @@ __meta__ = {
 }
 
 [node name="type" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 12.0
-margin_right = 90.0
-margin_bottom = 20.0
+margin_left = 24.0
+margin_top = 32.0
+margin_right = 104.0
+margin_bottom = 48.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "FIRE"
@@ -298,10 +294,10 @@ __meta__ = {
 }
 
 [node name="health" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 24.0
-margin_right = 82.0
-margin_bottom = 32.0
+margin_left = 24.0
+margin_top = 72.0
+margin_right = 152.0
+margin_bottom = 88.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "HP 20/20"
@@ -310,10 +306,10 @@ __meta__ = {
 }
 
 [node name="mana" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 32.0
-margin_right = 82.0
-margin_bottom = 40.0
+margin_left = 24.0
+margin_top = 88.0
+margin_right = 152.0
+margin_bottom = 104.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "MP 10/=10"
@@ -322,10 +318,10 @@ __meta__ = {
 }
 
 [node name="attack" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 44.0
-margin_right = 82.0
-margin_bottom = 52.0
+margin_left = 24.0
+margin_top = 128.0
+margin_right = 168.0
+margin_bottom = 144.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "ATTACK 20"
@@ -334,10 +330,10 @@ __meta__ = {
 }
 
 [node name="defense" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 52.0
-margin_right = 90.0
-margin_bottom = 60.0
+margin_left = 24.0
+margin_top = 144.0
+margin_right = 184.0
+margin_bottom = 160.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "DEFENSE 20"
@@ -346,10 +342,10 @@ __meta__ = {
 }
 
 [node name="speed" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 60.0
-margin_right = 82.0
-margin_bottom = 68.0
+margin_left = 24.0
+margin_top = 160.0
+margin_right = 152.0
+margin_bottom = 176.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "SPEED 20"
@@ -357,23 +353,11 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="focus" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 68.0
-margin_right = 82.0
-margin_bottom = 76.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 1 )
-text = "FOCUS 20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="move_1" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 78.0
-margin_right = 146.0
-margin_bottom = 86.0
+margin_left = 24.0
+margin_top = 192.0
+margin_right = 216.0
+margin_bottom = 208.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "EMBER / FIRE"
@@ -382,9 +366,9 @@ __meta__ = {
 }
 
 [node name="details" type="Label" parent="summary/move_1"]
-margin_top = 8.0
-margin_right = 136.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
 text = "POWER 60 COST 5MP"
@@ -393,76 +377,77 @@ __meta__ = {
 }
 
 [node name="move_2" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 94.0
-margin_right = 106.0
-margin_bottom = 102.0
+margin_left = 336.0
+margin_top = 192.0
+margin_right = 528.0
+margin_bottom = 208.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "EMBER (FIRE)"
+text = "EMBER / FIRE"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="details" type="Label" parent="summary/move_2"]
-margin_top = 8.0
-margin_right = 136.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "POWER:60 COST:5MP"
+text = "POWER 60 COST 5MP"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="move_3" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 110.0
-margin_right = 106.0
-margin_bottom = 118.0
+margin_left = 24.0
+margin_top = 232.0
+margin_right = 216.0
+margin_bottom = 248.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "EMBER (FIRE)"
+text = "EMBER / FIRE"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="details" type="Label" parent="summary/move_3"]
-margin_top = 8.0
-margin_right = 136.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "POWER:60 COST:5MP"
+text = "POWER 60 COST 5MP"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="move_4" type="Label" parent="summary"]
-margin_left = 10.0
-margin_top = 126.0
-margin_right = 106.0
-margin_bottom = 134.0
+margin_left = 336.0
+margin_top = 232.0
+margin_right = 528.0
+margin_bottom = 248.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "EMBER (FIRE)"
+text = "EMBER / FIRE"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="details" type="Label" parent="summary/move_4"]
-margin_top = 8.0
-margin_right = 136.0
-margin_bottom = 16.0
+margin_top = 16.0
+margin_right = 272.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 1 )
-text = "POWER:60 COST:5MP"
+text = "POWER 60 COST 5MP"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="sprite" type="Sprite" parent="summary"]
-position = Vector2( 128, 44 )
+position = Vector2( 424, 88 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 6 )
 
 [node name="switch_cursor" type="Sprite" parent="."]

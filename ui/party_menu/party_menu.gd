@@ -101,7 +101,6 @@ func open_summary():
     summary.get_node("attack").text = "ATTACK " + String(familiar.attack)
     summary.get_node("defense").text = "DEFENSE " + String(familiar.defense)
     summary.get_node("speed").text = "SPEED " + String(familiar.speed)
-    summary.get_node("focus").text = "FOCUS " + String(familiar.focus)
     for i in range(0, 4):
         var move_label = summary.get_node("move_" + String(i + 1))
         if i >= familiar.moves.size():

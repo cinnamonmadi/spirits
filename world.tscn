@@ -4,9 +4,9 @@
 [ext_resource path="res://actors/tris.tscn" type="PackedScene" id=2]
 [ext_resource path="res://actors/npc.tscn" type="PackedScene" id=3]
 [ext_resource path="res://ui/dialog/dialog.tscn" type="PackedScene" id=5]
-[ext_resource path="res://ui/pause_menu.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/pause_menu/pause_menu.tscn" type="PackedScene" id=7]
 [ext_resource path="res://world.gd" type="Script" id=8]
-[ext_resource path="res://ui/party_menu.tscn" type="PackedScene" id=9]
+[ext_resource path="res://ui/party_menu/party_menu.tscn" type="PackedScene" id=9]
 
 [sub_resource type="ConvexPolygonShape2D" id=1]
 points = PoolVector2Array( 64, 64, 0, 64, 0, 0, 64, 0 )
@@ -123,8 +123,6 @@ visible = false
 
 [node name="pause_menu" parent="ui" instance=ExtResource( 7 )]
 visible = false
-margin_left = 72.0
-margin_right = 160.0
 
 [node name="party_menu" parent="ui" instance=ExtResource( 9 )]
 visible = false

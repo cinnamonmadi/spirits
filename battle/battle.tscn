@@ -6,10 +6,10 @@
 [ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=4]
 [ext_resource path="res://battle/platform.png" type="Texture" id=5]
 [ext_resource path="res://ui/battle_actions.tscn" type="PackedScene" id=6]
-[ext_resource path="res://ui/move_select.tscn" type="PackedScene" id=7]
-[ext_resource path="res://ui/move_info.tscn" type="PackedScene" id=8]
-[ext_resource path="res://ui/party_menu.tscn" type="PackedScene" id=9]
-[ext_resource path="res://ui/runaway.tscn" type="PackedScene" id=10]
+[ext_resource path="res://ui/battle_menus/move_select.tscn" type="PackedScene" id=7]
+[ext_resource path="res://ui/battle_menus/move_info.tscn" type="PackedScene" id=8]
+[ext_resource path="res://ui/party_menu/party_menu.tscn" type="PackedScene" id=9]
+[ext_resource path="res://ui/battle_menus/runaway.tscn" type="PackedScene" id=10]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
