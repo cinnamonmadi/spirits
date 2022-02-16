@@ -1,0 +1,10 @@
+class_name State
+enum {
+    SPRITES_ENTERING,
+    SUMMON_FAMILIARS,
+    CHOOSE_ACTION,
+    CHOOSE_MOVE,
+    CHOOSE_TARGET,
+    BEGIN_TURN,
+    ANIMATE_MOVE,
+}

@@ -1,13 +1,15 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://ui/font_12.tres" type="DynamicFont" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=3]
 [ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=4]
+[ext_resource path="res://ui/frame.png" type="Texture" id=5]
 [ext_resource path="res://ui/battle_menus/battle_actions.tscn" type="PackedScene" id=6]
 [ext_resource path="res://ui/battle_menus/move_select.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/battle_menus/move_info.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/party_menu/party_menu.tscn" type="PackedScene" id=9]
+[ext_resource path="res://ui/cursor_up.png" type="Texture" id=10]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
@@ -38,21 +40,25 @@ __meta__ = {
 }
 
 [node name="1" type="Sprite" parent="enemy_sprites"]
+visible = false
 position = Vector2( 64, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="2" type="Sprite" parent="enemy_sprites"]
+visible = false
 position = Vector2( 166, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="3" type="Sprite" parent="enemy_sprites"]
+visible = false
 position = Vector2( 260, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="4" type="Sprite" parent="enemy_sprites"]
+visible = false
 position = Vector2( 356, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
@@ -203,6 +209,34 @@ visible = false
 
 [node name="party_menu" parent="ui" instance=ExtResource( 9 )]
 visible = false
+
+[node name="move_callout" type="NinePatchRect" parent="ui"]
+visible = false
+margin_left = 22.0
+margin_top = 30.0
+margin_right = 196.0
+margin_bottom = 62.0
+texture = ExtResource( 5 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="ui/move_callout"]
+margin_left = 8.0
+margin_top = 10.0
+margin_right = 168.0
+margin_bottom = 26.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "APPLEFIGHT"
+
+[node name="target_cursor" type="Sprite" parent="ui"]
+visible = false
+texture = ExtResource( 10 )
 
 [node name="timer" type="Timer" parent="."]
 one_shot = true

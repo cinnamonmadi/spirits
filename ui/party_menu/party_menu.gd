@@ -45,10 +45,10 @@ func close():
 func open_list():
     for choice in list_choices:
         choice.visible = false
-    for i in range(0, director.player_familiars.size()):
-        list_choices[i].text = director.player_familiars[i].get_display_name()
-        list_choices[i].find_node("level").text = "LVL " + String(director.player_familiars[i].level)
-        list_choices[i].find_node("health").text = "HP:" + String(director.player_familiars[i].health) + "/" + String(director.player_familiars[i].max_health) + " MP:" + String(director.player_familiars[i].mana) + "/" + String(director.player_familiars[i].max_mana)
+    for i in range(0, director.player_party.familiars.size()):
+        list_choices[i].text = director.player_party.familiars[i].get_display_name()
+        list_choices[i].find_node("level").text = "LVL " + String(director.player_party.familiars[i].level)
+        list_choices[i].find_node("health").text = "HP:" + String(director.player_party.familiars[i].health) + "/" + String(director.player_party.familiars[i].max_health) + " MP:" + String(director.player_party.familiars[i].mana) + "/" + String(director.player_party.familiars[i].max_mana)
         list_choices[i].visible = true
     list.reset_choices()
     list.open()
@@ -91,7 +91,7 @@ func set_state(new_state):
         switch_cursor_timer = SWITCH_CURSOR_FLICKER_DURATION
 
 func open_summary():
-    var familiar = director.player_familiars[chosen_index]
+    var familiar = director.player_party.familiars[chosen_index]
 
     summary.get_node("name").text = familiar.get_display_name()
     summary.get_node("level").text = "LVL " + String(familiar.level)
@@ -143,12 +143,12 @@ func check_for_input():
             set_state(State.LIST)
             return
         elif Input.is_action_just_pressed("right"):
-            chosen_index = (chosen_index + 1) % director.player_familiars.size()
+            chosen_index = (chosen_index + 1) % director.player_party.familiars.size()
             set_state(State.SUMMARY)
         elif Input.is_action_just_pressed("left"):
             chosen_index -= 1
             if chosen_index == -1:
-                chosen_index = director.player_familiars.size() - 1
+                chosen_index = director.player_party.familiars.size() - 1
             set_state(State.SUMMARY)
     elif state == State.SWITCH:
         if Input.is_action_just_pressed("back"):

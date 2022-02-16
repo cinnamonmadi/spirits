@@ -85,9 +85,9 @@ func _ready():
     if director.is_player_wiped():
         set_state(State.ANNOUNCE_WINNER)
     else:
-        if director.player_familiars[0].health <= 0:
-            for i in range(1, director.player_familiars.size()):
-                if director.player_familiars[i].health > 0:
+        if director.player_party.familiars[0].health <= 0:
+            for i in range(1, director.player_party.familiars.size()):
+                if director.player_party.familiars[i].health > 0:
                     director.player_switch_familiars(0, i)
                     break
 
@@ -114,8 +114,8 @@ func init_healthbars():
     enemy_sprite.texture = load(enemy_familiar.get_portrait_path())
     enemy_name_label.text = enemy_familiar.get_display_name()
 
-    player_sprite.texture = load(director.player_familiars[0].get_portrait_path())
-    player_name_label.text = director.player_familiars[0].get_display_name()
+    player_sprite.texture = load(director.player_party.familiars[0].get_portrait_path())
+    player_name_label.text = director.player_party.familiars[0].get_display_name()
 
     update_healthbars(0)
 
@@ -132,15 +132,15 @@ func update_bar(bar_label, prefix, old_value, new_value, max_value, percent_comp
     bar_label.text = prefix + String(value) + "/" + String(max_value)
 
 func update_healthbars(percent_complete=0.0):
-    update_bar(player_health_label, "HP: ", player_old_hp, director.player_familiars[0].health, director.player_familiars[0].max_health, percent_complete)
-    update_bar(player_mana_label, "MP: ", player_old_mp, director.player_familiars[0].mana, director.player_familiars[0].max_mana, percent_complete)
+    update_bar(player_health_label, "HP: ", player_old_hp, director.player_party.familiars[0].health, director.player_party.familiars[0].max_health, percent_complete)
+    update_bar(player_mana_label, "MP: ", player_old_mp, director.player_party.familiars[0].mana, director.player_party.familiars[0].max_mana, percent_complete)
     update_bar(enemy_health_label, "HP: ", enemy_old_hp, enemy_familiar.health, enemy_familiar.max_health, percent_complete)
     update_bar(enemy_mana_label, "MP: ", enemy_old_mp, enemy_familiar.mana, enemy_familiar.max_mana, percent_complete)
 
 func init_turn(player_move: String):
     player_chosen_move = player_move
     enemy_chosen_move = enemy_familiar.moves[director.rng.randi_range(0, 3)]
-    if director.player_familiars[0].speed >= enemy_familiar.speed:
+    if director.player_party.familiars[0].speed >= enemy_familiar.speed:
         turns = ["player", "enemy"]
     else:
         turns = ["enemy", "player"]
@@ -183,7 +183,7 @@ func process_announce_opponent():
         set_state(State.CALLOUT_FAMILIAR)
 
 func begin_callout_familiar():
-    dialog.open("Go! " + director.player_familiars[0].get_display_name() + "!")
+    dialog.open("Go! " + director.player_party.familiars[0].get_display_name() + "!")
 
 func process_callout_familiar():
     if dialog.is_waiting():
@@ -195,7 +195,7 @@ func process_callout_familiar():
 func begin_callback_familiar():
     player_sprite.visible = false
     player_health.visible = false
-    dialog.open(director.player_familiars[0].get_display_name() + "! Come back!")
+    dialog.open(director.player_party.familiars[0].get_display_name() + "! Come back!")
 
 func process_callback_familiar():
     if dialog.is_waiting():
@@ -222,7 +222,7 @@ func process_choose_action():
 
 func begin_choose_move():
     dialog.open_empty()
-    move_select.set_labels([director.player_familiars[0].moves])
+    move_select.set_labels([director.player_party.familiars[0].moves])
     move_select.open()
     open_move_info(move_select.select())
 
@@ -235,7 +235,7 @@ func process_choose_move():
             open_move_info(move_select.select())
         else:
             var move_info_values = Familiar.MOVE_INFO[move]
-            var can_use_move: bool = director.player_familiars[0].mana >= move_info_values["cost"]
+            var can_use_move: bool = director.player_party.familiars[0].mana >= move_info_values["cost"]
             if not can_use_move:
                 return
             init_turn(move)
@@ -250,14 +250,14 @@ func process_party_menu():
         # Check if the player actually switched familiars
         if party_menu.battle_switch_index != -1:
             # Skip the callback familiar if your familiar is already dead
-            if director.player_familiars[0].health <= 0:
+            if director.player_party.familiars[0].health <= 0:
                 director.player_switch_familiars(0, party_menu.battle_switch_index)
                 set_state(State.CALLOUT_FAMILIAR)
             else:
                 set_state(State.CALLBACK_FAMILIAR)
         else:
             # If familiar is dead, return to prompt escape selection
-            if director.player_familiars[0].health <= 0:
+            if director.player_party.familiars[0].health <= 0:
                 set_state(State.PROMPT_ESCAPE)
             # Otherwise return to choose action screen
             else:
@@ -265,7 +265,7 @@ func process_party_menu():
 
 func begin_announce_move():
     if turns[current_turn] == "player":
-        dialog.open_with([[director.player_familiars[0].get_display_name(), "used " + player_chosen_move]])
+        dialog.open_with([[director.player_party.familiars[0].get_display_name(), "used " + player_chosen_move]])
     elif turns[current_turn] == "enemy":
         dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "used " + enemy_chosen_move]])
 
@@ -293,8 +293,8 @@ func process_animate_move():
         set_state(State.EXECUTE_MOVE)
 
 func begin_execute_move():
-    player_old_hp = director.player_familiars[0].health
-    player_old_mp = director.player_familiars[0].mana
+    player_old_hp = director.player_party.familiars[0].health
+    player_old_mp = director.player_party.familiars[0].mana
     enemy_old_hp = enemy_familiar.health
     enemy_old_mp = enemy_familiar.mana
 
@@ -302,11 +302,11 @@ func begin_execute_move():
     var defender
     var move
     if turns[current_turn] == "player":
-        attacker = director.player_familiars[0]
+        attacker = director.player_party.familiars[0]
         defender = enemy_familiar
         move = player_chosen_move
     elif turns[current_turn] == "enemy":
-        defender = director.player_familiars[0]
+        defender = director.player_party.familiars[0]
         attacker = enemy_familiar
         move = enemy_chosen_move
 
@@ -332,7 +332,7 @@ func begin_faint():
     if turns[current_turn] == "player":
         dialog.open_with([["Enemy " + enemy_familiar.get_display_name(), "fainted!"]])
     elif turns[current_turn] == "enemy":
-        dialog.open_with([[director.player_familiars[0].get_display_name(), "fainted!"]])
+        dialog.open_with([[director.player_party.familiars[0].get_display_name(), "fainted!"]])
 
 func process_faint():
     if timer.is_stopped():
@@ -377,7 +377,7 @@ func process_announce_winner():
         director.end_battle()
 
 func evaluate_fight_status():
-    if (turns[current_turn] == "player" and enemy_familiar.health == 0) or (turns[current_turn] == "enemy" and director.player_familiars[0].health == 0):
+    if (turns[current_turn] == "player" and enemy_familiar.health == 0) or (turns[current_turn] == "enemy" and director.player_party.familiars[0].health == 0):
         set_state(State.FAINT)
         return
 

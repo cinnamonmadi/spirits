@@ -83,6 +83,9 @@ func _init(as_species: String, at_level: int):
         if moves.size() == 4:
             break
 
+func is_living() -> bool:
+    return health > 0
+
 func set_level(value: int):
     level = value
     var species_info = SPECIES_INFO[species]

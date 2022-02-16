@@ -7,7 +7,7 @@ var world_instance
 var battle_instance
 var transition_instance
 
-var player_familiars = []
+var player_party = Party.new()
 
 enum State {
     WORLD,
@@ -19,25 +19,14 @@ var state = State.WORLD
 var rng = RandomNumberGenerator.new()
 
 func _ready():
-    player_familiars.append(Familiar.new("SPHYNX", 5))
-    player_familiars[0].nickname = "Beerus"
-    player_familiars.append(Familiar.new("OWLBEAR", 5))
-    player_familiars[1].nickname = "Deputy"
+    player_party.familiars.append(Familiar.new("SPHYNX", 5))
+    player_party.familiars[0].nickname = "Beerus"
+    player_party.familiars.append(Familiar.new("OWLBEAR", 5))
+    player_party.familiars[1].nickname = "Deputy"
 
     rng.randomize()
     var root = get_tree().get_root()
     world_instance = root.get_child(root.get_child_count() - 1)
-
-func is_player_wiped():
-    for familiar in player_familiars:
-        if familiar.health > 0:
-            return false
-    return true
-
-func player_switch_familiars(index_a, index_b):
-    var temp_familiar = player_familiars[index_a]
-    player_familiars[index_a] = player_familiars[index_b]
-    player_familiars[index_b] = temp_familiar 
 
 func _process(_delta):
     if state == State.TRANSITION and transition_instance.finished:
