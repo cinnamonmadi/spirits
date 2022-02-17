@@ -23,6 +23,7 @@ var chosen_index: int = -1
 # fighter and then close the menu, rather than serving as a way to rearrange the list
 var battle_mode: bool = false 
 var battle_switch_index: int = -1
+var battle_restricted_switch_indeces = []
 
 # Switch variables
 const SWITCH_CURSOR_FLICKER_DURATION: float = 0.3
@@ -75,8 +76,8 @@ func set_state(new_state):
         open_list()
     elif state == State.SELECTED:
         select_menu.open()
-        # Don't show the switch option for the first familiar if in battle
-        if battle_mode and chosen_index == 0:
+        # Don't show the switch option for the restricted indexes if in battle
+        if battle_mode and battle_restricted_switch_indeces.has(chosen_index):
             select_menu.choices[0][1].visible = false
             select_menu.reset_choices()
         else:
@@ -159,7 +160,7 @@ func check_for_input():
             return
         var switch_with_index = list.cursor_position.y
         if chosen_index != switch_with_index:
-            director.player_switch_familiars(chosen_index, switch_with_index)
+            director.player_party.swap_familiars(chosen_index, switch_with_index)
         set_state(State.LIST)
 
 func _process(delta):

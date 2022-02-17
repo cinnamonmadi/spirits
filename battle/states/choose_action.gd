@@ -4,12 +4,13 @@ class_name ChooseAction
 onready var director = get_node("/root/Director")
 
 onready var battle_actions = get_parent().get_node("ui/battle_actions")
+onready var target_cursor = get_parent().get_node("ui/target_cursor")
 
 const State = preload("res://battle/states/states.gd")
 
 func begin():
     # If the player has chosen actions for all their familiars, begin the turn
-    var chosen_all_actions = get_parent().actions.size() == director.player_party.get_living_familiar_count()
+    var chosen_all_actions = get_parent().actions.size() == min(director.player_party.get_living_familiar_count(), 2)
     if chosen_all_actions:
         battle_actions.close()
         get_parent().set_state(State.BEGIN_TURN)
@@ -35,6 +36,9 @@ func process(_delta):
     var action = battle_actions.check_for_input()
     if action == "FIGHT":
         get_parent().set_state(State.CHOOSE_MOVE)
+    elif action == "SPIRITS":
+        target_cursor.visible = false
+        get_parent().set_state(State.PARTY_MENU)
     
 func handle_tween_finish():
     pass

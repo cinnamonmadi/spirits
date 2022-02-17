@@ -11,7 +11,10 @@ func begin():
     for i in range(0, 2):
         if i < director.player_party.get_living_familiar_count():
             summon_player_familiar(i)
-    get_parent().set_state(State.CHOOSE_ACTION)
+    if get_parent().current_turn == -1:
+        get_parent().set_state(State.CHOOSE_ACTION)
+    else:
+        get_parent().set_state(State.EVALUATE_MOVE)
 
 func process(_delta):
     return

@@ -24,6 +24,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://battle/states/animate_move.gd"
 }, {
+"base": "Node",
+"class": "AnnounceWinner",
+"language": "GDScript",
+"path": "res://battle/states/announce_winner.gd"
+}, {
 "base": "Node2D",
 "class": "Battle",
 "language": "GDScript",
@@ -75,6 +80,11 @@ _global_script_classes=[ {
 "path": "res://battle/party.gd"
 }, {
 "base": "Node",
+"class": "PartyMenu",
+"language": "GDScript",
+"path": "res://battle/states/party_menu.gd"
+}, {
+"base": "Node",
 "class": "SpritesEntering",
 "language": "GDScript",
 "path": "res://battle/states/sprites_entering.gd"
@@ -93,6 +103,7 @@ _global_script_class_icons={
 "Action": "",
 "Actor": "",
 "AnimateMove": "",
+"AnnounceWinner": "",
 "Battle": "",
 "BeginTurn": "",
 "ChooseAction": "",
@@ -103,6 +114,7 @@ _global_script_class_icons={
 "Familiar": "",
 "NPC": "",
 "Party": "",
+"PartyMenu": "",
 "SpritesEntering": "",
 "State": "",
 "SummonFamiliar": ""

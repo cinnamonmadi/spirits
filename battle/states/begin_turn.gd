@@ -34,10 +34,6 @@ func begin():
 
             current_index -= 1
     
-    # Confirm that I sorted everything right
-    for i in range(0, action_speeds.size()):
-        print(String(action_speeds[i]) + ", ")
-
     get_parent().current_turn = -1
     get_parent().set_state(State.ANIMATE_MOVE)
 

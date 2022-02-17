@@ -28,27 +28,29 @@ var state = State.SPRITES_ENTERING
 var states = [SpritesEntering.new(),
               SummonFamiliar.new(),
               ChooseAction.new(),
+              PartyMenu.new(),
               ChooseMove.new(),
               ChooseTarget.new(),
               BeginTurn.new(),
               AnimateMove.new(),
               ExecuteMove.new(),
-              EvaluateMove.new()]
+              EvaluateMove.new(),
+              AnnounceWinner.new()]
 var enemy_party = Party.new()
 var actions = []
 var player_choosing_index
 var chosen_move = "" 
-var current_turn = 0
+var current_turn = -1
 
 func _ready():
     tween.connect("tween_all_completed", self, "_on_tween_finish")
     for state_node in states:
         add_child(state_node)
 
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 3))
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 3))
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 3))
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 3))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
 
     close_all_menus()
     director.player_party.sort_fighters_first()
@@ -104,3 +106,7 @@ func set_target_cursor(target_who: String, target_index: int):
     target_cursor.flip_v = target_who == "player"
     target_cursor.position = cursor_base_position + Vector2(0, 80 * offset_direction)
     target_cursor.visible = true
+
+func open_move_callout(move: String):
+    move_callout.get_child(0).text = move
+    move_callout.visible = true

@@ -23,6 +23,8 @@ func _ready():
     player_party.familiars[0].nickname = "Beerus"
     player_party.familiars.append(Familiar.new("OWLBEAR", 5))
     player_party.familiars[1].nickname = "Deputy"
+    player_party.familiars.append(Familiar.new("SPHYNX", 3))
+    player_party.familiars[2].nickname = "Cat"
 
     rng.randomize()
     var root = get_tree().get_root()

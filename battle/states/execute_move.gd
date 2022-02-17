@@ -11,13 +11,14 @@ const Action = preload("res://battle/states/action.gd")
 const EXECUTE_MOVE_DURATION: float = 1.0
 
 var current_action 
-var defender_index
 
 func begin():
     current_action = get_parent().actions[get_parent().current_turn]
 
     if current_action.action == Action.USE_MOVE:
         execute_use_move()
+    elif current_action.action == Action.SWITCH:
+        execute_switch()
 
 func process(_delta):
     if current_action.who == "player":
@@ -25,9 +26,9 @@ func process(_delta):
     else:
         get_parent().update_enemy_label(current_action.familiar)
     if current_action.target_who == "player":
-        get_parent().update_player_label(defender_index)
+        get_parent().update_player_label(current_action.target_familiar)
     else:
-        get_parent().update_enemy_label(defender_index)
+        get_parent().update_enemy_label(current_action.target_familiar)
 
 func handle_tween_finish():
     get_parent().set_state(State.EVALUATE_MOVE)
@@ -51,10 +52,9 @@ func execute_use_move():
     else:
         defending_party = get_parent().enemy_party
         defending_party_size = defending_party.familiars.size()
-    defender_index = current_action.target_familiar
-    while not defending_party.familiars[defender_index].is_living():
-        defender_index = (defender_index + 1) % defending_party_size
-    defender = defending_party.familiars[defender_index]
+    while not defending_party.familiars[current_action.target_familiar].is_living():
+        current_action.target_familiar = (current_action.target_familiar + 1) % defending_party_size
+    defender = defending_party.familiars[current_action.target_familiar]
 
     var move = current_action.move
     var move_info = Familiar.MOVE_INFO[move]
@@ -66,3 +66,8 @@ func execute_use_move():
     tween.interpolate_property(defender, "health", defender.health, max(0, defender.health - damage), EXECUTE_MOVE_DURATION)
     tween.interpolate_property(attacker, "mana", attacker.mana, max(0, attacker.mana - move_info.cost), EXECUTE_MOVE_DURATION)
     tween.start()
+
+func execute_switch():
+    if current_action.who == "player":
+        director.player_party.swap_familiars(current_action.familiar, current_action.with)
+        get_parent().set_state(State.SUMMON_FAMILIARS)
