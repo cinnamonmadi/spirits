@@ -7,6 +7,7 @@ onready var move_select = get_parent().get_node("ui/move_select")
 onready var move_info = get_parent().get_node("ui/move_info")
 
 const State = preload("res://battle/states/states.gd")
+const Action = preload("res://battle/states/action.gd")
 
 var current_familiar
 
@@ -37,7 +38,7 @@ func begin():
     for i in range(0, action_speeds.size()):
         print(String(action_speeds[i]) + ", ")
 
-    get_parent().current_turn = 0
+    get_parent().current_turn = -1
     get_parent().set_state(State.ANIMATE_MOVE)
 
 func process(_delta):
@@ -47,11 +48,11 @@ func handle_tween_finish():
     pass
 
 func get_action_speed(action) -> int:
-    if action.action == Action.ACTION_RUN:
+    if action.action == Action.RUN:
         return 1000
-    elif action.action == Action.ACTION_USE_ITEM: 
+    elif action.action == Action.USE_ITEM: 
         return 999
-    elif action.action == Action.ACTION_SWITCH:
+    elif action.action == Action.SWITCH:
         return 998
     else:
         return get_parent().get_acting_familiar(action).speed

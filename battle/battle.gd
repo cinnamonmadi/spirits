@@ -31,9 +31,12 @@ var states = [SpritesEntering.new(),
               ChooseMove.new(),
               ChooseTarget.new(),
               BeginTurn.new(),
-              AnimateMove.new()]
+              AnimateMove.new(),
+              ExecuteMove.new(),
+              EvaluateMove.new()]
 var enemy_party = Party.new()
 var actions = []
+var player_choosing_index
 var chosen_move = "" 
 var current_turn = 0
 
@@ -69,13 +72,35 @@ func _on_tween_finish():
 func _process(_delta):
     states[state].process(_delta)
 
-func update_player_label(i):
-    player_labels.get_child(i).text = director.player_party.familiars[i].get_display_name()
-    player_labels.get_child(i).get_child(0).text = "HP " + String(director.player_party.familiars[i].health) + " MP " + String(director.player_party.familiars[i].mana)
-    player_labels.get_child(i).visible = true
-
 func get_acting_familiar(action):
     if action.who == "player":
         return director.player_party.familiars[action.familiar]
     else:
         return enemy_party.familiars[action.familiar]
+
+func update_player_label(i):
+    player_labels.get_child(i).text = director.player_party.familiars[i].get_display_name()
+    player_labels.get_child(i).get_child(0).text = "HP " + String(director.player_party.familiars[i].health) + " MP " + String(director.player_party.familiars[i].mana)
+    player_labels.get_child(i).visible = true
+
+func hide_all_enemy_labels():
+    for child in enemy_labels.get_children():
+        child.visible = false
+
+func update_enemy_label(i):
+    var child_index = enemy_labels.get_child_count() - 1 - i
+    enemy_labels.get_child(child_index).text = "HP " + String(enemy_party.familiars[i].health)
+    enemy_labels.get_child(child_index).visible = true
+
+func set_target_cursor(target_who: String, target_index: int):
+    var offset_direction = 1
+    var cursor_base_position
+    if target_who == "player":
+        cursor_base_position = player_sprites.rect_position + player_sprites.get_child(target_index).position
+        offset_direction = -1
+    else:
+        cursor_base_position = enemy_sprites.rect_position + enemy_sprites.get_child(3 - target_index).position
+
+    target_cursor.flip_v = target_who == "player"
+    target_cursor.position = cursor_base_position + Vector2(0, 80 * offset_direction)
+    target_cursor.visible = true

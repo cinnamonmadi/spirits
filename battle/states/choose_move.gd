@@ -5,13 +5,15 @@ onready var director = get_node("/root/Director")
 
 onready var move_select = get_parent().get_node("ui/move_select")
 onready var move_info = get_parent().get_node("ui/move_info")
+onready var battle_actions = get_parent().get_node("ui/battle_actions")
 
 const State = preload("res://battle/states/states.gd")
 
 var current_familiar
 
 func begin():
-    current_familiar = director.player_party.familiars[get_parent().actions.size() - 1]
+    current_familiar = director.player_party.familiars[get_parent().player_choosing_index]
+    battle_actions.open()
     move_select.open()
     move_select.set_labels([current_familiar.moves])
 
@@ -33,6 +35,7 @@ func process(_delta):
     
     # If we've reached this point in the code, it means they *have* chosen a move
     # So set the state to choosing a target
+    battle_actions.close()
     move_select.close()
     move_info.close()
     get_parent().set_state(State.CHOOSE_TARGET)

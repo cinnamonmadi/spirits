@@ -21,12 +21,13 @@ func begin():
     target_who = "enemy"
     target_index = 0
     wrap_target_cursor(-1)
-    set_target_cursor()
+    get_parent().set_target_cursor(target_who, target_index)
 
 func process(_delta):
     # If player pressed back, return to choose move screen
     if Input.is_action_just_pressed("back"):
         target_cursor.visible = false
+        get_parent().hide_all_enemy_labels()
         get_parent().set_state(State.CHOOSE_MOVE)
         return
     
@@ -34,7 +35,7 @@ func process(_delta):
     if Input.is_action_just_pressed("action"):
         get_parent().actions.append({
             "who": "player",
-            "familiar": get_parent().actions.size() - 1,
+            "familiar": get_parent().player_choosing_index,
             "action": Action.USE_MOVE,
             "move": get_parent().chosen_move,
             "target_who": target_who,
@@ -57,19 +58,6 @@ func process(_delta):
 func handle_tween_finish():
     pass
 
-func set_target_cursor():
-    var offset_direction = 1
-    var cursor_base_position
-    if target_who == "player":
-        cursor_base_position = player_sprites.rect_position + player_sprites.get_child(target_index).position
-        offset_direction = -1
-    else:
-        cursor_base_position = enemy_sprites.rect_position + enemy_sprites.get_child(3 - target_index).position
-
-    target_cursor.flip_v = target_who == "player"
-    target_cursor.position = cursor_base_position + Vector2(0, 64 * offset_direction)
-    target_cursor.visible = true
-
 func navigate_target_cursor(input_direction: Vector2):
     if input_direction.y != 0:
         if target_who == "player":
@@ -79,7 +67,7 @@ func navigate_target_cursor(input_direction: Vector2):
     else:
         target_index -= input_direction.x
     wrap_target_cursor(int(input_direction.x))
-    set_target_cursor()
+    get_parent().set_target_cursor(target_who, target_index)
 
 func wrap_target_cursor(wrap_direction: int):
     var target_index_max = 2

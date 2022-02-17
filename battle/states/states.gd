@@ -7,4 +7,6 @@ enum {
     CHOOSE_TARGET,
     BEGIN_TURN,
     ANIMATE_MOVE,
+    EXECUTE_MOVE,
+    EVALUATE_MOVE,
 }
