@@ -22,22 +22,26 @@ func _physics_process(_delta):
         sprite.stop()
         return
     var _linear_velocity = move_and_slide(direction.normalized() * speed)
-    update_sprite()
+    update_animation()
 
-func update_sprite():
+func update_facing_direction():
     if direction.x > 0:
         facing_direction = Vector2.RIGHT
     elif direction.x < 0:
         facing_direction = Vector2.LEFT
-    elif direction.y > 1:
+    elif direction.y > 0:
         facing_direction = Vector2.DOWN
-    elif direction.y < -1:
+    elif direction.y < 0:
         facing_direction = Vector2.UP
-    var animation_prefix: String
+
+func update_animation():
     if direction == Vector2.ZERO:
-        animation_prefix = "idle_"
+        update_sprite("idle")
     else:
-        animation_prefix = "move_"
+        update_sprite("move")
+
+func update_sprite(animation_name: String):
+    update_facing_direction()
     for index in range(0, 4):
         if facing_direction == direction_vectors[index]:
-            sprite.play(animation_prefix + direction_names[index])
+            sprite.play(animation_name + "_" + direction_names[index])

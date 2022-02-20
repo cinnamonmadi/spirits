@@ -114,7 +114,7 @@ position = Vector2( 608, 352 )
 path = [ "left,2", "wait,2", "right,2" ]
 
 [node name="tris" parent="." instance=ExtResource( 2 )]
-position = Vector2( 64, 96 )
+position = Vector2( 64, 64 )
 
 [node name="npc" parent="." instance=ExtResource( 3 )]
 position = Vector2( 320, 64 )

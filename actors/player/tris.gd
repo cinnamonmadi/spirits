@@ -7,14 +7,21 @@ onready var interact_scanbox = $interact_scanbox
 
 enum State {
     MOVING,
+    ROLLING,
     DIALOG
 }
 
-var speaking_npc = null
+const ROLL_SPEED: float = 256.0
+const END_ROLL_SPEED: float = 64.0
+const MOVE_SPEED: float = 128.0
 
 var state = State.MOVING
+var input_direction: Vector2
+var speaking_npc = null
 
 func _ready():
+    sprite.connect("animation_finished", self, "_on_animation_finished")
+    input_direction = Vector2.ZERO
     set_camera_bounds()
 
 func set_camera_bounds():
@@ -28,36 +35,39 @@ func set_camera_bounds():
     camera.limit_bottom = TILE_SIZE * tilemap_size.y
 
 func handle_input():
+    if Input.is_action_just_pressed("up"):
+        input_direction.y = -1
+    if Input.is_action_just_pressed("down"):
+        input_direction.y = 1
+    if Input.is_action_just_pressed("right"):
+        input_direction.x = 1
+    if Input.is_action_just_pressed("left"):
+        input_direction.x = -1
+    if Input.is_action_just_released("up"):
+        if Input.is_action_pressed("down"):
+            input_direction.y = 1
+        else:
+            input_direction.y = 0
+    if Input.is_action_just_released("down"):
+        if Input.is_action_pressed("up"):
+            input_direction.y = -1
+        else:
+            input_direction.y = 0
+    if Input.is_action_just_released("right"):
+        if Input.is_action_pressed("left"):
+            input_direction.x = -1
+        else:
+            input_direction.x = 0
+    if Input.is_action_just_released("left"):
+        if Input.is_action_pressed("right"):
+            input_direction.x = 1
+        else:
+            input_direction.x = 0
     if state == State.MOVING:
-        if Input.is_action_just_pressed("up"):
-            direction.y = -1
-        if Input.is_action_just_pressed("down"):
-            direction.y = 1
-        if Input.is_action_just_pressed("right"):
-            direction.x = 1
-        if Input.is_action_just_pressed("left"):
-            direction.x = -1
-        if Input.is_action_just_released("up"):
-            if Input.is_action_pressed("down"):
-                direction.y = 1
-            else:
-                direction.y = 0
-        if Input.is_action_just_released("down"):
-            if Input.is_action_pressed("up"):
-                direction.y = -1
-            else:
-                direction.y = 0
-        if Input.is_action_just_released("right"):
-            if Input.is_action_pressed("left"):
-                direction.x = -1
-            else:
-                direction.x = 0
-        if Input.is_action_just_released("left"):
-            if Input.is_action_pressed("right"):
-                direction.x = 1
-            else:
-                direction.x = 0
-        if Input.is_action_just_pressed("action"):
+        direction = input_direction
+        if direction != Vector2.ZERO and Input.is_action_just_pressed("back"):
+            state = State.ROLLING
+        elif Input.is_action_just_pressed("action"):
             try_interact()
     elif state == State.DIALOG:
         if Input.is_action_just_pressed("action"):
@@ -95,8 +105,29 @@ func try_interact():
                 direction = Vector2.ZERO
                 state = State.DIALOG
             break
-    
+
 func _physics_process(_delta):
     handle_input()
-    if state == State.DIALOG:
+    if state == State.ROLLING and sprite.frame >= 10 and input_direction != Vector2.ZERO:
+            state = State.MOVING
+    if state == State.MOVING:
+        speed = MOVE_SPEED
+    elif state == State.ROLLING:
+        if sprite.frame < 3 or sprite.frame >= 13:
+            speed = 0
+        elif sprite.frame >= 10:
+            speed = 64.0
+        else:
+            speed = ROLL_SPEED
+    elif state == State.DIALOG:
         direction = Vector2.ZERO
+
+func update_animation():
+    if state == State.ROLLING:
+        update_sprite("roll")
+    else:
+        .update_animation()
+
+func _on_animation_finished():
+    if state == State.ROLLING:
+        state = State.MOVING
