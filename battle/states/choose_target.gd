@@ -27,7 +27,6 @@ func process(_delta):
     # If player pressed back, return to choose move screen
     if Input.is_action_just_pressed("back"):
         target_cursor.visible = false
-        get_parent().hide_all_enemy_labels()
         get_parent().set_state(State.CHOOSE_MOVE)
         return
     

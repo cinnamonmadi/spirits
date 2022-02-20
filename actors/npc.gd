@@ -1,12 +1,5 @@
-extends KinematicBody2D
-
+extends Actor
 class_name NPC
-
-onready var sprite = $sprite
-
-const TILE_SIZE: int = 64
-const direction_names = ["up", "right", "down", "left"]
-const direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 
 enum Path {
     MOVE,
@@ -14,17 +7,10 @@ enum Path {
     WAIT,
 }
 
-var direction: Vector2
-var facing_direction: Vector2
-var speed: float = 64.0
-
-var is_speaking: bool = false
+var is_pathing: bool = true
 var old_facing_direction: Vector2
 
-var paused: bool = false
-
 export var path = []
-export var dialog: String = ""
 
 var _path = []
 var path_index: int = 0
@@ -32,19 +18,15 @@ var path_timer: float = 0
 
 func _ready():
     add_to_group("npcs")
-    add_to_group("pausables")
     parse_path()
+    resume_pathing()
 
-func start_speaking(player_direction: Vector2):
-    is_speaking = true
+func pause_pathing():
+    is_pathing = false
     old_facing_direction = facing_direction
-    # Face player
-    for i in range(0, 4):
-        if direction_vectors[i] == player_direction:
-            facing_direction = direction_vectors[(i + 2) % 4]
 
-func stop_speaking():
-    is_speaking = false
+func resume_pathing():
+    is_pathing = true
     facing_direction = old_facing_direction
 
 func parse_path():
@@ -71,12 +53,8 @@ func parse_path():
                     previous_path_position = new_path_position
 
 func _physics_process(delta):
-    if paused:
-        sprite.stop()
-        return
-    if not is_speaking:
+    if is_pathing:
         update_path(delta)
-    update_sprite()
 
 func update_path(delta):
     progress_path(delta)
@@ -118,22 +96,3 @@ func increment_path():
         facing_direction = _path[path_index][1]
     elif current_path_action == Path.WAIT:
         path_timer = _path[path_index][1]
-
-func update_sprite():
-    if not is_speaking:
-        if direction.x == 1:
-            facing_direction = Vector2.RIGHT
-        elif direction.x == -1:
-            facing_direction = Vector2.LEFT
-        elif direction.y == 1:
-            facing_direction = Vector2.DOWN
-        elif direction.y == -1:
-            facing_direction = Vector2.UP
-    var animation_prefix: String
-    if is_speaking or direction == Vector2.ZERO:
-        animation_prefix = "idle_"
-    else:
-        animation_prefix = "move_"
-    for index in range(0, 4):
-        if facing_direction == direction_vectors[index]:
-            sprite.play(animation_prefix + direction_names[index])

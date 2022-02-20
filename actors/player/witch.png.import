@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/witch.png-2fa3c390581289e408fa16edef6ae62a.stex"
+path="res://.import/witch.png-33a24ef969cc261eeb2d3e765608c5ce.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://actors/witch.png"
-dest_files=[ "res://.import/witch.png-2fa3c390581289e408fa16edef6ae62a.stex" ]
+source_file="res://actors/player/witch.png"
+dest_files=[ "res://.import/witch.png-33a24ef969cc261eeb2d3e765608c5ce.stex" ]
 
 [params]
 

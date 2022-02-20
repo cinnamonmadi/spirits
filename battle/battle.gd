@@ -47,10 +47,10 @@ func _ready():
     for state_node in states:
         add_child(state_node)
 
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
-    enemy_party.familiars.append(Familiar.new("SPHYNX", 1))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 50))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 50))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 50))
+    enemy_party.familiars.append(Familiar.new("SPHYNX", 50))
 
     close_all_menus()
     director.player_party.sort_fighters_first()

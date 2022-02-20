@@ -20,7 +20,6 @@ func begin():
         if current_action.target_who == "player" and not director.player_party.familiars[current_action.target_familiar].is_living():
             player_sprites.get_child(current_action.target_familiar).visible = false
             player_labels.get_child(current_action.target_familiar).visible = false
-            print("hello?")
             if director.player_party.get_living_familiar_count() == 0:
                 get_parent().set_state(State.ANNOUNCE_WINNER)
                 return

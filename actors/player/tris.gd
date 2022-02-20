@@ -1,39 +1,21 @@
-extends KinematicBody2D
+extends Actor
 
-onready var world = get_parent()
 onready var dialog = get_parent().get_node("ui/dialog")
 
-onready var sprite = $sprite
 onready var camera = $camera
 onready var interact_scanbox = $interact_scanbox
-
-const TILE_SIZE: int = 64
-const direction_names = ["up", "right", "down", "left"]
-const direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 
 enum State {
     MOVING,
     DIALOG
 }
 
-var direction: Vector2
-var facing_direction: Vector2
-var speed: float = 128.0
 var speaking_npc = null
 
 var state = State.MOVING
-var paused: bool = false
-
-var rng
-var steps_to_battle = -1
 
 func _ready():
-    add_to_group("pausables")
     set_camera_bounds()
-    rng = RandomNumberGenerator.new()
-    rng.randomize()
-    steps_to_battle = rng.randi_range(10, 20)
-    direction = Vector2.ZERO
 
 func set_camera_bounds():
     var tilemap = get_parent().find_node("tilemap")
@@ -115,28 +97,6 @@ func try_interact():
             break
     
 func _physics_process(_delta):
-    if paused:
-        sprite.stop()
-        return
     handle_input()
-    if state == State.MOVING:
-        var _linear_velocity = move_and_slide(direction * speed)
-    update_sprite()
-
-func update_sprite():
-    if direction.x == 1:
-        facing_direction = Vector2.RIGHT
-    elif direction.x == -1:
-        facing_direction = Vector2.LEFT
-    elif direction.y == 1:
-        facing_direction = Vector2.DOWN
-    elif direction.y == -1:
-        facing_direction = Vector2.UP
-    var animation_prefix: String
-    if direction == Vector2.ZERO:
-        animation_prefix = "idle_"
-    else:
-        animation_prefix = "move_"
-    for index in range(0, 4):
-        if facing_direction == direction_vectors[index]:
-            sprite.play(animation_prefix + direction_names[index])
+    if state == State.DIALOG:
+        direction = Vector2.ZERO
