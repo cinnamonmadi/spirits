@@ -3,6 +3,7 @@ class_name Familiar
 # Stat constants
 const SPECIES_INFO = {
     "SPHYNX": {
+        "types": ["FIRE"],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -10,13 +11,14 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPOOK" },
+            { "level": 1, "move": "SPLASH" },
             { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TAUNT" },
-            { "level": 1, "move": "BASK" },
+            { "level": 1, "move": "TACKLE" },
+            { "level": 1, "move": "VINE WHIP" },
         ]
     },
-    "OWLBEAR": {
+    "GOBLIN": {
+        "types": ["FIRE"],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -24,40 +26,130 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPOOK" },
+            { "level": 1, "move": "SPLASH" },
             { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TAUNT" },
-            { "level": 1, "move": "BASK" },
+            { "level": 1, "move": "TACKLE" },
+            { "level": 1, "move": "VINE WHIP" },
+        ]
+    },
+    "GHOST": {
+        "types": ["FIRE"],
+        "health": 50,
+        "mana": 20,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "focus": 20,
+        "moves": [
+            { "level": 1, "move": "SPLASH" },
+            { "level": 1, "move": "EMBER" },
+            { "level": 1, "move": "TACKLE" },
+            { "level": 1, "move": "VINE WHIP" },
+        ]
+    },
+    "HIPPOCAMPUS": {
+        "types": ["WATER"],
+        "health": 50,
+        "mana": 20,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "focus": 20,
+        "moves": [
+            { "level": 1, "move": "SPLASH" },
+            { "level": 1, "move": "EMBER" },
+            { "level": 1, "move": "TACKLE" },
+            { "level": 1, "move": "VINE WHIP" },
+        ]
+    },
+    "SLIME": {
+        "types": ["FIRE"],
+        "health": 50,
+        "mana": 20,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "focus": 20,
+        "moves": [
+            { "level": 1, "move": "SPLASH" },
+            { "level": 1, "move": "EMBER" },
+            { "level": 1, "move": "TACKLE" },
+            { "level": 1, "move": "VINE WHIP" },
+        ]
+    },
+    "MIMIC": {
+        "types": ["GRASS"],
+        "health": 50,
+        "mana": 20,
+        "attack": 75,
+        "defense": 85,
+        "speed": 40,
+        "focus": 20,
+        "moves": [
+            { "level": 1, "move": "SPLASH" },
+            { "level": 1, "move": "EMBER" },
+            { "level": 1, "move": "TACKLE" },
+            { "level": 1, "move": "VINE WHIP" },
         ]
     }
 }
 const MOVE_INFO = {
-    "SPOOK": {
-        "type": "GHOST",
+    "SPLASH": {
+        "type": "WATER",
         "cost": 2,
-        "power": 0,
+        "power": 40,
     },
     "EMBER": {
         "type": "FIRE",
         "cost": 3,
-        "power": 60,
+        "power": 40,
     },
-    "TAUNT": {
+    "TACKLE": {
         "type": "NORMAL",
         "cost": 1,
         "power": 40,
     },
-    "BASK": {
-        "type": "FIRE",
+    "VINE WHIP": {
+        "type": "GRASS",
         "cost": 0,
-        "power": 20,
+        "power": 40,
+    }
+}
+const TYPE_INFO = {
+    "FIRE": {
+        "weaknesses": [
+            "WATER"
+        ],
+        "resistances": [
+            "GRASS"
+        ]
+    },
+    "WATER": {
+        "weaknesses": [
+            "GRASS"
+        ],
+        "resistances": [
+            "FIRE"
+        ]
+    },
+    "GRASS": {
+        "weaknesses": [
+            "FIRE"
+        ],
+        "resistances": [
+            "WATER"
+        ]
+    },
+    "NORMAL": {
+        "weaknesses": [],
+        "resistances": []
     }
 }
 
 # Stats
 var species: String
 var nickname: String = ""
-var type: String
+var types 
 var level: int
 var experience: int
 
@@ -89,6 +181,7 @@ func is_living() -> bool:
 func set_level(value: int):
     level = value
     var species_info = SPECIES_INFO[species]
+    types = species_info.types
     max_health = int((species_info["health"] * 2 * level) / 100) + level + 10
     max_mana = int((species_info["mana"] * 2 * level) / 100) + level + 5
     attack = int((species_info["attack"] * 2 * level) / 100) + 5

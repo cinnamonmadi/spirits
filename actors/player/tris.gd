@@ -83,17 +83,8 @@ func try_interact():
     for scanbox_collider in interact_scanbox.get_children():
         scanbox_collider.disabled = true
 
-    # Get the interact direction name from the facing_direction
-    var interact_direction: String = ""
-    for i in range(0, 4):
-        if facing_direction == direction_vectors[i]:
-            interact_direction = direction_names[i]
-    if interact_direction == "":
-        print("Error! Somehow facing direction has not matched up to a proper direction name!")
-        return
-
-    # And use this name to enable the correct scanbox collider
-    interact_scanbox.get_node("collider_" + interact_direction).disabled = false
+    # Enable the correct scanbox collider
+    interact_scanbox.get_node("collider_" + get_direction_name(facing_direction)).disabled = false
 
     # Finally, check if any NPCs are in the scanbox range
     for npc in get_tree().get_nodes_in_group("npcs"):
@@ -109,7 +100,7 @@ func try_interact():
 func _physics_process(_delta):
     handle_input()
     if state == State.ROLLING and sprite.frame >= 10 and input_direction != Vector2.ZERO:
-            state = State.MOVING
+        state = State.MOVING
     if state == State.MOVING:
         speed = MOVE_SPEED
     elif state == State.ROLLING:
@@ -122,6 +113,9 @@ func _physics_process(_delta):
     elif state == State.DIALOG:
         direction = Vector2.ZERO
 
+    var is_invulnerable = state == State.ROLLING and speed != 0
+    set_collision_layer_bit(0, not is_invulnerable)
+
 func update_animation():
     if state == State.ROLLING:
         update_sprite("roll")
@@ -131,3 +125,6 @@ func update_animation():
 func _on_animation_finished():
     if state == State.ROLLING:
         state = State.MOVING
+
+func handle_monster_attack(monster):
+    get_parent().init_start_battle(monster)

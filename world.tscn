@@ -131,3 +131,6 @@ visible = false
 
 [node name="party_menu" parent="ui" instance=ExtResource( 9 )]
 visible = false
+
+[node name="timer" type="Timer" parent="."]
+one_shot = true

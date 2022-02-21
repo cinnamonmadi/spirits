@@ -4,6 +4,7 @@ onready var director = get_node("/root/Director")
 
 onready var pause_menu = $ui/pause_menu
 onready var party_menu = $ui/party_menu
+onready var timer = $timer
 
 enum State {
     WORLD,
@@ -12,9 +13,10 @@ enum State {
 }
 
 var state = State.WORLD
-var transition_instance = null
+var attacking_monster
 
 func _ready():
+    timer.connect("timeout", self, "_on_timer_timeout")
     pause_menu.close()
 
 func set_paused(value):
@@ -51,5 +53,22 @@ func _process(_delta):
         if party_menu.is_closed():
             set_state(State.PAUSE_MENU)
 
-func init_start_battle():
+func init_start_battle(monster):
+    for child in get_children():
+        if "visible" in child:
+            child.visible = false
+    get_node("tris").visible = true
+    monster.visible = true
+    attacking_monster = monster
+    set_paused(true)
+    timer.start(1.0)
+
+func _on_timer_timeout():
+    attacking_monster.queue_free()
     director.start_battle()
+
+func end_battle():
+    for child in get_children():
+        if "visible" in child:
+            child.visible = true
+    set_paused(false)

@@ -17,6 +17,18 @@ func _ready():
     add_to_group("pausables")
     direction = Vector2.ZERO
 
+func get_direction_name(direction_vector: Vector2):
+    for i in range(0, 4):
+        if direction_vectors[i] == direction_vector:
+            return direction_names[i]
+    return ""
+
+func get_direction_vector(direction_name: String):
+    for i in range(0, 4):
+        if direction_names[i] == direction_name:
+            return direction_vectors[i]
+    return Vector2.ZERO
+
 func _physics_process(_delta):
     if paused:
         sprite.stop()
@@ -42,6 +54,4 @@ func update_animation():
 
 func update_sprite(animation_name: String):
     update_facing_direction()
-    for index in range(0, 4):
-        if facing_direction == direction_vectors[index]:
-            sprite.play(animation_name + "_" + direction_names[index])
+    sprite.play(animation_name + "_" + get_direction_name(facing_direction))

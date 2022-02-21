@@ -59,9 +59,25 @@ func execute_use_move():
     var move = current_action.move
     var move_info = Familiar.MOVE_INFO[move]
 
+    # Compute base damage
     var base_damage = (((((2 * attacker.level) / 5) + 2) * move_info.power * (attacker.attack / defender.defense)) / 50) + 2
+
+    # Compute STAB
+    var stab = 1
+    if attacker.types.has(move_info.type):
+        stab = 1.5 
+    
+    # Compute weaknesses / resistances
+    var type_mod = 1.0
+    for type in defender.types:
+        var type_info = Familiar.TYPE_INFO[type]
+        if type_info.weaknesses.has(move_info.type):
+            type_mod *= 2.0
+        elif type_info.resistances.has(move_info.type):
+            type_mod *= 0.5
+
     var random = director.rng.randf_range(0.85, 1.0)
-    var damage = base_damage * random
+    var damage = base_damage * stab * type_mod * random
 
     tween.interpolate_property(defender, "health", defender.health, max(0, defender.health - damage), EXECUTE_MOVE_DURATION)
     tween.interpolate_property(attacker, "mana", attacker.mana, max(0, attacker.mana - move_info.cost), EXECUTE_MOVE_DURATION)

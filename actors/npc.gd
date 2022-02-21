@@ -39,18 +39,15 @@ func parse_path():
         var path_value = path_string_parts[1]
 
         if path_command == "face":
-            for i in range(0, direction_names.size()):
-                if path_value == direction_names[i]:
-                    _path.append([Path.FACE, direction_vectors[i]])
+            _path.append([Path.FACE, get_direction_vector(path_value)])
         elif path_command == "wait":
             _path.append([Path.WAIT, float(path_value)]) 
         else:
-            for i in range(0, direction_names.size()):
-                if path_command == direction_names[i]:
-                    var new_path_position = previous_path_position + (direction_vectors[i] * TILE_SIZE * int(path_value))
-                    _path.append([Path.MOVE, new_path_position])
+            var path_direction = get_direction_vector(path_command)
+            var new_path_position = previous_path_position + (path_direction * TILE_SIZE * int(path_value))
+            _path.append([Path.MOVE, new_path_position])
 
-                    previous_path_position = new_path_position
+            previous_path_position = new_path_position
 
 func _physics_process(delta):
     if is_pathing:

@@ -16,8 +16,7 @@ func begin():
 
 func process(_delta):
     if Input.is_action_just_pressed("action"):
-        pass
-        # end battle
+        director.end_battle()
     
 func handle_tween_finish():
     pass
