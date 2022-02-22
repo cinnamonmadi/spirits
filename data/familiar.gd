@@ -1,9 +1,32 @@
 class_name Familiar
 
+enum Species {
+    SPHYNX,
+    GOBLIN,
+    GHOST,
+    HIPPOCAMPUS,
+    SLIME,
+    MIMIC
+}
+
+enum Type {
+    FIRE,
+    GRASS,
+    WATER,
+    NORMAL
+}
+
+enum Move {
+    SPLASH,
+    EMBER,
+    TACKLE,
+    VINE_WHIP
+}
+
 # Stat constants
 const SPECIES_INFO = {
-    "SPHYNX": {
-        "types": ["FIRE"],
+    Species.SPHYNX: {
+        "types": [Type.FIRE],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -11,14 +34,14 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPLASH" },
-            { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TACKLE" },
-            { "level": 1, "move": "VINE WHIP" },
+            { "level": 1, "move": Move.SPLASH },
+            { "level": 1, "move": Move.EMBER },
+            { "level": 1, "move": Move.TACKLE },
+            { "level": 1, "move": Move.VINE_WHIP },
         ]
     },
-    "GOBLIN": {
-        "types": ["FIRE"],
+    Species.GOBLIN: {
+        "types": [Type.FIRE],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -26,14 +49,14 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPLASH" },
-            { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TACKLE" },
-            { "level": 1, "move": "VINE WHIP" },
+            { "level": 1, "move": Move.SPLASH },
+            { "level": 1, "move": Move.EMBER },
+            { "level": 1, "move": Move.TACKLE },
+            { "level": 1, "move": Move.VINE_WHIP },
         ]
     },
-    "GHOST": {
-        "types": ["FIRE"],
+    Species.GHOST: {
+        "types": [Type.WATER],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -41,14 +64,14 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPLASH" },
-            { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TACKLE" },
-            { "level": 1, "move": "VINE WHIP" },
+            { "level": 1, "move": Move.SPLASH },
+            { "level": 1, "move": Move.EMBER },
+            { "level": 1, "move": Move.TACKLE },
+            { "level": 1, "move": Move.VINE_WHIP },
         ]
     },
-    "HIPPOCAMPUS": {
-        "types": ["WATER"],
+    Species.HIPPOCAMPUS: {
+        "types": [Type.WATER],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -56,14 +79,14 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPLASH" },
-            { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TACKLE" },
-            { "level": 1, "move": "VINE WHIP" },
+            { "level": 1, "move": Move.SPLASH },
+            { "level": 1, "move": Move.EMBER },
+            { "level": 1, "move": Move.TACKLE },
+            { "level": 1, "move": Move.VINE_WHIP },
         ]
     },
-    "SLIME": {
-        "types": ["FIRE"],
+    Species.SLIME: {
+        "types": [Type.NORMAL],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -71,14 +94,14 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPLASH" },
-            { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TACKLE" },
-            { "level": 1, "move": "VINE WHIP" },
+            { "level": 1, "move": Move.SPLASH },
+            { "level": 1, "move": Move.EMBER },
+            { "level": 1, "move": Move.TACKLE },
+            { "level": 1, "move": Move.VINE_WHIP },
         ]
     },
-    "MIMIC": {
-        "types": ["GRASS"],
+    Species.MIMIC: {
+        "types": [Type.GRASS],
         "health": 50,
         "mana": 20,
         "attack": 75,
@@ -86,68 +109,70 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "moves": [
-            { "level": 1, "move": "SPLASH" },
-            { "level": 1, "move": "EMBER" },
-            { "level": 1, "move": "TACKLE" },
-            { "level": 1, "move": "VINE WHIP" },
+            { "level": 1, "move": Move.SPLASH },
+            { "level": 1, "move": Move.EMBER },
+            { "level": 1, "move": Move.TACKLE },
+            { "level": 1, "move": Move.VINE_WHIP },
         ]
     }
 }
+
 const MOVE_INFO = {
-    "SPLASH": {
-        "type": "WATER",
+    Move.SPLASH: {
+        "type": Type.WATER,
         "cost": 2,
         "power": 40,
     },
-    "EMBER": {
-        "type": "FIRE",
+    Move.EMBER: {
+        "type": Type.FIRE,
         "cost": 3,
         "power": 40,
     },
-    "TACKLE": {
-        "type": "NORMAL",
+    Move.TACKLE: {
+        "type": Type.NORMAL,
         "cost": 1,
         "power": 40,
     },
-    "VINE WHIP": {
-        "type": "GRASS",
+    Move.VINE_WHIP: {
+        "type": Type.GRASS,
         "cost": 0,
         "power": 40,
     }
 }
+
 const TYPE_INFO = {
-    "FIRE": {
+    Type.FIRE: {
         "weaknesses": [
-            "WATER"
+            Type.WATER
         ],
         "resistances": [
-            "GRASS"
+            Type.GRASS
         ]
     },
-    "WATER": {
+    Type.WATER: {
         "weaknesses": [
-            "GRASS"
+            Type.GRASS
         ],
         "resistances": [
-            "FIRE"
+            Type.FIRE
         ]
     },
-    "GRASS": {
+    Type.GRASS: {
         "weaknesses": [
-            "FIRE"
+            Type.FIRE
         ],
         "resistances": [
-            "WATER"
+            Type.WATER
         ]
     },
-    "NORMAL": {
+    Type.NORMAL: {
         "weaknesses": [],
         "resistances": []
     }
 }
 
 # Stats
-var species: String
+var species: int
 var nickname: String = ""
 var types 
 var level: int
@@ -165,7 +190,7 @@ var speed: int
 
 var moves = []
 
-func _init(as_species: String, at_level: int):
+func _init(as_species: int, at_level: int):
     species = as_species
     set_level(at_level)
     health = max_health
@@ -189,12 +214,12 @@ func set_level(value: int):
     speed = int((species_info["speed"] * 2 * level) / 100) + 5
 
 func get_portrait_path() -> String:
-    return "res://battle/familiars/" + species.to_lower().replace(" ", "_") + ".png"
+    return "res://battle/familiars/" + Species.keys[species].to_lower().replace(" ", "_") + ".png"
 
 func get_display_name() -> String:
     var display_name: String
     if nickname == "":
-        display_name = species
+        display_name = Species.keys[species]
     else:
         display_name = nickname
     return display_name

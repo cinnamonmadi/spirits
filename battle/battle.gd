@@ -47,8 +47,8 @@ func _ready():
     for state_node in states:
         add_child(state_node)
 
-    enemy_party.familiars.append(Familiar.new("GHOST", 5))
-    enemy_party.familiars.append(Familiar.new("MIMIC", 5))
+    enemy_party.familiars.append(Familiar.new(Familiar.Species.GHOST, 5))
+    enemy_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 5))
 
     close_all_menus()
     director.player_party.sort_fighters_first()

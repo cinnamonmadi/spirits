@@ -29,7 +29,7 @@ func reset_choices():
         num_columns += 1
         column_sizes.append(0)
         for y in range(0, choices[x].size()):
-            if not choices[x][y].visible:
+            if choices[x][y].text == "" or not choices[x][y].visible:
                 continue
             column_sizes[x] += 1
     set_cursor_position()

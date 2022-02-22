@@ -50,6 +50,8 @@ func parse_path():
             previous_path_position = new_path_position
 
 func _physics_process(delta):
+    if paused:
+        return
     if is_pathing:
         update_path(delta)
 

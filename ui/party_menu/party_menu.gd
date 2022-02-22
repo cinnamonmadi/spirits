@@ -96,7 +96,7 @@ func open_summary():
 
     summary.get_node("name").text = familiar.get_display_name()
     summary.get_node("level").text = "LVL " + String(familiar.level)
-    summary.get_node("type").text = familiar.type
+    summary.get_node("type").text = familiar.types[0]
     summary.get_node("health").text = "HP " + String(familiar.health) + "/" + String(familiar.max_health)
     summary.get_node("mana").text = "MP " + String(familiar.mana) + "/" + String(familiar.max_mana)
     summary.get_node("attack").text = "ATTACK " + String(familiar.attack)

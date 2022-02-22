@@ -1,0 +1,313 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://ui/font.tres" type="DynamicFont" id=1]
+[ext_resource path="res://ui/frame.png" type="Texture" id=2]
+[ext_resource path="res://ui/cursor.png" type="Texture" id=3]
+[ext_resource path="res://ui/choice_menu/choice_menu.gd" type="Script" id=4]
+[ext_resource path="res://ui/item_menu/item_menu.gd" type="Script" id=5]
+
+[node name="item_menu" type="ColorRect"]
+margin_right = 640.0
+margin_bottom = 360.0
+script = ExtResource( 5 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="item_list" type="NinePatchRect" parent="."]
+margin_left = 352.0
+margin_right = 640.0
+margin_bottom = 360.0
+texture = ExtResource( 2 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choices" type="Control" parent="item_list"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="col_1" type="Control" parent="item_list/choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="1" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 16.0
+margin_right = 208.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2  x2"
+
+[node name="2" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 40.0
+margin_right = 208.0
+margin_bottom = 56.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="3" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 64.0
+margin_right = 208.0
+margin_bottom = 80.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="4" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 88.0
+margin_right = 208.0
+margin_bottom = 104.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="5" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 112.0
+margin_right = 208.0
+margin_bottom = 128.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="6" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 136.0
+margin_right = 208.0
+margin_bottom = 152.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="7" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 160.0
+margin_right = 208.0
+margin_bottom = 176.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="8" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 184.0
+margin_right = 208.0
+margin_bottom = 200.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="9" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 208.0
+margin_right = 208.0
+margin_bottom = 224.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="10" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 232.0
+margin_right = 208.0
+margin_bottom = 248.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="11" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 256.0
+margin_right = 208.0
+margin_bottom = 272.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="12" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 280.0
+margin_right = 208.0
+margin_bottom = 296.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+
+[node name="13" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 304.0
+margin_right = 208.0
+margin_bottom = 320.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="14" type="Label" parent="item_list/choices/col_1"]
+margin_left = 48.0
+margin_top = 328.0
+margin_right = 208.0
+margin_bottom = 344.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Sprite" parent="item_list"]
+position = Vector2( 16, 24 )
+texture = ExtResource( 3 )
+
+[node name="desc" type="NinePatchRect" parent="."]
+margin_top = 40.0
+margin_right = 352.0
+margin_bottom = 184.0
+texture = ExtResource( 2 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="name" type="Label" parent="desc"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 176.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "HI POTION2"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="desc" type="Control" parent="desc"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="one" type="Label" parent="desc/desc"]
+margin_left = 16.0
+margin_top = 56.0
+margin_right = 320.0
+margin_bottom = 72.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "Heals a familiar by"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="two" type="Label" parent="desc/desc"]
+margin_left = 16.0
+margin_top = 72.0
+margin_right = 320.0
+margin_bottom = 88.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "20 HP."
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="select" type="NinePatchRect" parent="."]
+margin_left = 216.0
+margin_top = 288.0
+margin_right = 352.0
+margin_bottom = 360.0
+texture = ExtResource( 2 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="cursor" type="Sprite" parent="select"]
+position = Vector2( 16, 24 )
+texture = ExtResource( 3 )
+
+[node name="choices" type="Control" parent="select"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="col_1" type="Control" parent="select/choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="1" type="Label" parent="select/choices/col_1"]
+margin_left = 40.0
+margin_top = 16.0
+margin_right = 200.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "USE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="2" type="Label" parent="select/choices/col_1"]
+margin_left = 40.0
+margin_top = 40.0
+margin_right = 200.0
+margin_bottom = 56.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "ORDER"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="category" type="NinePatchRect" parent="."]
+margin_right = 216.0
+margin_bottom = 40.0
+texture = ExtResource( 2 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="label" type="Label" parent="category"]
+margin_left = 32.0
+margin_top = 16.0
+margin_right = 192.0
+margin_bottom = 32.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 1 )
+text = "KEY ITEMS"
+__meta__ = {
+"_edit_use_anchors_": false
+}

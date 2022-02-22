@@ -67,7 +67,12 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Familiar",
 "language": "GDScript",
-"path": "res://battle/familiar.gd"
+"path": "res://data/familiar.gd"
+}, {
+"base": "Reference",
+"class": "Inventory",
+"language": "GDScript",
+"path": "res://data/inventory.gd"
 }, {
 "base": "Actor",
 "class": "NPC",
@@ -77,7 +82,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "Party",
 "language": "GDScript",
-"path": "res://battle/party.gd"
+"path": "res://data/party.gd"
 }, {
 "base": "Node",
 "class": "PartyMenu",
@@ -117,6 +122,7 @@ _global_script_class_icons={
 "EvaluateMove": "",
 "ExecuteMove": "",
 "Familiar": "",
+"Inventory": "",
 "NPC": "",
 "Party": "",
 "PartyMenu": "",

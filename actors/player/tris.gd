@@ -98,6 +98,8 @@ func try_interact():
             break
 
 func _physics_process(_delta):
+    if paused:
+        return false
     handle_input()
     if state == State.ROLLING and sprite.frame >= 10 and input_direction != Vector2.ZERO:
         state = State.MOVING

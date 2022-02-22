@@ -18,6 +18,8 @@ func _ready():
     attack_scanbox.connect("body_entered", self, "_on_attack_scanbox_body_entered")
 
 func _physics_process(_delta):
+    if paused:
+        return 
     if biting:
         if sprite.frame <= 3 or sprite.frame >= 9:
             speed = 0
