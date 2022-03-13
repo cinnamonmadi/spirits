@@ -181,6 +181,11 @@ __meta__ = {
 position = Vector2( 16, 24 )
 texture = ExtResource( 3 )
 
+[node name="order_cursor" type="Sprite" parent="item_list"]
+visible = false
+position = Vector2( 16, 24 )
+texture = ExtResource( 3 )
+
 [node name="desc" type="NinePatchRect" parent="."]
 margin_top = 40.0
 margin_right = 352.0

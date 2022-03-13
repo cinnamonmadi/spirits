@@ -154,3 +154,9 @@ func remove_item(item: int, amount: int):
             if items[category][i].quantity <= 0:
                 items[category].erase(i)
             return
+
+func swap_items(category: int, index_a: int, index_b: int):
+    var temp_item = items[category][index_a].duplicate()
+    items[category][index_a] = items[category][index_b].duplicate()
+    items[category][index_b] = temp_item
+    print(items[category])

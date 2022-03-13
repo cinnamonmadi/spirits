@@ -8,6 +8,8 @@ onready var desc_row_1 = $desc/desc/one
 onready var desc_row_2 = $desc/desc/two
 onready var item_list = $item_list
 onready var select = $select
+onready var cursor = $item_list/cursor
+onready var order_cursor = $item_list/order_cursor
 
 enum State {
     CLOSED,
@@ -17,9 +19,12 @@ enum State {
 }
 
 const ITEM_LIST_HEIGHT = 14
+const ORDER_CURSOR_TIMER_DURATION = 0.5
 
 var category = Inventory.Category.POTION
 var list_offset = 0
+var order_cursor_timer = 0
+var order_cursor_index = 0
 var state = State.CLOSED
 
 func _ready():
@@ -30,22 +35,71 @@ func is_closed():
     return state == State.CLOSED
 
 func set_state(new_state):
+    if state == State.SELECT:
+        select.close()
+
     state = new_state
+
     if state == State.CLOSED:
         close()
+    elif state == State.LIST:
+        refresh_items()
+    elif state == State.SELECT:
+        select.open()
+    elif state == State.ORDER:
+        begin_order()
 
 func close():
     select.close()
     item_list.close()
+    order_cursor.visible = false
 
 func open():
     category = 0
     open_category()
     state = State.LIST
 
-func _process(_delta):
+func _process(delta):
     if state == State.LIST:
         process_list()
+    elif state == State.SELECT:
+        process_select()
+    elif state == State.ORDER:
+        process_order(delta)
+
+func get_item_list_inventory_index():
+    print(list_offset + item_list.cursor_position.y)
+    return list_offset + item_list.cursor_position.y
+
+func list_navigate_up():
+    item_list.cursor_position.y -= 1
+    if item_list.cursor_position.y < 0:
+        if director.player_inventory.size(category) < ITEM_LIST_HEIGHT:
+            item_list.cursor_position.y = director.player_inventory.size(category) - 1
+        else:
+            if list_offset == 0:
+                list_offset = director.player_inventory.size(category) - ITEM_LIST_HEIGHT
+                item_list.cursor_position.y = ITEM_LIST_HEIGHT - 1
+            else:
+                list_offset -= 1
+                item_list.cursor_position.y = 0
+            refresh_items()
+    item_list.set_cursor_position()
+
+func list_navigate_down():
+    item_list.cursor_position.y += 1
+    if director.player_inventory.size(category) < ITEM_LIST_HEIGHT and item_list.cursor_position.y >= director.player_inventory.size(category):
+        item_list.cursor_position.y = 0
+    elif item_list.cursor_position.y >= ITEM_LIST_HEIGHT:
+        if list_offset + ITEM_LIST_HEIGHT < director.player_inventory.size(category):
+            item_list.cursor_position.y -= 1
+            list_offset += 1
+        else:
+            item_list.cursor_position.y = 0
+            list_offset = 0
+        refresh_items()
+    update_description()
+    item_list.set_cursor_position()
 
 func process_list():
     if Input.is_action_just_pressed("back"):
@@ -61,51 +115,28 @@ func process_list():
             category -= 1
         open_category()
     elif Input.is_action_just_pressed("up"):
-        item_list.cursor_position.y -= 1
-        if item_list.cursor_position.y < 0:
-            if director.player_inventory.size(category) < ITEM_LIST_HEIGHT:
-                item_list.cursor_position.y = director.player_inventory.size(category) - 1
-            else:
-                if list_offset == 0:
-                    list_offset = director.player_inventory.size(category) - ITEM_LIST_HEIGHT
-                    item_list.cursor_position.y = ITEM_LIST_HEIGHT - 1
-                else:
-                    list_offset -= 1
-                    item_list.cursor_position.y = 0
-                refresh_items()
+        list_navigate_up()
         update_description()
-        item_list.set_cursor_position()
     elif Input.is_action_just_pressed("down"):
-        item_list.cursor_position.y += 1
-        if director.player_inventory.size(category) < ITEM_LIST_HEIGHT and item_list.cursor_position.y >= director.player_inventory.size(category):
-            item_list.cursor_position.y = 0
-        elif item_list.cursor_position.y >= ITEM_LIST_HEIGHT:
-            if list_offset + ITEM_LIST_HEIGHT < director.player_inventory.size(category):
-                item_list.cursor_position.y -= 1
-                list_offset += 1
-            else:
-                item_list.cursor_position.y = 0
-                list_offset = 0
-            refresh_items()
-        update_description()
-        item_list.set_cursor_position()
+        list_navigate_down()
+    elif Input.is_action_just_pressed("action"):
+        if director.player_inventory.size(category) != 0:
+            set_state(State.SELECT)
 
 func open_category():
     list_offset = 0
 
-    print(Inventory.Category.keys())
     category_label.text = Inventory.Category.keys()[category]
     refresh_items()
 
 func refresh_items():
     var list_values = []
     for i in range(0, ITEM_LIST_HEIGHT):
-        var index = list_offset + i
+        var index = i + list_offset
         if director.player_inventory.size(category) <= index:
             list_values.append("")
         else:
             var item = director.player_inventory.item_name_at(category, index)
-            print(item)
             var quantity = director.player_inventory.quantity_at(category, index)
             list_values.append(item + " x" + String(quantity))
     item_list.set_labels([list_values])
@@ -151,3 +182,41 @@ func update_description():
 
     desc_row_1.text = desc_lines[0]
     desc_row_2.text = desc_lines[1]
+
+func process_select():
+    var action = select.check_for_input()
+    if Input.is_action_just_pressed("back"):
+        set_state(State.LIST)
+    elif action == "ORDER":
+        set_state(State.ORDER)
+    elif action == "USE":
+        pass
+
+func begin_order():
+    order_cursor_index = item_list.cursor_position.y
+    order_cursor_timer = ORDER_CURSOR_TIMER_DURATION
+    set_order_cursor_position()
+
+func set_order_cursor_position():
+    if not order_cursor_index in range(list_offset, list_offset + ITEM_LIST_HEIGHT):
+        order_cursor.position.y = -20
+    else:
+        order_cursor.position = item_list.choices[0][order_cursor_index].rect_position + Vector2(-10, 0)
+
+func process_order(delta):
+    set_order_cursor_position()
+    order_cursor_timer -= delta
+    if order_cursor_timer <= 0:
+        order_cursor_timer = ORDER_CURSOR_TIMER_DURATION
+        order_cursor.visible = not order_cursor.visible
+    if Input.is_action_just_pressed("up"):
+        list_navigate_up()
+    elif Input.is_action_just_pressed("down"):
+        list_navigate_down()
+    elif Input.is_action_just_pressed("action"):
+        director.player_inventory.swap_items(category, order_cursor_index, get_item_list_inventory_index())
+        order_cursor.visible = false
+        set_state(State.LIST)
+    elif Input.is_action_just_pressed("back"):
+        order_cursor.visible = false
+        set_state(State.LIST)
