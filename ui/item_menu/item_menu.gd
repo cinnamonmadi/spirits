@@ -68,7 +68,6 @@ func _process(delta):
         process_order(delta)
 
 func get_item_list_inventory_index():
-    print(list_offset + item_list.cursor_position.y)
     return list_offset + item_list.cursor_position.y
 
 func list_navigate_up():

@@ -214,12 +214,18 @@ func set_level(value: int):
     speed = int((species_info["speed"] * 2 * level) / 100) + 5
 
 func get_portrait_path() -> String:
-    return "res://battle/familiars/" + Species.keys[species].to_lower().replace(" ", "_") + ".png"
+    return "res://battle/familiars/" + Species.keys()[species].to_lower().replace(" ", "_") + ".png"
 
 func get_display_name() -> String:
     var display_name: String
     if nickname == "":
-        display_name = Species.keys[species]
+        display_name = Species.keys()[species]
     else:
         display_name = nickname
     return display_name
+
+func get_move_names():
+    var move_names = []
+    for move in moves:
+        move_names.append(Move.keys()[move])
+    return move_names

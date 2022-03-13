@@ -39,7 +39,7 @@ var states = [SpritesEntering.new(),
 var enemy_party = Party.new()
 var actions = []
 var player_choosing_index
-var chosen_move = "" 
+var chosen_move = 0
 var current_turn = -1
 
 func _ready():

@@ -57,7 +57,7 @@ func handle_tween_finish():
         get_parent().set_state(State.EXECUTE_MOVE)
 
 func begin_animate_attack():
-    get_parent().open_move_callout(current_action.move)
+    get_parent().open_move_callout(Familiar.Move.keys()[current_action.move])
 
     var move_direction = 1
     if current_action.who == "enemy":

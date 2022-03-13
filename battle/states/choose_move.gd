@@ -15,7 +15,7 @@ func begin():
     current_familiar = director.player_party.familiars[get_parent().player_choosing_index]
     battle_actions.open()
     move_select.open()
-    move_select.set_labels([current_familiar.moves])
+    move_select.set_labels([current_familiar.get_move_names()])
 
 func process(_delta):
     # If player pressed back, return to choose action screen
@@ -26,23 +26,23 @@ func process(_delta):
         return
     
     # Handle input
-    get_parent().chosen_move = move_select.check_for_input()
+    var has_chosen_move = move_select.check_for_input()
     open_move_info(current_familiar.moves[move_select.cursor_position.y])
-
     # If they haven't chosen a move, don't do anything else
-    if get_parent().chosen_move == "":
+    if not has_chosen_move:
         return
     
     # If we've reached this point in the code, it means they *have* chosen a move
     # So set the state to choosing a target
+    get_parent().chosen_move = current_familiar.moves[move_select.cursor_position.y]
     battle_actions.close()
     move_select.close()
     move_info.close()
     get_parent().set_state(State.CHOOSE_TARGET)
 
-func open_move_info(move: String):
+func open_move_info(move: int):
     var move_info_values = Familiar.MOVE_INFO[move]
-    move_info.open(move_info_values["type"], String(move_info_values["cost"]) + " MP")
+    move_info.open(Familiar.Type.keys()[move_info_values["type"]], String(move_info_values["cost"]) + " MP")
 
 func handle_tween_finish():
     pass
