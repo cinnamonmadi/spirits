@@ -19,9 +19,9 @@ func begin():
                                 Vector2(-enemy_sprites.rect_size.x, enemy_sprites.rect_position.y), 
                                 Vector2(enemy_sprites.rect_position.x, enemy_sprites.rect_position.y), 
                                 SPRITES_ENTERING_DURATION)
-    tween.interpolate_property(witch, "rect_position", 
-                                Vector2(get_parent().SCREEN_WIDTH, witch.rect_position.y), 
-                                Vector2(witch.rect_position.x, witch.rect_position.y), 
+    tween.interpolate_property(witch, "position", 
+                                Vector2(get_parent().SCREEN_WIDTH, witch.position.y), 
+                                witch.position, 
                                 SPRITES_ENTERING_DURATION)
     # Begin the interpolation
     tween.start()

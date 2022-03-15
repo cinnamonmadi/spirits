@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://ui/font_12.tres" type="DynamicFont" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://ui/battle_menus/move_info.tscn" type="PackedScene" id=8]
 [ext_resource path="res://ui/party_menu/party_menu.tscn" type="PackedScene" id=9]
 [ext_resource path="res://ui/cursor_up.png" type="Texture" id=10]
+[ext_resource path="res://battle/witch_back.png" type="Texture" id=11]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
@@ -21,15 +22,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="witch" type="ColorRect" parent="."]
-margin_left = 18.0
-margin_top = 216.0
-margin_right = 78.0
-margin_bottom = 344.0
-color = Color( 0, 0, 0, 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="witch" type="Sprite" parent="."]
+position = Vector2( 72, 280 )
+texture = ExtResource( 11 )
 
 [node name="enemy_sprites" type="Control" parent="."]
 margin_left = 216.0
@@ -72,13 +67,13 @@ __meta__ = {
 
 [node name="1" type="Sprite" parent="player_sprites"]
 visible = false
-position = Vector2( 184, 256 )
+position = Vector2( 226, 268 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="2" type="Sprite" parent="player_sprites"]
 visible = false
-position = Vector2( 348, 256 )
+position = Vector2( 390, 268 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
@@ -91,10 +86,10 @@ __meta__ = {
 
 [node name="1" type="Label" parent="player_labels"]
 visible = false
-margin_left = 100.0
-margin_top = 320.0
-margin_right = 260.0
-margin_bottom = 336.0
+margin_left = 142.0
+margin_top = 332.0
+margin_right = 302.0
+margin_bottom = 348.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "FRIEND STS"
@@ -115,10 +110,10 @@ __meta__ = {
 
 [node name="2" type="Label" parent="player_labels"]
 visible = false
-margin_left = 282.0
-margin_top = 320.0
-margin_right = 442.0
-margin_bottom = 336.0
+margin_left = 324.0
+margin_top = 332.0
+margin_right = 484.0
+margin_bottom = 348.0
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "FRIEND STS"
