@@ -30,94 +30,37 @@ enum Item {
     PEARL9,
 }
 
+enum ItemUse {
+    WORLD,
+    BATTLE,
+    BOTH
+}
+
 const ITEM_INFO = {
     Item.POTION: {
         "category": Category.POTION,
-        "desc": "Heals a familiar by 20 HP"
+        "desc": "Heals a familiar by 20 HP",
+        "use": ItemUse.BOTH,
     },
     Item.HI_POTION: {
         "category": Category.POTION,
-        "desc": "Heals a familiar by 40 HP"
+        "desc": "Heals a familiar by 40 HP",
+        "use": ItemUse.BOTH,
     },
     Item.ETHER: {
         "category": Category.POTION,
-        "desc": "Restores a familiar's MP by 10"
+        "desc": "Restores a familiar's MP by 10",
+        "use": ItemUse.BOTH,
     },
     Item.RUBY: {
         "category": Category.GEMS,
-        "desc": "Captures a fire type monster"
+        "desc": "Captures a fire type monster",
+        "use": ItemUse.BATTLE,
     },
     Item.SAPPHIRE: {
         "category": Category.GEMS,
-        "desc": "Captures a water type monster"
-    },
-    Item.EMERALD: {
-        "category": Category.GEMS,
-        "desc": "Captures a grass type monster"
-    },
-    Item.ONYX: {
-        "category": Category.GEMS,
-        "desc": "Captures a rock type monster"
-    },
-    Item.QUARTZ: {
-        "category": Category.GEMS,
-        "desc": "Captures a ghost type monster"
-    },
-    Item.RARE_RUBY: {
-        "category": Category.GEMS,
-        "desc": "Captures a fire type monster really well"
-    },
-    Item.RARE_SAPPHIRE: {
-        "category": Category.GEMS,
-        "desc": "Captures a water type monster really well"
-    },
-    Item.RARE_EMERALD: {
-        "category": Category.GEMS,
-        "desc": "Captures a grass type monster really well"
-    },
-    Item.RARE_ONYX: {
-        "category": Category.GEMS,
-        "desc": "Captures a rock type monster really well"
-    },
-    Item.RARE_QUARTZ: {
-        "category": Category.GEMS,
-        "desc": "Captures a ghost type monster really well"
-    },
-    Item.PEARL: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL2: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL3: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL4: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL5: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL6: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL7: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL8: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
-    },
-    Item.PEARL9: {
-        "category": Category.GEMS,
-        "desc": "Captures a monster of any type"
+        "desc": "Captures a water type monster",
+        "use": ItemUse.BATTLE,
     },
 }
 
@@ -131,6 +74,9 @@ func item_name_at(category: int, index: int):
 
 func item_desc_at(category: int, index: int):
     return ITEM_INFO[item_id_at(category, index)].desc
+
+func item_use_at(category: int, index: int):
+    return ITEM_INFO[item_id_at(category, index)].use
 
 func quantity_at(category: int, index: int):
     return items[category][index].quantity

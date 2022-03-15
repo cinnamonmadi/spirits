@@ -4,12 +4,14 @@ onready var director = get_node("/root/Director")
 
 onready var pause_menu = $ui/pause_menu
 onready var party_menu = $ui/party_menu
+onready var item_menu = $ui/item_menu
 onready var timer = $timer
 
 enum State {
     WORLD,
     PAUSE_MENU,
     PARTY_MENU,
+    ITEM_MENU,
 }
 
 var state = State.WORLD
@@ -28,6 +30,8 @@ func set_state(new_state):
         pause_menu.close()
     elif state == State.PARTY_MENU:
         party_menu.close()
+    elif state == State.ITEM_MENU:
+        item_menu.close()
 
     state = new_state
 
@@ -38,8 +42,11 @@ func set_state(new_state):
         pause_menu.open()
     elif state == State.PARTY_MENU:
         party_menu.open(false)
+    elif state == State.ITEM_MENU:
+        print("hi")
+        item_menu.open(false)
 
-func _process(_delta):
+func _process(delta):
     if state == State.WORLD and Input.is_action_just_pressed("menu"):
         set_state(State.PAUSE_MENU)
     elif state == State.PAUSE_MENU:
@@ -48,9 +55,15 @@ func _process(_delta):
             set_state(State.WORLD)
         elif action == "SPIRITS":
             set_state(State.PARTY_MENU)
+        elif action == "ITEM":
+            set_state(State.ITEM_MENU)
     elif state == State.PARTY_MENU:
         party_menu.check_for_input()
         if party_menu.is_closed():
+            set_state(State.PAUSE_MENU)
+    elif state == State.ITEM_MENU:
+        item_menu.handle_process(delta)
+        if item_menu.is_closed():
             set_state(State.PAUSE_MENU)
 
 func init_start_battle(monster):

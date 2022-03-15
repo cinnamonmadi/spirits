@@ -16,7 +16,6 @@ __meta__ = {
 }
 
 [node name="choice_menu" type="NinePatchRect" parent="."]
-visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 2 )
@@ -248,9 +247,9 @@ texture = ExtResource( 4 )
 offset = Vector2( 2.5, 3.5 )
 
 [node name="select_menu" parent="." instance=ExtResource( 5 )]
-visible = false
 
 [node name="summary" type="Control" parent="."]
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
 __meta__ = {

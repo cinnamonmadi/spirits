@@ -10,12 +10,14 @@ onready var item_list = $item_list
 onready var select = $select
 onready var cursor = $item_list/cursor
 onready var order_cursor = $item_list/order_cursor
+onready var use_dialog = $use_dialog
 
 enum State {
     CLOSED,
     LIST,
     SELECT,
-    ORDER
+    ORDER,
+    CANT_USE,
 }
 
 const ITEM_LIST_HEIGHT = 14
@@ -26,10 +28,11 @@ var list_offset = 0
 var order_cursor_timer = 0
 var order_cursor_index = 0
 var state = State.CLOSED
+var battle_mode = false
 
 func _ready():
+    use_dialog.ROW_CHAR_LEN = 20
     select.close()
-    open()
 
 func is_closed():
     return state == State.CLOSED
@@ -48,24 +51,31 @@ func set_state(new_state):
         select.open()
     elif state == State.ORDER:
         begin_order()
+    elif state == State.CANT_USE:
+        begin_cant_use()
 
 func close():
     select.close()
     item_list.close()
     order_cursor.visible = false
+    visible = false
 
-func open():
+func open(in_battle_mode):
+    battle_mode = in_battle_mode
     category = 0
     open_category()
     state = State.LIST
+    visible = true
 
-func _process(delta):
+func handle_process(delta):
     if state == State.LIST:
         process_list()
     elif state == State.SELECT:
         process_select()
     elif state == State.ORDER:
         process_order(delta)
+    elif state == State.CANT_USE:
+        process_cant_use()
 
 func get_item_list_inventory_index():
     return list_offset + item_list.cursor_position.y
@@ -189,7 +199,12 @@ func process_select():
     elif action == "ORDER":
         set_state(State.ORDER)
     elif action == "USE":
-        pass
+        try_use_item()
+
+func try_use_item():
+    var item_use = director.player_inventory.item_use_at(category, get_item_list_inventory_index())
+    if (battle_mode and item_use == Inventory.ItemUse.WORLD) or (not battle_mode and item_use == Inventory.ItemUse.BATTLE):
+        set_state(State.CANT_USE)
 
 func begin_order():
     order_cursor_index = item_list.cursor_position.y
@@ -219,3 +234,15 @@ func process_order(delta):
     elif Input.is_action_just_pressed("back"):
         order_cursor.visible = false
         set_state(State.LIST)
+
+func begin_cant_use():
+    if battle_mode:
+        use_dialog.open('This item can only be used in battle.')
+    else:
+        use_dialog.open('This item cannot be used in battle.')
+
+func process_cant_use():
+    if Input.is_action_just_pressed("action"):
+        use_dialog.progress()
+    if not use_dialog.is_open():
+        set_state(State.SELECT)
