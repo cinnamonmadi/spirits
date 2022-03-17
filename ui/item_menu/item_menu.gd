@@ -1,7 +1,9 @@
-extends ColorRect
+extends Control
 
 onready var director = get_node("/root/Director")
 
+onready var category_box = $category
+onready var desc_box = $desc
 onready var category_label = $category/label
 onready var desc_name = $desc/name
 onready var desc_row_1 = $desc/desc/one
@@ -18,6 +20,7 @@ enum State {
     SELECT,
     ORDER,
     CANT_USE,
+    AWAIT_TARGET,
 }
 
 const ITEM_LIST_HEIGHT = 14
@@ -37,6 +40,9 @@ func _ready():
 func is_closed():
     return state == State.CLOSED
 
+func is_awaiting_target():
+    return state == State.AWAIT_TARGET
+
 func set_state(new_state):
     if state == State.SELECT:
         select.close()
@@ -46,6 +52,8 @@ func set_state(new_state):
     if state == State.CLOSED:
         close()
     elif state == State.LIST:
+        category_box.visible = true
+        desc_box.visible = true
         refresh_items()
     elif state == State.SELECT:
         select.open()
@@ -53,6 +61,10 @@ func set_state(new_state):
         begin_order()
     elif state == State.CANT_USE:
         begin_cant_use()
+    elif state == State.AWAIT_TARGET:
+        select.close()
+        category_box.visible = false
+        desc_box.visible = false
 
 func close():
     select.close()
@@ -205,6 +217,8 @@ func try_use_item():
     var item_use = director.player_inventory.item_use_at(category, get_item_list_inventory_index())
     if (battle_mode and item_use == Inventory.ItemUse.WORLD) or (not battle_mode and item_use == Inventory.ItemUse.BATTLE):
         set_state(State.CANT_USE)
+    else:
+        set_state(State.AWAIT_TARGET)
 
 func begin_order():
     order_cursor_index = item_list.cursor_position.y
@@ -237,12 +251,12 @@ func process_order(delta):
 
 func begin_cant_use():
     if battle_mode:
-        use_dialog.open('This item can only be used in battle.')
-    else:
         use_dialog.open('This item cannot be used in battle.')
+    else:
+        use_dialog.open('This item can only be used in battle.')
 
 func process_cant_use():
     if Input.is_action_just_pressed("action"):
         use_dialog.progress()
     if not use_dialog.is_open():
-        set_state(State.SELECT)
+        set_state(State.LIST)

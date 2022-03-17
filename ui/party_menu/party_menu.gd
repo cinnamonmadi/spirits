@@ -7,13 +7,16 @@ onready var list_choices = $choice_menu/choices/col_1.get_children()
 onready var select_menu = $select_menu
 onready var summary = $summary
 onready var switch_cursor = $switch_cursor
+onready var item_menu = $item_menu
 
 enum State {
     CLOSED,
     LIST,
     SELECTED,
     SUMMARY,
-    SWITCH
+    SWITCH,
+    ITEM_MENU,
+    ITEM_TARGET
 }
 
 var state = State.LIST
@@ -24,6 +27,8 @@ var chosen_index: int = -1
 var battle_mode: bool = false 
 var battle_switch_index: int = -1
 var battle_restricted_switch_indeces = []
+var item_used: int = -1
+var item_target: int = -1
 
 # Switch variables
 const SWITCH_CURSOR_FLICKER_DURATION: float = 0.3
@@ -31,14 +36,18 @@ var switch_cursor_timer: float
 
 func _ready():
     close()
+    item_menu.close()
 
 func is_closed():
     return state == State.CLOSED
 
-func open(in_battle_mode: bool):
+func open(in_battle_mode: bool, as_item_menu: bool):
     battle_mode = in_battle_mode
     battle_switch_index = -1
-    set_state(State.LIST)
+    if as_item_menu:
+        set_state(State.ITEM_MENU)
+    else:
+        set_state(State.LIST)
 
 func close():
     set_state(State.CLOSED)
@@ -90,25 +99,32 @@ func set_state(new_state):
         switch_cursor.position = list.cursor.position
         switch_cursor.visible = true
         switch_cursor_timer = SWITCH_CURSOR_FLICKER_DURATION
+    elif state == State.ITEM_MENU:
+        close_list()
+        item_menu.open(battle_mode)
+    elif state == State.ITEM_TARGET:
+        open_list()
 
 func open_summary():
     var familiar = director.player_party.familiars[chosen_index]
 
     summary.get_node("name").text = familiar.get_display_name()
     summary.get_node("level").text = "LVL " + String(familiar.level)
-    summary.get_node("type").text = familiar.types[0]
+    summary.get_node("type").text = familiar.get_type_name()
     summary.get_node("health").text = "HP " + String(familiar.health) + "/" + String(familiar.max_health)
     summary.get_node("mana").text = "MP " + String(familiar.mana) + "/" + String(familiar.max_mana)
     summary.get_node("attack").text = "ATTACK " + String(familiar.attack)
     summary.get_node("defense").text = "DEFENSE " + String(familiar.defense)
     summary.get_node("speed").text = "SPEED " + String(familiar.speed)
+    var move_names = familiar.get_move_names()
+    var move_type_names = familiar.get_move_type_names()
     for i in range(0, 4):
         var move_label = summary.get_node("move_" + String(i + 1))
         if i >= familiar.moves.size():
             move_label.visible = false
             continue
         var move_info = Familiar.MOVE_INFO[familiar.moves[i]]
-        move_label.text = familiar.moves[i] + " / " + move_info["type"]
+        move_label.text = move_names[i] + " / " + move_type_names[i]
         move_label.get_node("details").text = "POWER " + String(move_info["power"]) + " COST " + String(move_info["cost"]) + "MP"
         move_label.visible = true
 
@@ -116,7 +132,7 @@ func open_summary():
 
     summary.visible = true
 
-func check_for_input():
+func handle_process(delta=0.0):
     if state == State.LIST:
         if Input.is_action_just_pressed("back"):
             set_state(State.CLOSED)
@@ -162,6 +178,32 @@ func check_for_input():
         if chosen_index != switch_with_index:
             director.player_party.swap_familiars(chosen_index, switch_with_index)
         set_state(State.LIST)
+    elif state == State.ITEM_MENU:
+        item_menu.handle_process(delta)
+        if item_menu.is_closed():
+            set_state(State.CLOSED)
+        elif item_menu.is_awaiting_target():
+            set_state(State.ITEM_TARGET)
+    elif state == State.ITEM_TARGET:
+        if Input.is_action_just_pressed("back"):
+            set_state(State.ITEM_MENU)
+            return
+        var action = list.check_for_input()
+        if action == "":
+            return
+        item_used = director.player_inventory.item_id_at(item_menu.category, item_menu.get_item_list_inventory_index())
+        item_target = list.cursor_position.y
+        if not battle_mode:
+            var target_familiar = director.player_party.familiars[item_target]
+            director.player_inventory.use_item(item_used, target_familiar)
+            item_menu.refresh_items()
+            if director.player_inventory.quantity_of(item_used) == 0:
+                item_menu.set_state(item_menu.State.LIST)
+                set_state(State.ITEM_MENU)
+            else:
+                open_list()
+        else:
+            close()
 
 func _process(delta):
     if state == State.SWITCH:

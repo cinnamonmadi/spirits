@@ -26,6 +26,7 @@ func _ready():
     player_party.familiars[1].nickname = "Deputy"
     player_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 3))
     player_party.familiars[2].nickname = "Cat"
+    player_party.familiars[0].health -= 23
 
     player_inventory.add_item(Inventory.Item.POTION, 5)
     player_inventory.add_item(Inventory.Item.HI_POTION, 2)

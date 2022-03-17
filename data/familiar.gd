@@ -213,6 +213,14 @@ func set_level(value: int):
     defense = int((species_info["defense"] * 2 * level) / 100) + 5
     speed = int((species_info["speed"] * 2 * level) / 100) + 5
 
+func change_health(amount: int):
+    health += amount
+    health = int(clamp(health, 0, max_health))
+
+func change_mana(amount: int):
+    mana += amount
+    mana = int(clamp(mana, 0, max_mana))
+
 func get_portrait_path() -> String:
     return "res://battle/familiars/" + Species.keys()[species].to_lower().replace(" ", "_") + ".png"
 
@@ -224,8 +232,17 @@ func get_display_name() -> String:
         display_name = nickname
     return display_name
 
+func get_type_name():
+    return Type.keys()[types[0]]
+
 func get_move_names():
     var move_names = []
     for move in moves:
         move_names.append(Move.keys()[move])
     return move_names
+
+func get_move_type_names():
+    var move_type_names = []
+    for move in moves:
+        move_type_names.append(Type.keys()[MOVE_INFO[move].type])
+    return move_type_names

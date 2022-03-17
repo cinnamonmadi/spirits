@@ -1,0 +1,9 @@
+{
+    "files.exclude": {
+        "**/*.import": true,
+        "**/*.png": true,
+        "**/*.tres": true,
+        "**/*.tscn": true,
+        "**/*.ttf": true
+    }
+}
