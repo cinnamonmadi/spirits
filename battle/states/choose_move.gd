@@ -38,6 +38,7 @@ func process(_delta):
     battle_actions.close()
     move_select.close()
     move_info.close()
+    get_parent().targeting_for_action = Action.USE_MOVE
     get_parent().set_state(State.CHOOSE_TARGET)
 
 func open_move_info(move: int):

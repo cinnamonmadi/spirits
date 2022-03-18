@@ -17,6 +17,8 @@ func begin():
         return
 
     battle_actions.open()
+    battle_actions.cursor_position.y = 0
+    battle_actions.set_cursor_position()
 
     get_parent().player_choosing_index = get_parent().actions.size()
     if not director.player_party.familiars[get_parent().player_choosing_index].is_living():
@@ -27,9 +29,12 @@ func process(_delta):
     # If the player presses back, allow them to reselect the previous fighter's action
     if Input.is_action_just_pressed("back"):
         if get_parent().actions.size() > 0:
-            get_parent().actions.pop_back()
-            get_parent().set_target_cursor("player", get_parent().actions.size())
+            var previous_action = get_parent().actions.pop_back()
+            if previous_action.action == Action.USE_ITEM:
+                director.player_inventory.add_item(previous_action.item, 1)
             battle_actions.cursor_position.y = 0
+            battle_actions.set_cursor_position()
+            get_parent().set_target_cursor("player", get_parent().actions.size())
             return
 
     # Check for input on the action select
@@ -39,6 +44,9 @@ func process(_delta):
     elif action == "SPIRITS":
         target_cursor.visible = false
         get_parent().set_state(State.PARTY_MENU)
+    elif action == "ITEM":
+        target_cursor.visible = false
+        get_parent().set_state(State.ITEM_MENU)
     
 func handle_tween_finish():
     pass

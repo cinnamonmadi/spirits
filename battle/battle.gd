@@ -29,6 +29,7 @@ var states = [SpritesEntering.new(),
               SummonFamiliar.new(),
               ChooseAction.new(),
               PartyMenu.new(),
+              ItemMenu.new(),
               ChooseMove.new(),
               ChooseTarget.new(),
               BeginTurn.new(),
@@ -40,6 +41,8 @@ var enemy_party = Party.new()
 var actions = []
 var player_choosing_index
 var chosen_move = 0
+var chosen_item = 0
+var targeting_for_action
 var current_turn = -1
 
 func _ready():

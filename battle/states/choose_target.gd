@@ -27,19 +27,33 @@ func process(_delta):
     # If player pressed back, return to choose move screen
     if Input.is_action_just_pressed("back"):
         target_cursor.visible = false
-        get_parent().set_state(State.CHOOSE_MOVE)
+        if get_parent().targeting_for_action == Action.USE_MOVE:
+            get_parent().set_state(State.CHOOSE_MOVE)
+        elif get_parent().targeting_for_action == Action.USE_ITEM:
+            get_parent().set_state(State.ITEM_MENU)
         return
     
     # If the player chose their target, add the action to the actions list
     if Input.is_action_just_pressed("action"):
-        get_parent().actions.append({
-            "who": "player",
-            "familiar": get_parent().player_choosing_index,
-            "action": Action.USE_MOVE,
-            "move": get_parent().chosen_move,
-            "target_who": target_who,
-            "target_familiar": target_index
-        })
+        if get_parent().targeting_for_action == Action.USE_MOVE:
+            get_parent().actions.append({
+                "who": "player",
+                "familiar": get_parent().player_choosing_index,
+                "action": Action.USE_MOVE,
+                "move": get_parent().chosen_move,
+                "target_who": target_who,
+                "target_familiar": target_index
+            })
+        elif get_parent().targeting_for_action == Action.USE_ITEM:
+            get_parent().actions.append({
+                "who": "player",
+                "familiar": get_parent().player_choosing_index,
+                "action": Action.USE_ITEM,
+                "item": get_parent().chosen_item,
+                "target_who": target_who,
+                "target_familiar": target_index,
+            })
+            director.player_inventory.remove_item(get_parent().chosen_item, 1)
 
         target_cursor.visible = false
 
@@ -58,7 +72,7 @@ func handle_tween_finish():
     pass
 
 func navigate_target_cursor(input_direction: Vector2):
-    if input_direction.y != 0:
+    if input_direction.y != 0 and get_parent().targeting_for_action == Action.USE_MOVE:
         if target_who == "player":
             target_who = "enemy"
         else:

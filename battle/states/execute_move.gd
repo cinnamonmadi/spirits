@@ -19,6 +19,8 @@ func begin():
         execute_use_move()
     elif current_action.action == Action.SWITCH:
         execute_switch()
+    elif current_action.action == Action.USE_ITEM:
+        execute_use_item()
 
 func process(_delta):
     if current_action.who == "player":
@@ -87,3 +89,9 @@ func execute_switch():
     if current_action.who == "player":
         director.player_party.swap_familiars(current_action.familiar, current_action.with)
         get_parent().set_state(State.SUMMON_FAMILIARS)
+
+func execute_use_item():
+    if current_action.target_who == "player":
+        var target_familiar = director.player_party.familiars[current_action.target_familiar]
+        director.player_inventory.use_item(current_action.item, target_familiar)
+        get_parent().set_state(State.EVALUATE_MOVE)

@@ -20,15 +20,15 @@ func begin():
                 break
     else:
         switch_index = get_parent().player_choosing_index
-    party_menu.open(true)
+    party_menu.open(true, false)
     party_menu.battle_restricted_switch_indeces = [0, 1]
     # Don't allow player to switch to the same familiar with two different familiars
     if get_parent().actions.size() != 0 and get_parent().actions[0].action == Action.SWITCH:
         party_menu.battle_restricted_switch_indeces.append(get_parent().actions[0].with)
 
-func process(_delta):
+func process(delta):
     # Check for input on the party menu
-    party_menu.check_for_input()
+    party_menu.handle_process(delta)
     if party_menu.is_closed():
         if requires_switch and party_menu.battle_switch_index == -1:
             party_menu.open(true)

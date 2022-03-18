@@ -76,7 +76,7 @@ func open(in_battle_mode):
     battle_mode = in_battle_mode
     category = 0
     open_category()
-    state = State.LIST
+    set_state(State.LIST)
     visible = true
 
 func handle_process(delta):

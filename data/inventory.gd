@@ -42,6 +42,11 @@ enum ItemAction {
     CAPTURE_MONSTER,
 }
 
+enum ItemTargets {
+    ALLIES,
+    ENEMIES
+}
+
 const ITEM_INFO = {
     Item.POTION: {
         "category": Category.POTION,
@@ -49,6 +54,7 @@ const ITEM_INFO = {
         "use": ItemUse.BOTH,
         "action": ItemAction.CHANGE_HEALTH,
         "value": 20,
+        "targets": ItemTargets.ALLIES,
     },
     Item.HI_POTION: {
         "category": Category.POTION,
@@ -56,6 +62,7 @@ const ITEM_INFO = {
         "use": ItemUse.BOTH,
         "action": ItemAction.CHANGE_HEALTH,
         "value": 40,
+        "targets": ItemTargets.ALLIES,
     },
     Item.ETHER: {
         "category": Category.POTION,
@@ -63,20 +70,23 @@ const ITEM_INFO = {
         "use": ItemUse.BOTH,
         "action": ItemAction.CHANGE_MANA,
         "value": 20,
+        "targets": ItemTargets.ALLIES,
     },
     Item.RUBY: {
         "category": Category.GEMS,
         "desc": "Captures a fire type monster",
         "use": ItemUse.BATTLE,
         "action": ItemAction.CAPTURE_MONSTER,
-        "value": 0
+        "value": 0,
+        "targets": ItemTargets.ENEMIES,
     },
     Item.SAPPHIRE: {
         "category": Category.GEMS,
         "desc": "Captures a water type monster",
         "use": ItemUse.BATTLE,
         "action": ItemAction.CAPTURE_MONSTER,
-        "value": 0
+        "value": 0,
+        "targets": ItemTargets.ENEMIES,
     },
 }
 
@@ -130,11 +140,8 @@ func swap_items(category: int, index_a: int, index_b: int):
     items[category][index_b] = temp_item
 
 func use_item(item: int, target: Familiar):
-    # Get the item info
-    var item_info = ITEM_INFO[item]
-    remove_item(item, 1)
-
     # Use the item on the target
+    var item_info = ITEM_INFO[item]
     if item_info.action == ItemAction.CHANGE_HEALTH:
         target.change_health(item_info.value)
     elif item_info.action == ItemAction.CHANGE_MANA:

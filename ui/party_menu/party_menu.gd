@@ -44,6 +44,7 @@ func is_closed():
 func open(in_battle_mode: bool, as_item_menu: bool):
     battle_mode = in_battle_mode
     battle_switch_index = -1
+    item_used = -1
     if as_item_menu:
         set_state(State.ITEM_MENU)
     else:
@@ -185,17 +186,31 @@ func handle_process(delta=0.0):
         elif item_menu.is_awaiting_target():
             set_state(State.ITEM_TARGET)
     elif state == State.ITEM_TARGET:
+        var selected_item = director.player_inventory.item_id_at(item_menu.category, item_menu.get_item_list_inventory_index())
+        # Check to see if the item targets allies or enemies
+        if battle_mode:
+            var selected_item_info = Inventory.ITEM_INFO[selected_item]
+            if selected_item_info.targets == Inventory.ItemTargets.ENEMIES:
+                # Close the menu so that the enemy target can be selected in the battle screen
+                item_used = selected_item
+                close()
+                return
+
+        # If we're out of battle or using an ally-targeting item, select the target from the party menu list
         if Input.is_action_just_pressed("back"):
             set_state(State.ITEM_MENU)
             return
         var action = list.check_for_input()
         if action == "":
             return
-        item_used = director.player_inventory.item_id_at(item_menu.category, item_menu.get_item_list_inventory_index())
+
+        # Once a target is chosen, set the item and target variables and then either use the item or return to the battle screen
+        item_used = selected_item
         item_target = list.cursor_position.y
         if not battle_mode:
             var target_familiar = director.player_party.familiars[item_target]
             director.player_inventory.use_item(item_used, target_familiar)
+            director.player_inventory.remove_item(item_used, 1)
             item_menu.refresh_items()
             if director.player_inventory.quantity_of(item_used) == 0:
                 item_menu.set_state(item_menu.State.LIST)

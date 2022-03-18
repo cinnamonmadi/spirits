@@ -41,6 +41,8 @@ func begin():
         begin_animate_attack()
     elif current_action.action == Action.SWITCH:
         begin_animate_switch()
+    elif current_action.action == Action.USE_ITEM:
+        begin_animate_item()
 
 func process(_delta):
     pass
@@ -76,5 +78,11 @@ func begin_animate_switch():
     animating_sprite.visible = false
     if current_action.who == "player":
         player_labels.get_child(current_action.familiar).visible = false
+    tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
+    tween.start()
+
+func begin_animate_item():
+    get_parent().open_move_callout(Inventory.Item.keys()[current_action.item])
+
     tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
     tween.start()
