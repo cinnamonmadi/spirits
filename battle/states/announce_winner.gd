@@ -15,6 +15,12 @@ func begin():
         if action.action == Action.USE_ITEM and action.who == "player":
             director.player_inventory.add_item(action.item, 1)
 
+    # If the player captured any monsters, add them to the crew!
+    for i in range(0, get_parent().enemy_captured.size()):
+        # TODO, change the < 6 rule to allow stoage familiars
+        if get_parent().enemy_captured[i] and director.player_party.familiars.size() < 6:
+            director.player_party.familiars.append(get_parent().enemy_party.familiars[i])
+
     if director.player_party.get_living_familiar_count() == 0:
         get_parent().open_move_callout("You lose!")
     else:

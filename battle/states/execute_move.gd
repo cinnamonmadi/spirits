@@ -94,4 +94,11 @@ func execute_use_item():
     if current_action.target_who == "player":
         var target_familiar = director.player_party.familiars[current_action.target_familiar]
         director.player_inventory.use_item(current_action.item, target_familiar)
-        get_parent().set_state(State.EVALUATE_MOVE)
+    else:
+        var item_info = Inventory.ITEM_INFO[current_action.item]
+        if item_info.action == Inventory.ItemAction.CAPTURE_MONSTER:
+            get_parent().enemy_captured[current_action.target_familiar] = true
+        else:
+            var target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
+            director.player_inventory.use_item(current_action.item, target_familiar)
+    get_parent().set_state(State.EVALUATE_MOVE)

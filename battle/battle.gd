@@ -38,6 +38,7 @@ var states = [SpritesEntering.new(),
               EvaluateMove.new(),
               AnnounceWinner.new()]
 var enemy_party = Party.new()
+var enemy_captured = []
 var actions = []
 var player_choosing_index
 var chosen_move = 0
@@ -52,6 +53,8 @@ func _ready():
 
     enemy_party.familiars.append(Familiar.new(Familiar.Species.GHOST, 5))
     enemy_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 5))
+    for _i in range(0, enemy_party.familiars.size()):
+        enemy_captured.append(false)
 
     close_all_menus()
     director.player_party.sort_fighters_first()
