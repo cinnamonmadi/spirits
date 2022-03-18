@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/owlbear_spritesheet.png-7601e8fbd6186f4163a648e8f3e5bae2.stex"
+path="res://.import/mimic.png-09728894bd5b4960fd8bd8449cbfce55.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://actors/monsters/owlbear_spritesheet.png"
-dest_files=[ "res://.import/owlbear_spritesheet.png-7601e8fbd6186f4163a648e8f3e5bae2.stex" ]
+source_file="res://actors/monsters/mimic/mimic.png"
+dest_files=[ "res://.import/mimic.png-09728894bd5b4960fd8bd8449cbfce55.stex" ]
 
 [params]
 

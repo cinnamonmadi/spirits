@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/mimic_bite.png-9df4ccd33b926545c6f0682b0ae9bbda.stex"
+path="res://.import/mimic_bite.png-cec71a7e9124433eb0d6ac56ec11cb1c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://actors/monsters/mimic_bite.png"
-dest_files=[ "res://.import/mimic_bite.png-9df4ccd33b926545c6f0682b0ae9bbda.stex" ]
+source_file="res://actors/monsters/mimic/mimic_bite.png"
+dest_files=[ "res://.import/mimic_bite.png-cec71a7e9124433eb0d6ac56ec11cb1c.stex" ]
 
 [params]
 
