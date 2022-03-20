@@ -11,7 +11,7 @@ const Action = preload("res://battle/states/action.gd")
 var requires_switch 
 var switch_index
 
-func begin():
+func begin(_params):
     requires_switch = get_parent().current_turn != -1
     if requires_switch:
         for i in range(0, 2):
@@ -19,7 +19,7 @@ func begin():
                 switch_index = i
                 break
     else:
-        switch_index = get_parent().player_choosing_index
+        switch_index = get_parent().get_choosing_familiar_index()
     party_menu.open(true, false)
     party_menu.battle_restricted_switch_indeces = [0, 1]
     # Don't allow player to switch to the same familiar with two different familiars
@@ -34,7 +34,7 @@ func process(delta):
             party_menu.open(true)
         elif requires_switch and party_menu.battle_switch_index != -1:
             director.player_party.swap_familiars(switch_index, party_menu.battle_switch_index)
-            get_parent().set_state(State.SUMMON_FAMILIARS)
+            get_parent().set_state(State.SUMMON_FAMILIARS, {})
         elif not requires_switch:
             if party_menu.battle_switch_index != -1:
                 get_parent().actions.append({
@@ -43,7 +43,7 @@ func process(delta):
                     "action": Action.SWITCH,
                     "with": party_menu.battle_switch_index
                 })
-            get_parent().set_state(State.CHOOSE_ACTION)
+            get_parent().set_state(State.CHOOSE_ACTION, {})
     
 func handle_tween_finish():
     pass

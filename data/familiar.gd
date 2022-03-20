@@ -33,6 +33,7 @@ const SPECIES_INFO = {
         "defense": 85,
         "speed": 40,
         "focus": 20,
+        "catch_rate": 0.75,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -48,6 +49,7 @@ const SPECIES_INFO = {
         "defense": 85,
         "speed": 40,
         "focus": 20,
+        "catch_rate": 0.75,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -63,6 +65,7 @@ const SPECIES_INFO = {
         "defense": 85,
         "speed": 40,
         "focus": 20,
+        "catch_rate": 0.75,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -78,6 +81,7 @@ const SPECIES_INFO = {
         "defense": 85,
         "speed": 40,
         "focus": 20,
+        "catch_rate": 0.75,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -93,6 +97,7 @@ const SPECIES_INFO = {
         "defense": 85,
         "speed": 40,
         "focus": 20,
+        "catch_rate": 0.75,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -108,6 +113,7 @@ const SPECIES_INFO = {
         "defense": 85,
         "speed": 40,
         "focus": 20,
+        "catch_rate": 0.75,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -177,6 +183,7 @@ var nickname: String = ""
 var types 
 var level: int
 var experience: int
+var catch_rate: float
 
 var health: int
 var max_health: int
@@ -195,8 +202,10 @@ func _init(as_species: int, at_level: int):
     set_level(at_level)
     health = max_health
     mana = max_mana
-    for move in SPECIES_INFO[species]["moves"]:
-        moves.append(move["move"])
+    experience = 0
+    catch_rate = SPECIES_INFO[species].catch_rate
+    for move in SPECIES_INFO[species].moves:
+        moves.append(move.move)
         if moves.size() == 4:
             break
 
@@ -207,11 +216,11 @@ func set_level(value: int):
     level = value
     var species_info = SPECIES_INFO[species]
     types = species_info.types
-    max_health = int((species_info["health"] * 2 * level) / 100) + level + 10
-    max_mana = int((species_info["mana"] * 2 * level) / 100) + level + 5
-    attack = int((species_info["attack"] * 2 * level) / 100) + 5
-    defense = int((species_info["defense"] * 2 * level) / 100) + 5
-    speed = int((species_info["speed"] * 2 * level) / 100) + 5
+    max_health = int((species_info.health * 2 * level) / 100) + level + 10
+    max_mana = int((species_info.mana * 2 * level) / 100) + level + 5
+    attack = int((species_info.attack * 2 * level) / 100) + 5
+    defense = int((species_info.defense * 2 * level) / 100) + 5
+    speed = int((species_info.speed * 2 * level) / 100) + 5
 
 func change_health(amount: int):
     health += amount

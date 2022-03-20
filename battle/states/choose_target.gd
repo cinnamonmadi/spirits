@@ -16,8 +16,18 @@ const direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT
 
 var target_who
 var target_index
+var targeting_action
+var chosen_move
+var chosen_item
 
-func begin():
+func begin(params):
+    # Get params
+    targeting_action = params.action
+    if targeting_action == Action.USE_MOVE:
+        chosen_move = params.chosen_move
+    elif targeting_action == Action.USE_ITEM:
+        chosen_item = params.chosen_item
+
     target_who = "enemy"
     target_index = 0
     wrap_target_cursor(-1)
@@ -28,38 +38,38 @@ func process(_delta):
     if Input.is_action_just_pressed("back"):
         target_cursor.visible = false
         if get_parent().targeting_for_action == Action.USE_MOVE:
-            get_parent().set_state(State.CHOOSE_MOVE)
+            get_parent().set_state(State.CHOOSE_MOVE, {})
         elif get_parent().targeting_for_action == Action.USE_ITEM:
-            get_parent().set_state(State.ITEM_MENU)
+            get_parent().set_state(State.ITEM_MENU, {})
         return
     
     # If the player chose their target, add the action to the actions list
     if Input.is_action_just_pressed("action"):
-        if get_parent().targeting_for_action == Action.USE_MOVE:
+        if targeting_action == Action.USE_MOVE:
             get_parent().actions.append({
                 "who": "player",
-                "familiar": get_parent().player_choosing_index,
+                "familiar": get_parent().get_choosing_familiar_index(),
                 "action": Action.USE_MOVE,
-                "move": get_parent().chosen_move,
+                "move": chosen_move,
                 "target_who": target_who,
                 "target_familiar": target_index
             })
-        elif get_parent().targeting_for_action == Action.USE_ITEM:
+        elif targeting_action == Action.USE_ITEM:
             get_parent().actions.append({
                 "who": "player",
-                "familiar": get_parent().player_choosing_index,
+                "familiar": get_parent().get_choosing_familiar_index(),
                 "action": Action.USE_ITEM,
-                "item": get_parent().chosen_item,
+                "item": chosen_item,
                 "target_who": target_who,
                 "target_familiar": target_index,
             })
-            director.player_inventory.remove_item(get_parent().chosen_item, 1)
+            director.player_inventory.remove_item(chosen_item, 1)
 
         target_cursor.visible = false
 
         # After adding the action, return the CHOOSE_ACTION state
         # This state will be in charge of deciding whether to progress into the BEGIN_TURN state or not
-        get_parent().set_state(State.CHOOSE_ACTION)
+        get_parent().set_state(State.CHOOSE_ACTION, {})
         return
     
     # Check if the player has pressed a directional key, and move the cursor accordingly
@@ -72,7 +82,7 @@ func handle_tween_finish():
     pass
 
 func navigate_target_cursor(input_direction: Vector2):
-    if input_direction.y != 0 and get_parent().targeting_for_action == Action.USE_MOVE:
+    if input_direction.y != 0 and targeting_action == Action.USE_MOVE:
         if target_who == "player":
             target_who = "enemy"
         else:

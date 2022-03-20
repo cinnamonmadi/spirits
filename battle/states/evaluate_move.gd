@@ -13,7 +13,7 @@ const Action = preload("res://battle/states/action.gd")
 
 var current_action 
 
-func begin():
+func begin(_params):
     current_action = get_parent().actions[get_parent().current_turn]
 
     if current_action.action == Action.USE_MOVE:
@@ -21,7 +21,7 @@ func begin():
             player_sprites.get_child(current_action.target_familiar).visible = false
             player_labels.get_child(current_action.target_familiar).visible = false
             if director.player_party.get_living_familiar_count() == 0:
-                get_parent().set_state(State.ANNOUNCE_WINNER)
+                get_parent().set_state(State.ANNOUNCE_WINNER, {})
                 return
             elif director.player_party.get_living_familiar_count() >= 2:
                 get_parent().set_state(State.PARTY_MENU)
@@ -30,15 +30,15 @@ func begin():
             enemy_sprites.get_child(enemy_sprites.get_child_count() - 1 - current_action.target_familiar).visible = false
             enemy_labels.get_child(enemy_labels.get_child_count() - 1 - current_action.target_familiar).visible = false
             if get_parent().enemy_party.get_living_familiar_count() == 0:
-                get_parent().set_state(State.ANNOUNCE_WINNER)
+                get_parent().set_state(State.ANNOUNCE_WINNER, {})
                 return
 
     if get_parent().current_turn == get_parent().actions.size() - 1:
         get_parent().actions = []
         get_parent().current_turn = -1
-        get_parent().set_state(State.CHOOSE_ACTION)
+        get_parent().set_state(State.CHOOSE_ACTION, {})
     else:
-        get_parent().set_state(State.ANIMATE_MOVE)
+        get_parent().set_state(State.ANIMATE_MOVE, {})
 
 func process(_delta):
     pass

@@ -8,7 +8,7 @@ const State = preload("res://battle/states/states.gd")
 var requires_switch 
 var switch_index
 
-func begin():
+func begin(_params):
     # If there are any pending moves that would have involved using items, make sure to give the item back to the player
     for i in range(get_parent().current_turn + 1, get_parent().actions.size()):
         var action = get_parent().actions[i]

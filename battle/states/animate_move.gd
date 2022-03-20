@@ -12,18 +12,23 @@ onready var tween = get_parent().get_node("tween")
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
 
+const item_effect_scene = preload("res://battle/effects/item_effect.tscn")
+
 const ANIMATE_MOVE_DURATION: float = 0.3
 const ANIMATE_MOVE_DISTANCE: int = 10
 
+var current_turn
 var current_action
 var animating_sprite
 var animate_move_start_position
 var dummy_timer
+var effect
 
-func begin():
+func begin(_params):
     get_parent().current_turn += 1
     current_action = get_parent().actions[get_parent().current_turn]
 
+    # Determine animating sprite
     if current_action.who == "player":
         animating_sprite = player_sprites.get_child(current_action.familiar)
     if current_action.who == "enemy":
@@ -31,10 +36,10 @@ func begin():
 
     # Check to make sure the acting familiar hasn't died before we perform their action
     if current_action.who == "player" and not director.player_party.familiars[current_action.familiar].is_living():
-        get_parent().set_state(State.EVALUATE_MOVE)
+        get_parent().set_state(State.EVALUATE_MOVE, {})
         return
     if current_action.who == "enemy" and not get_parent().enemy_party.familiars[current_action.familiar].is_living():
-        get_parent().set_state(State.EVALUATE_MOVE)
+        get_parent().set_state(State.EVALUATE_MOVE, {})
         return
 
     if current_action.action == Action.USE_MOVE:
@@ -56,7 +61,12 @@ func handle_tween_finish():
             tween.start()
     else:
         move_callout.visible = false
-        get_parent().set_state(State.EXECUTE_MOVE)
+        get_parent().set_state(State.EXECUTE_MOVE, {})
+
+func handle_effect_finish():
+    effect.stop()
+    effect.queue_free()
+    get_parent().set_state(State.EXECUTE_MOVE, {})
 
 func begin_animate_attack():
     get_parent().open_move_callout(Familiar.Move.keys()[current_action.move])
@@ -84,5 +94,13 @@ func begin_animate_switch():
 func begin_animate_item():
     get_parent().open_move_callout(Inventory.Item.keys()[current_action.item])
 
-    tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
-    tween.start()
+    effect = item_effect_scene.instance()
+    effect.connect("animation_finished", self, "handle_effect_finish")
+    get_parent().add_child(effect)
+
+    if current_action.target_who == "player":
+        effect.position = player_sprites.get_child(current_action.target_familiar).position
+    else:
+        effect.position = enemy_sprites.get_child(current_action.target_familiar).position
+
+    effect.play("default")

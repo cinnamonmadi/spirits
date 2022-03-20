@@ -7,14 +7,14 @@ onready var player_labels = get_parent().get_node("player_labels")
 
 const State = preload("res://battle/states/states.gd")
 
-func begin():
+func begin(_params):
     for i in range(0, 2):
         if i < director.player_party.get_living_familiar_count():
             summon_player_familiar(i)
     if get_parent().current_turn == -1:
-        get_parent().set_state(State.CHOOSE_ACTION)
+        get_parent().set_state(State.CHOOSE_ACTION, {})
     else:
-        get_parent().set_state(State.EVALUATE_MOVE)
+        get_parent().set_state(State.EVALUATE_MOVE, {})
 
 func process(_delta):
     return

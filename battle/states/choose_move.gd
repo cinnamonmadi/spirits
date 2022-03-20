@@ -11,8 +11,8 @@ const State = preload("res://battle/states/states.gd")
 
 var current_familiar
 
-func begin():
-    current_familiar = director.player_party.familiars[get_parent().player_choosing_index]
+func begin(_params):
+    current_familiar = director.player_party.familiars[get_parent().get_choosing_familiar_index()]
     battle_actions.open()
     move_select.open()
     move_select.set_labels([current_familiar.get_move_names()])
@@ -22,7 +22,7 @@ func process(_delta):
     if Input.is_action_just_pressed("back"):
         move_select.close()
         move_info.close()
-        get_parent().set_state(State.CHOOSE_ACTION)
+        get_parent().set_state(State.CHOOSE_ACTION, {})
         return
     
     # Handle input
@@ -34,12 +34,11 @@ func process(_delta):
     
     # If we've reached this point in the code, it means they *have* chosen a move
     # So set the state to choosing a target
-    get_parent().chosen_move = current_familiar.moves[move_select.cursor_position.y]
     battle_actions.close()
     move_select.close()
     move_info.close()
     get_parent().targeting_for_action = Action.USE_MOVE
-    get_parent().set_state(State.CHOOSE_TARGET)
+    get_parent().set_state(State.CHOOSE_TARGET, { "chosen_move": current_familiar.moves[move_select.cursor_position.y], "action": Action.USE_MOVE })
 
 func open_move_info(move: int):
     var move_info_values = Familiar.MOVE_INFO[move]

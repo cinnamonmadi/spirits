@@ -40,11 +40,10 @@ var states = [SpritesEntering.new(),
 var enemy_party = Party.new()
 var enemy_captured = []
 var actions = []
-var player_choosing_index
-var chosen_move = 0
+var current_turn = -1
+
 var chosen_item = 0
 var targeting_for_action
-var current_turn = -1
 
 func _ready():
     tween.connect("tween_all_completed", self, "_on_tween_finish")
@@ -58,7 +57,7 @@ func _ready():
 
     close_all_menus()
     director.player_party.sort_fighters_first()
-    set_state(State.SPRITES_ENTERING)
+    set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():
     battle_actions.close()
@@ -68,9 +67,9 @@ func close_all_menus():
     move_callout.visible = false
     target_cursor.visible = false
 
-func set_state(new_state):
+func set_state(new_state, params):
     state = new_state
-    states[state].begin()
+    states[state].begin(params)
 
 func _on_tween_finish():
     states[state].handle_tween_finish()
@@ -83,6 +82,12 @@ func get_acting_familiar(action):
         return director.player_party.familiars[action.familiar]
     else:
         return enemy_party.familiars[action.familiar]
+
+func get_choosing_familiar_index():
+    var index = actions.size()
+    if not director.player_party.familiars[index].is_living():
+        index += 1
+    return index
 
 func update_player_label(i):
     player_labels.get_child(i).text = director.player_party.familiars[i].get_display_name()

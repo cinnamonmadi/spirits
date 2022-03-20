@@ -11,7 +11,7 @@ const Action = preload("res://battle/states/action.gd")
 
 var current_familiar
 
-func begin():
+func begin(_params):
     enemy_choose_actions()
 
     # Compute the action speeds
@@ -35,7 +35,7 @@ func begin():
             current_index -= 1
     
     get_parent().current_turn = -1
-    get_parent().set_state(State.ANIMATE_MOVE)
+    get_parent().set_state(State.ANIMATE_MOVE, {})
 
 func process(_delta):
     pass

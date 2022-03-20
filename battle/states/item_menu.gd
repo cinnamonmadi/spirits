@@ -11,7 +11,7 @@ const Action = preload("res://battle/states/action.gd")
 var requires_switch 
 var switch_index
 
-func begin():
+func begin(_params):
     party_menu.open(true, true)
 
 func process(delta):
@@ -22,27 +22,25 @@ func process(delta):
 
         # If player didn't choose an item, do nothing
         if chosen_item == -1:
-            get_parent().set_state(State.CHOOSE_ACTION)
+            get_parent().set_state(State.CHOOSE_ACTION, {})
             return
 
         # If player choose an item that targets enemies, open the choose target screen
         var chosen_item_info = Inventory.ITEM_INFO[chosen_item]
         if chosen_item_info.targets == Inventory.ItemTargets.ENEMIES:
-            get_parent().chosen_item = chosen_item
-            get_parent().targeting_for_action = Action.USE_ITEM
-            get_parent().set_state(State.CHOOSE_TARGET)
+            get_parent().set_state(State.CHOOSE_TARGET, { "action": Action.USE_ITEM, "chosen_item": chosen_item })
         # Otherwise add the item use action to the actions list
         else:
             get_parent().actions.append({
                 "who": "player",
-                "familiar": get_parent().player_choosing_index,
+                "familiar": get_parent().get_choosing_familiar_index(),
                 "action": Action.USE_ITEM,
-                "item": party_menu.item_used,
+                "item": chosen_item,
                 "target_who": "player",
                 "target_familiar": party_menu.item_target
             })
             director.player_inventory.remove_item(party_menu.item_used, 1)
-            get_parent().set_state(State.CHOOSE_ACTION)
+            get_parent().set_state(State.CHOOSE_ACTION, {})
     
 func handle_tween_finish():
     pass

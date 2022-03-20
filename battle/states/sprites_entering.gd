@@ -9,7 +9,7 @@ const State = preload("res://battle/states/states.gd")
 
 const SPRITES_ENTERING_DURATION: float = 1.0
 
-func begin():
+func begin(_params):
     # Setup the enemy familiar sprites
     for i in range(0, get_parent().enemy_party.familiars.size()):
         enemy_sprites.get_child(3 - i).texture = load(get_parent().enemy_party.familiars[i].get_portrait_path())
@@ -32,4 +32,4 @@ func process(_delta):
 func handle_tween_finish():
     for i in range(0, get_parent().enemy_party.familiars.size()):
         get_parent().update_enemy_label(i)
-    get_parent().set_state(State.SUMMON_FAMILIARS)
+    get_parent().set_state(State.SUMMON_FAMILIARS, {})

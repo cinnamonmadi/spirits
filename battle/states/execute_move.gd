@@ -12,7 +12,7 @@ const EXECUTE_MOVE_DURATION: float = 1.0
 
 var current_action 
 
-func begin():
+func begin(_params):
     current_action = get_parent().actions[get_parent().current_turn]
 
     if current_action.action == Action.USE_MOVE:
@@ -33,7 +33,7 @@ func process(_delta):
         get_parent().update_enemy_label(current_action.target_familiar)
 
 func handle_tween_finish():
-    get_parent().set_state(State.EVALUATE_MOVE)
+    get_parent().set_state(State.EVALUATE_MOVE, {})
 
 func execute_use_move():
     var attacker  
@@ -81,24 +81,54 @@ func execute_use_move():
     var random = director.rng.randf_range(0.85, 1.0)
     var damage = base_damage * stab * type_mod * random
 
-    tween.interpolate_property(defender, "health", defender.health, max(0, defender.health - damage), EXECUTE_MOVE_DURATION)
-    tween.interpolate_property(attacker, "mana", attacker.mana, max(0, attacker.mana - move_info.cost), EXECUTE_MOVE_DURATION)
+    # Remember old values
+    var old_defender_health = defender.health
+    var old_attacker_mana = attacker.mana
+
+    # Apply damage and mana cost
+    defender.change_health(-damage)
+    attacker.change_mana(-move_info.cost)
+
+    # Interpolate values so that it looks fancy
+    tween.interpolate_property(defender, "health", old_defender_health, defender.health, EXECUTE_MOVE_DURATION)
+    tween.interpolate_property(attacker, "mana", old_attacker_mana, attacker.mana, EXECUTE_MOVE_DURATION)
     tween.start()
 
 func execute_switch():
     if current_action.who == "player":
         director.player_party.swap_familiars(current_action.familiar, current_action.with)
-        get_parent().set_state(State.SUMMON_FAMILIARS)
+        get_parent().set_state(State.SUMMON_FAMILIARS, {})
 
 func execute_use_item():
+    var target_familiar = null
     if current_action.target_who == "player":
-        var target_familiar = director.player_party.familiars[current_action.target_familiar]
-        director.player_inventory.use_item(current_action.item, target_familiar)
+        target_familiar = director.player_party.familiars[current_action.target_familiar]
     else:
         var item_info = Inventory.ITEM_INFO[current_action.item]
         if item_info.action == Inventory.ItemAction.CAPTURE_MONSTER:
             get_parent().enemy_captured[current_action.target_familiar] = true
         else:
-            var target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
-            director.player_inventory.use_item(current_action.item, target_familiar)
-    get_parent().set_state(State.EVALUATE_MOVE)
+            target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
+
+    if target_familiar != null:
+        var target_old_health = target_familiar.health
+        var target_old_mana = target_familiar.mana
+        director.player_inventory.use_item(current_action.item, target_familiar)
+        if target_familiar.health != target_old_health or target_familiar.mana != target_old_mana:
+            tween.interpolate_property(target_familiar, "health", target_old_health, target_familiar.health, EXECUTE_MOVE_DURATION)
+            tween.interpolate_property(target_familiar, "mana", target_old_mana, target_familiar.mana, EXECUTE_MOVE_DURATION)
+            tween.start()
+            return
+
+    get_parent().set_state(State.EVALUATE_MOVE, {})
+
+func try_catch_familiar():
+    if get_parent().enemy_captured[current_action.target_familiar]:
+        # TODO handle this somehow with a message or visual cue?
+        return
+    var target_familiar = get_parent().enemy_party.familiars[current_action.target_familiar]
+    var catch_value = director.rng.randf_range(0.0, 1.0)
+    var catch_rate = (1 - (target_familiar.health / target_familiar.max_health)) * target_familiar.catch_rate
+    if catch_value < catch_rate:
+        get_parent().enemy_captured[current_action.target_familiar] = true
+        get_parent().enemy_labels[current_action.target_familiar].custom_colors.font_color = Color(1, 1, 0)

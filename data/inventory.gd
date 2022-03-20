@@ -11,23 +11,6 @@ enum Item {
     ETHER,
     RUBY,
     SAPPHIRE,
-    EMERALD,
-    ONYX,
-    QUARTZ,
-    RARE_RUBY,
-    RARE_SAPPHIRE,
-    RARE_EMERALD,
-    RARE_ONYX,
-    RARE_QUARTZ,
-    PEARL,
-    PEARL2,
-    PEARL3,
-    PEARL4,
-    PEARL5,
-    PEARL6,
-    PEARL7,
-    PEARL8,
-    PEARL9,
 }
 
 enum ItemUse {
