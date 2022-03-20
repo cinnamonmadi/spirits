@@ -48,7 +48,6 @@ scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="3" type="Sprite" parent="enemy_sprites"]
-visible = false
 position = Vector2( 260, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
@@ -207,6 +206,7 @@ visible = false
 visible = false
 
 [node name="move_callout" type="NinePatchRect" parent="ui"]
+visible = false
 margin_left = 22.0
 margin_top = 30.0
 margin_right = 196.0

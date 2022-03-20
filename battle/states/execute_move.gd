@@ -106,7 +106,7 @@ func execute_use_item():
     else:
         var item_info = Inventory.ITEM_INFO[current_action.item]
         if item_info.action == Inventory.ItemAction.CAPTURE_MONSTER:
-            get_parent().enemy_captured[current_action.target_familiar] = true
+            try_to_catch_familiar(item_info)
         else:
             target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
 
@@ -122,13 +122,27 @@ func execute_use_item():
 
     get_parent().set_state(State.EVALUATE_MOVE, {})
 
-func try_catch_familiar():
+func try_to_catch_familiar(gem_info):
     if get_parent().enemy_captured[current_action.target_familiar]:
         # TODO handle this somehow with a message or visual cue?
+        # TODO similarly, do a type comparison check
+        print("already caught!")
         return
     var target_familiar = get_parent().enemy_party.familiars[current_action.target_familiar]
+
+    # Calculate the catch rate
+    var health_mod = float(((3 * target_familiar.max_health) - (2 * target_familiar.health)) / (3 * target_familiar.max_health)) # (3max_health - 2health) / 3max_health
+    var ally_mod = 1.0 - (float(get_parent().enemy_party.get_living_familiar_count() - 1) * 0.25) # 1 - (0.25 * num_allies)
+    var gem_mod = 1.0 + (float(gem_info.value) * 0.5) # 1 + (0.5 * gem_grade)
+    var catch_rate = health_mod * ally_mod * gem_mod * target_familiar.catch_rate
+
+    # Randomize the catch value
     var catch_value = director.rng.randf_range(0.0, 1.0)
-    var catch_rate = (1 - (target_familiar.health / target_familiar.max_health)) * target_familiar.catch_rate
+
+    # If the catch value is less than the catch rate, success! (So lower catch rate means lower chances of success)
     if catch_value < catch_rate:
+        print("success! " + String(catch_value) + " vs " + String(catch_rate))
         get_parent().enemy_captured[current_action.target_familiar] = true
-        get_parent().enemy_labels[current_action.target_familiar].custom_colors.font_color = Color(1, 1, 0)
+        get_parent().enemy_sprites.get_child(current_action.target_familiar).flip_h = true
+    else:
+        print("fail! " + String(catch_value) + " vs " + String(catch_rate))

@@ -60,7 +60,7 @@ const ITEM_INFO = {
         "desc": "Captures a fire type monster",
         "use": ItemUse.BATTLE,
         "action": ItemAction.CAPTURE_MONSTER,
-        "value": 0,
+        "value": 1,
         "targets": ItemTargets.ENEMIES,
     },
     Item.SAPPHIRE: {
@@ -68,7 +68,7 @@ const ITEM_INFO = {
         "desc": "Captures a water type monster",
         "use": ItemUse.BATTLE,
         "action": ItemAction.CAPTURE_MONSTER,
-        "value": 0,
+        "value": 1,
         "targets": ItemTargets.ENEMIES,
     },
 }

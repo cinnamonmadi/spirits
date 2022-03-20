@@ -41,4 +41,3 @@ animations = [ {
 [node name="item_effect" type="AnimatedSprite"]
 scale = Vector2( 2, 2 )
 frames = SubResource( 8 )
-frame = 4

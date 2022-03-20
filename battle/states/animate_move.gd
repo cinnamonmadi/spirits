@@ -101,6 +101,6 @@ func begin_animate_item():
     if current_action.target_who == "player":
         effect.position = player_sprites.get_child(current_action.target_familiar).position
     else:
-        effect.position = enemy_sprites.get_child(current_action.target_familiar).position
+        effect.position = enemy_sprites.rect_position + enemy_sprites.get_child(3 - current_action.target_familiar).position
 
     effect.play("default")
