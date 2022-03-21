@@ -24,7 +24,7 @@ func begin(_params):
                 get_parent().set_state(State.ANNOUNCE_WINNER, {})
                 return
             elif director.player_party.get_living_familiar_count() >= 2:
-                get_parent().set_state(State.PARTY_MENU)
+                get_parent().set_state(State.PARTY_MENU, {})
                 return
         elif current_action.target_who == "enemy" and not get_parent().enemy_party.familiars[current_action.target_familiar].is_living():
             enemy_sprites.get_child(enemy_sprites.get_child_count() - 1 - current_action.target_familiar).visible = false

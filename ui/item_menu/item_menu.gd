@@ -127,9 +127,13 @@ func process_list():
         set_state(State.CLOSED)
         return
     if Input.is_action_just_pressed("right"):
+        item_list.cursor_position.y = 0
+        item_list.set_cursor_position()
         category = (category + 1) % Inventory.Category.keys().size()
         open_category()
     elif Input.is_action_just_pressed("left"):
+        item_list.cursor_position.y = 0
+        item_list.set_cursor_position()
         if category == 0:
             category = Inventory.Category.keys().size() - 1
         else:

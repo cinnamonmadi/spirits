@@ -97,7 +97,7 @@ func execute_use_move():
 func execute_switch():
     if current_action.who == "player":
         director.player_party.swap_familiars(current_action.familiar, current_action.with)
-        get_parent().set_state(State.SUMMON_FAMILIARS, {})
+        get_parent().set_state(State.SUMMON_FAMILIARS, { "trigger_witch_exit": false })
 
 func execute_use_item():
     var target_familiar = null
@@ -131,7 +131,7 @@ func try_to_catch_familiar(gem_info):
     var target_familiar = get_parent().enemy_party.familiars[current_action.target_familiar]
 
     # Calculate the catch rate
-    var health_mod = float(((3 * target_familiar.max_health) - (2 * target_familiar.health)) / (3 * target_familiar.max_health)) # (3max_health - 2health) / 3max_health
+    var health_mod = float(((3.0 * target_familiar.max_health) - (2.0 * target_familiar.health)) / (3.0 * target_familiar.max_health)) # (3max_health - 2health) / 3max_health
     var ally_mod = 1.0 - (float(get_parent().enemy_party.get_living_familiar_count() - 1) * 0.25) # 1 - (0.25 * num_allies)
     var gem_mod = 1.0 + (float(gem_info.value) * 0.5) # 1 + (0.5 * gem_grade)
     var catch_rate = health_mod * ally_mod * gem_mod * target_familiar.catch_rate
@@ -143,6 +143,6 @@ func try_to_catch_familiar(gem_info):
     if catch_value < catch_rate:
         print("success! " + String(catch_value) + " vs " + String(catch_rate))
         get_parent().enemy_captured[current_action.target_familiar] = true
-        get_parent().enemy_sprites.get_child(current_action.target_familiar).flip_h = true
+        get_parent().enemy_sprites.get_child(3 - current_action.target_familiar).flip_h = true
     else:
         print("fail! " + String(catch_value) + " vs " + String(catch_rate))

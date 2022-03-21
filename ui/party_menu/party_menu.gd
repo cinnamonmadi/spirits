@@ -51,6 +51,7 @@ func open(in_battle_mode: bool, as_item_menu: bool):
         set_state(State.LIST)
 
 func close():
+    item_menu.close()
     set_state(State.CLOSED)
 
 func open_list():

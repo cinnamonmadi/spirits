@@ -34,7 +34,7 @@ func process(delta):
             party_menu.open(true)
         elif requires_switch and party_menu.battle_switch_index != -1:
             director.player_party.swap_familiars(switch_index, party_menu.battle_switch_index)
-            get_parent().set_state(State.SUMMON_FAMILIARS, {})
+            get_parent().set_state(State.SUMMON_FAMILIARS, { "trigger_witch_exit": false })
         elif not requires_switch:
             if party_menu.battle_switch_index != -1:
                 get_parent().actions.append({

@@ -32,4 +32,4 @@ func process(_delta):
 func handle_tween_finish():
     for i in range(0, get_parent().enemy_party.familiars.size()):
         get_parent().update_enemy_label(i)
-    get_parent().set_state(State.SUMMON_FAMILIARS, {})
+    get_parent().set_state(State.SUMMON_FAMILIARS, { "trigger_witch_exit": true })
