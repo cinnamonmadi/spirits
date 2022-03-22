@@ -44,3 +44,6 @@ func process(delta):
     
 func handle_tween_finish():
     pass
+
+func handle_timer_timeout():
+    pass

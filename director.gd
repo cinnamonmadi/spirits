@@ -20,13 +20,14 @@ var state = State.WORLD
 var rng = RandomNumberGenerator.new()
 
 func _ready():
-    player_party.familiars.append(Familiar.new(Familiar.Species.SPHYNX, 20))
+    player_party.add_familiar(Familiar.new(Familiar.Species.SPHYNX, 5))
     player_party.familiars[0].nickname = "Beerus"
-    player_party.familiars.append(Familiar.new(Familiar.Species.SLIME, 20))
+    player_party.familiars[0].experience = player_party.familiars[0].get_experience_tnl() - 3
+    player_party.add_familiar(Familiar.new(Familiar.Species.SLIME, 5))
     player_party.familiars[1].nickname = "Deputy"
-    player_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 3))
+    player_party.add_familiar(Familiar.new(Familiar.Species.MIMIC, 3))
     player_party.familiars[2].nickname = "Cat"
-    player_party.familiars[0].health -= 23
+    player_party.familiars[0].health -= 10
 
     player_inventory.add_item(Inventory.Item.POTION, 5)
     player_inventory.add_item(Inventory.Item.HI_POTION, 2)

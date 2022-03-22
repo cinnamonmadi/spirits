@@ -43,6 +43,9 @@ func process(_delta):
 func handle_tween_finish():
     pass
 
+func handle_timer_timeout():
+    pass
+
 func get_action_speed(action) -> int:
     if action.action == Action.RUN:
         return 1000

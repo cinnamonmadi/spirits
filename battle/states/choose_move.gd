@@ -34,15 +34,19 @@ func process(_delta):
     
     # If we've reached this point in the code, it means they *have* chosen a move
     # So set the state to choosing a target
+    var chosen_move = current_familiar.moves[move_select.cursor_position.y]
     battle_actions.close()
     move_select.close()
     move_info.close()
     get_parent().targeting_for_action = Action.USE_MOVE
-    get_parent().set_state(State.CHOOSE_TARGET, { "chosen_move": current_familiar.moves[move_select.cursor_position.y], "action": Action.USE_MOVE })
+    get_parent().set_state(State.CHOOSE_TARGET, { "chosen_move": chosen_move, "action": Action.USE_MOVE })
 
 func open_move_info(move: int):
     var move_info_values = Familiar.MOVE_INFO[move]
     move_info.open(Familiar.Type.keys()[move_info_values["type"]], String(move_info_values["cost"]) + " MP")
 
 func handle_tween_finish():
+    pass
+
+func handle_timer_timeout():
     pass

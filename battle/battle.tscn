@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://ui/font_12.tres" type="DynamicFont" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
@@ -11,7 +11,6 @@
 [ext_resource path="res://ui/party_menu/party_menu.tscn" type="PackedScene" id=9]
 [ext_resource path="res://ui/cursor_up.png" type="Texture" id=10]
 [ext_resource path="res://battle/witch_back.png" type="Texture" id=11]
-[ext_resource path="res://ui/dialog/dialog.tscn" type="PackedScene" id=12]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
@@ -230,12 +229,33 @@ custom_colors/font_color = Color( 0, 0, 0, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "APPLEFIGHT"
 
+[node name="success_log" type="NinePatchRect" parent="ui"]
+visible = false
+margin_left = 22.0
+margin_top = 30.0
+margin_right = 406.0
+margin_bottom = 60.0
+texture = ExtResource( 5 )
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="label" type="Label" parent="ui/success_log"]
+margin_left = 8.0
+margin_top = 10.0
+margin_right = 168.0
+margin_bottom = 26.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "You win!"
+
 [node name="target_cursor" type="Sprite" parent="ui"]
 visible = false
 texture = ExtResource( 10 )
-
-[node name="dialog" parent="ui" instance=ExtResource( 12 )]
-visible = false
 
 [node name="timer" type="Timer" parent="."]
 one_shot = true

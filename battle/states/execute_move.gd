@@ -35,6 +35,9 @@ func process(_delta):
 func handle_tween_finish():
     get_parent().set_state(State.EVALUATE_MOVE, {})
 
+func handle_timer_timeout():
+    pass
+
 func execute_use_move():
     var attacker  
     var defender
@@ -134,7 +137,7 @@ func try_to_catch_familiar(gem_info):
     var health_mod = float(((3.0 * target_familiar.max_health) - (2.0 * target_familiar.health)) / (3.0 * target_familiar.max_health)) # (3max_health - 2health) / 3max_health
     var ally_mod = 1.0 - (float(get_parent().enemy_party.get_living_familiar_count() - 1) * 0.25) # 1 - (0.25 * num_allies)
     var gem_mod = 1.0 + (float(gem_info.value) * 0.5) # 1 + (0.5 * gem_grade)
-    var catch_rate = health_mod * ally_mod * gem_mod * target_familiar.catch_rate
+    var catch_rate = health_mod * ally_mod * gem_mod * target_familiar.get_catch_rate()
 
     # Randomize the catch value
     var catch_value = director.rng.randf_range(0.0, 1.0)

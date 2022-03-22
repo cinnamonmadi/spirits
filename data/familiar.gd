@@ -34,6 +34,7 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "catch_rate": 0.75,
+        "base_exp_yield": 50,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -50,6 +51,7 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "catch_rate": 0.75,
+        "base_exp_yield": 50,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -66,6 +68,7 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "catch_rate": 0.75,
+        "base_exp_yield": 50,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -82,6 +85,7 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "catch_rate": 0.75,
+        "base_exp_yield": 50,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -98,6 +102,7 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "catch_rate": 0.75,
+        "base_exp_yield": 50,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -114,6 +119,7 @@ const SPECIES_INFO = {
         "speed": 40,
         "focus": 20,
         "catch_rate": 0.75,
+        "base_exp_yield": 50,
         "moves": [
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
@@ -177,13 +183,14 @@ const TYPE_INFO = {
     }
 }
 
+const MAX_LEVEL = 100
+
 # Stats
 var species: int
 var nickname: String = ""
 var types 
 var level: int
 var experience: int
-var catch_rate: float
 
 var health: int
 var max_health: int
@@ -203,7 +210,6 @@ func _init(as_species: int, at_level: int):
     health = max_health
     mana = max_mana
     experience = 0
-    catch_rate = SPECIES_INFO[species].catch_rate
     for move in SPECIES_INFO[species].moves:
         moves.append(move.move)
         if moves.size() == 4:
@@ -211,6 +217,12 @@ func _init(as_species: int, at_level: int):
 
 func is_living() -> bool:
     return health > 0
+
+func get_catch_rate() -> float:
+    return SPECIES_INFO[species].catch_rate
+
+func get_experience_yield() -> int:
+    return int((SPECIES_INFO[species].base_exp_yield * level) / 7.0)
 
 func set_level(value: int):
     level = value
@@ -221,6 +233,24 @@ func set_level(value: int):
     attack = int((species_info.attack * 2 * level) / 100) + 5
     defense = int((species_info.defense * 2 * level) / 100) + 5
     speed = int((species_info.speed * 2 * level) / 100) + 5
+
+func get_experience_tnl() -> int:
+    return int(pow((level + 1), 3)) - experience
+
+# If the amount of experience gained is more than needed to reach the next level, the remaining EXP is returned
+# This allows experience gain to pause whenever there's a level up
+func add_experience(amount: int):
+    if level == MAX_LEVEL:
+        return 
+    while amount > 0: 
+        var tnl = get_experience_tnl()
+        if tnl > amount:
+            experience += amount
+            amount = 0
+        else:
+            experience = 0
+            set_level(level + 1)
+            amount -= tnl
 
 func change_health(amount: int):
     health += amount

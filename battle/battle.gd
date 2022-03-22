@@ -41,22 +41,24 @@ var enemy_party = Party.new()
 var enemy_captured = []
 var actions = []
 var current_turn = -1
-
 var chosen_item = 0
 var targeting_for_action
 
 func _ready():
     tween.connect("tween_all_completed", self, "_on_tween_finish")
+    timer.connect("timeout", self, "_on_timer_timeout")
     for state_node in states:
         add_child(state_node)
 
-    enemy_party.familiars.append(Familiar.new(Familiar.Species.GHOST, 5))
-    enemy_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 5))
+    enemy_party.familiars.append(Familiar.new(Familiar.Species.GHOST, 3))
+    enemy_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 3))
+    for familiar in enemy_party.familiars:
+        familiar.health = 1
     for _i in range(0, enemy_party.familiars.size()):
         enemy_captured.append(false)
 
     close_all_menus()
-    director.player_party.sort_fighters_first()
+    director.player_party.pre_battle_setup()
     set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():
@@ -73,6 +75,9 @@ func set_state(new_state, params):
 
 func _on_tween_finish():
     states[state].handle_tween_finish()
+
+func _on_timer_timeout():
+    states[state].handle_timer_timeout()
 
 func _process(_delta):
     states[state].process(_delta)

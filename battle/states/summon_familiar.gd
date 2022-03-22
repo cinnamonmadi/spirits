@@ -30,6 +30,9 @@ func handle_tween_finish():
     else:
         get_parent().set_state(State.EVALUATE_MOVE, {})
 
+func handle_timer_timeout():
+    pass
+
 func summon_player_familiar(i):
     player_sprites.get_child(i).texture = load(director.player_party.familiars[i].get_portrait_path())
     player_sprites.get_child(i).visible = true

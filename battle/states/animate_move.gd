@@ -63,6 +63,9 @@ func handle_tween_finish():
         move_callout.visible = false
         get_parent().set_state(State.EXECUTE_MOVE, {})
 
+func handle_timer_timeout():
+    pass
+
 func handle_effect_finish():
     effect.stop()
     effect.queue_free()

@@ -81,6 +81,9 @@ func process(_delta):
 func handle_tween_finish():
     pass
 
+func handle_timer_timeout():
+    pass
+
 func navigate_target_cursor(input_direction: Vector2):
     if input_direction.y != 0 and targeting_action == Action.USE_MOVE:
         if target_who == "player":
