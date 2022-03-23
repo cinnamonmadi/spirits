@@ -92,7 +92,18 @@ func disable_attack_scanbox():
 
 func enable_attack_scanbox():
     disable_attack_scanbox()
-    attack_scanbox.get_node("collider_" + get_direction_name(facing_direction)).disabled = false
+    var attacking_direction
+    if abs(direction.x) >= abs(direction.y):
+        if direction.x > 0:
+            attacking_direction = "right"
+        else:
+            attacking_direction = "left"
+    else:
+        if direction.y > 0:
+            attacking_direction = "down"
+        else:
+            attacking_direction = "up"
+    attack_scanbox.get_node("collider_" + attacking_direction).disabled = false
 
 func _on_attack_scanbox_body_entered(body):
     if body.name == "tris":

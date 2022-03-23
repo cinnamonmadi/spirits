@@ -44,21 +44,37 @@ func handle_win():
             director.player_party.add_familiar(get_parent().enemy_party.familiars[i])
             success_log_messages.append("Wild " + get_parent().enemy_party.familiars[i].get_display_name() + " caught!")
 
-    # Apply experience from defeated monsters
+    # Count experience from defeated monsters
     var total_exp = 0
     for familiar in get_parent().enemy_party.familiars:
         total_exp += familiar.get_experience_yield()
+
+    # Get the list of participating player familiar indexes
+    var participating_player_familiars = []
     for i in range(0, director.player_party.familiars.size()):
-        if not director.player_party.familiar_participated[i]:
-            continue
-        var familiar_old_level = director.player_party.familiars[i].level
-        director.player_party.familiars[i].add_experience(total_exp)
+        if director.player_party.familiar_participated[i]:
+            participating_player_familiars.append(i)
+    
+    # Divide the experience between familiars
+    var exp_per_familiar = int(total_exp / participating_player_familiars.size())
+
+    for i in range(0, participating_player_familiars.size()):
+        # Determine how much exp to give
+        # If the exp doesn't divide evenly, give the odd experience points to the first one on the list
+        var exp_to_give = exp_per_familiar
+        if i == 0:
+            exp_to_give += exp_per_familiar % participating_player_familiars.size()
+
+        var familiar_index = participating_player_familiars[i]
+        var familiar_old_level = director.player_party.familiars[familiar_index].level
+        director.player_party.familiars[i].add_experience(exp_to_give)
 
         # If the familiar leveled up, add messages to the log
-        var amount_of_level_ups = director.player_party.familiars[i].level - familiar_old_level
+        var amount_of_level_ups = director.player_party.familiars[familiar_index].level - familiar_old_level
         for levelup_number in range(1, amount_of_level_ups + 1):
-            success_log_messages.append(director.player_party.familiars[i].get_display_name() + " level " + String(familiar_old_level + levelup_number) + "!")
+            success_log_messages.append(director.player_party.familiars[familiar_index].get_display_name() + " level " + String(familiar_old_level + levelup_number) + "!")
 
+    # Return party order to how it was before the fight started
     director.player_party.recall_familiar_order()
 
 func handle_loss():

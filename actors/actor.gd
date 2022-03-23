@@ -8,7 +8,7 @@ const direction_names = ["up", "right", "down", "left"]
 const direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 
 var direction: Vector2
-var facing_direction: Vector2
+var facing_direction: Vector2 = Vector2.DOWN
 var speed: float = 128.0
 
 var paused: bool = false
