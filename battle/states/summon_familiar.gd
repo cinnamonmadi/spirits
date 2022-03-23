@@ -6,6 +6,7 @@ onready var player_sprites = get_parent().get_node("player_sprites")
 onready var player_labels = get_parent().get_node("player_labels")
 onready var tween = get_parent().get_node("tween")
 onready var witch = get_parent().get_node("witch")
+onready var move_callout = get_parent().get_node("ui/move_callout")
 
 const WITCH_EXIT_DURATION: float = 1.0
 
@@ -25,6 +26,8 @@ func handle_tween_finish():
     for i in range(0, 2):
         if i < director.player_party.get_living_familiar_count():
             summon_player_familiar(i)
+    if get_parent().surprise_round != "none":
+        move_callout.visible = false
     if get_parent().current_turn == -1:
         get_parent().set_state(State.CHOOSE_ACTION, {})
     else:

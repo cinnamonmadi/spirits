@@ -24,6 +24,12 @@ const SCREEN_WIDTH: int = 640
 
 const State = preload("res://battle/states/states.gd")
 
+enum SurpriseRound {
+    NONE,
+    PLAYER,
+    ENEMY
+}
+
 var state = State.SPRITES_ENTERING
 var states = [SpritesEntering.new(),
               SummonFamiliar.new(),
@@ -37,6 +43,8 @@ var states = [SpritesEntering.new(),
               ExecuteMove.new(),
               EvaluateMove.new(),
               AnnounceWinner.new()]
+
+var surprise_round = "none"
 var enemy_party = Party.new()
 var enemy_captured = []
 var actions = []
@@ -59,6 +67,10 @@ func _ready():
 
     close_all_menus()
     director.player_party.pre_battle_setup()
+    if surprise_round == "player":
+        open_move_callout("AMBUSH!")
+    elif surprise_round == "enemy":
+        open_move_callout("SURROUNDED!")
     set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():

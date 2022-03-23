@@ -12,7 +12,8 @@ const Action = preload("res://battle/states/action.gd")
 var current_familiar
 
 func begin(_params):
-    enemy_choose_actions()
+    if get_parent().surprise_round != "player":
+        enemy_choose_actions()
 
     # Compute the action speeds
     var action_speeds = []
@@ -34,6 +35,7 @@ func begin(_params):
 
             current_index -= 1
     
+    get_parent().surprise_round = "none"
     get_parent().current_turn = -1
     get_parent().set_state(State.ANIMATE_MOVE, {})
 

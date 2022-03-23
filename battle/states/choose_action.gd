@@ -9,6 +9,11 @@ onready var target_cursor = get_parent().get_node("ui/target_cursor")
 const State = preload("res://battle/states/states.gd")
 
 func begin(_params):
+    # If the enemy has a surprise round, just go straight into their actions
+    if get_parent().surprise_round == "enemy":
+        get_parent().set_state(State.BEGIN_TURN, {})
+        return
+
     # If the player has chosen actions for all their familiars, begin the turn
     var chosen_all_actions = get_parent().actions.size() == min(director.player_party.get_living_familiar_count(), 2)
     if chosen_all_actions:
