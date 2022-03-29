@@ -16,6 +16,10 @@ onready var move_info = $ui/move_info
 onready var party_menu = $ui/party_menu
 onready var move_callout = $ui/move_callout
 onready var target_cursor = $ui/target_cursor
+onready var centered_familiar = $ui/centered_familiar
+onready var dialog = $ui/dialog
+onready var dialog_yes_no = $ui/dialog_yes_no
+onready var namebox = $ui/namebox
 
 onready var tween = $tween
 onready var timer = $timer
@@ -42,7 +46,8 @@ var states = [SpritesEntering.new(),
               AnimateMove.new(),
               ExecuteMove.new(),
               EvaluateMove.new(),
-              AnnounceWinner.new()]
+              AnnounceWinner.new(),
+              NameFamiliar.new()]
 
 var surprise_round = "none"
 var enemy_party = Party.new()
@@ -71,15 +76,20 @@ func _ready():
         open_move_callout("AMBUSH!")
     elif surprise_round == "enemy":
         open_move_callout("SURROUNDED!")
+    # set_state(State.NAME_FAMILIAR, { "familiar": enemy_party.familiars[0] })
     set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():
-    battle_actions.close()
+    set_actions_menu_frame(-1)
     move_select.close()
     move_info.close()
     party_menu.close()
     move_callout.visible = false
     target_cursor.visible = false
+    centered_familiar.visible = false
+    dialog.close()
+    dialog_yes_no.close()
+    namebox.visible = false
 
 func set_state(new_state, params):
     state = new_state
@@ -136,3 +146,10 @@ func set_target_cursor(target_who: String, target_index: int):
 func open_move_callout(move: String):
     move_callout.get_child(0).text = move
     move_callout.visible = true
+
+func set_actions_menu_frame(frame: int):
+    if frame == -1:
+        battle_actions.visible = false
+    else: 
+        battle_actions.visible = true
+        battle_actions.frame = frame

@@ -19,6 +19,10 @@ const MAX_QUIRK_DURATION: float = 30.0
 export var chase_speed: float = 128.0
 export var attack_speed: float = 256.0
 export var path_speed: float = 64.0
+export var attack_hurt_frame_start: int = 3
+export var attack_hurt_frame_end: int = 9
+export var attack_move_frame_start: int = 3
+export var attack_move_frame_end: int = 9
 
 var biting: bool = false
 var quirk_timer: float = 0.0
@@ -50,11 +54,14 @@ func _physics_process(delta):
     if quirk_timer <= 0.0:
         state = State.QUIRK
     elif state == State.ATTACK:
-        if sprite.frame <= 3 or sprite.frame >= 9:
-            speed = 0
-        else:
+        if sprite.frame in range(attack_move_frame_start, attack_move_frame_end + 1):
             speed = attack_speed
+        else:
+            speed = 0
+        if sprite.frame in range(attack_hurt_frame_start, attack_hurt_frame_end + 1):
             enable_attack_scanbox()
+        else:
+            disable_attack_scanbox()
     elif position.distance_to(player.position) <= ATTACK_RADIUS:
         speed = 0
         set_state(State.ATTACK)

@@ -30,6 +30,8 @@ func resume_pathing():
     facing_direction = old_facing_direction
 
 func parse_path():
+    assert(path.size() != 0, "NPC path cannot be empty!")
+
     _path.append([Path.MOVE, position])
     var previous_path_position = position
 

@@ -6,7 +6,6 @@ onready var director = get_node("/root/Director")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var target_cursor = get_parent().get_node("ui/target_cursor")
-onready var battle_actions = get_parent().get_node("ui/battle_actions")
 
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")

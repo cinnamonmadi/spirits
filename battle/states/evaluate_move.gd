@@ -21,7 +21,7 @@ func begin(_params):
             player_sprites.get_child(current_action.target_familiar).visible = false
             player_labels.get_child(current_action.target_familiar).visible = false
             if director.player_party.get_living_familiar_count() == 0:
-                get_parent().set_state(State.ANNOUNCE_WINNER, {})
+                get_parent().set_state(State.ANNOUNCE_WINNER, { "first_time_entering_state": true })
                 return
             elif director.player_party.get_living_familiar_count() >= 2:
                 get_parent().set_state(State.PARTY_MENU, {})
@@ -30,7 +30,7 @@ func begin(_params):
             enemy_sprites.get_child(enemy_sprites.get_child_count() - 1 - current_action.target_familiar).visible = false
             enemy_labels.get_child(enemy_labels.get_child_count() - 1 - current_action.target_familiar).visible = false
             if get_parent().enemy_party.get_living_familiar_count() == 0:
-                get_parent().set_state(State.ANNOUNCE_WINNER, {})
+                get_parent().set_state(State.ANNOUNCE_WINNER, { "first_time_entering_state": true })
                 return
 
     if get_parent().current_turn == get_parent().actions.size() - 1:
