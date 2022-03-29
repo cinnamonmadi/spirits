@@ -47,7 +47,8 @@ var states = [SpritesEntering.new(),
               ExecuteMove.new(),
               EvaluateMove.new(),
               AnnounceWinner.new(),
-              NameFamiliar.new()]
+              NameFamiliar.new(),
+              LearnMove.new()]
 
 var surprise_round = "none"
 var enemy_party = Party.new()

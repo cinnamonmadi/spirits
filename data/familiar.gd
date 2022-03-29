@@ -20,7 +20,8 @@ enum Move {
     SPLASH,
     EMBER,
     TACKLE,
-    VINE_WHIP
+    VINE_WHIP,
+    BANANA
 }
 
 # Stat constants
@@ -40,6 +41,7 @@ const SPECIES_INFO = {
             { "level": 1, "move": Move.EMBER },
             { "level": 1, "move": Move.TACKLE },
             { "level": 1, "move": Move.VINE_WHIP },
+            { "level": 6, "move": Move.BANANA },
         ]
     },
     Species.GOBLIN: {
@@ -274,6 +276,9 @@ func get_display_name() -> String:
 func get_type_name():
     return Type.keys()[types[0]]
 
+func get_move_name(move):
+    return Move.keys()[move]
+
 func get_move_names():
     var move_names = []
     for move in moves:
@@ -285,3 +290,10 @@ func get_move_type_names():
     for move in moves:
         move_type_names.append(Type.keys()[MOVE_INFO[move].type])
     return move_type_names
+
+func get_level_up_moves(for_level):
+    var level_up_moves = []
+    for move in SPECIES_INFO[species].moves:
+        if move.level == for_level:
+            level_up_moves.append(move.move)
+    return level_up_moves

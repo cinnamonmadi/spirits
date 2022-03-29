@@ -254,6 +254,13 @@ hframes = 4
 [node name="move_select" parent="ui" instance=ExtResource( 7 )]
 visible = false
 
+[node name="forget_move_select" parent="ui" instance=ExtResource( 7 )]
+visible = false
+margin_left = 418.0
+margin_top = 182.0
+margin_right = 630.0
+margin_bottom = 286.0
+
 [node name="move_info" parent="ui" instance=ExtResource( 8 )]
 visible = false
 
@@ -313,7 +320,6 @@ visible = false
 texture = ExtResource( 10 )
 
 [node name="dialog" parent="ui" instance=ExtResource( 14 )]
-visible = false
 
 [node name="centered_familiar" type="Sprite" parent="ui"]
 visible = false

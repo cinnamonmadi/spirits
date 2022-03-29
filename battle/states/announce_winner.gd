@@ -49,6 +49,8 @@ func handle_todos():
 
     if next_todo.type == "capture":
         get_parent().set_state(State.NAME_FAMILIAR, { "familiar": next_todo.familiar })
+    elif next_todo.type == "learn_move":
+        get_parent().set_state(State.LEARN_MOVE, { "familiar": next_todo.familiar, "move": next_todo.move })
 
 func handle_win():
     todos = []
@@ -82,8 +84,13 @@ func handle_win():
 
         # If the familiar leveled up, add messages to the log
         var amount_of_level_ups = director.player_party.familiars[familiar_index].level - familiar_old_level
+        var learned_moves = []
         for levelup_number in range(1, amount_of_level_ups + 1):
+            learned_moves += director.player_party.familiars[familiar_index].get_level_up_moves(familiar_old_level + levelup_number)
             success_log_messages.append(director.player_party.familiars[familiar_index].get_display_name() + " level " + String(familiar_old_level + levelup_number) + "!")
+
+        for learned_move in learned_moves:
+            todos.append({ "type": "learn_move", "familiar": director.player_party.familiars[familiar_index], "move": learned_move })
 
     # Return party order to how it was before the fight started
     director.player_party.recall_familiar_order()
