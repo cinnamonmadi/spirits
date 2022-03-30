@@ -66,8 +66,8 @@ func _ready():
 
     enemy_party.familiars.append(Familiar.new(Familiar.Species.GHOST, 3))
     enemy_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 3))
-    for familiar in enemy_party.familiars:
-        familiar.health = 1
+    # for familiar in enemy_party.familiars:
+        # familiar.health = 1
     for _i in range(0, enemy_party.familiars.size()):
         enemy_captured.append(false)
 
@@ -128,7 +128,7 @@ func hide_all_enemy_labels():
 
 func update_enemy_label(i):
     var child_index = enemy_labels.get_child_count() - 1 - i
-    enemy_labels.get_child(child_index).text = "HP " + String(enemy_party.familiars[i].health)
+    enemy_labels.get_child(child_index).set_familiar(enemy_party.familiars[i])
     enemy_labels.get_child(child_index).visible = true
 
 func set_target_cursor(target_who: String, target_index: int):

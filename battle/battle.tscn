@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://ui/font_12.tres" type="DynamicFont" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
@@ -15,6 +15,7 @@
 [ext_resource path="res://ui/cursor.png" type="Texture" id=13]
 [ext_resource path="res://ui/dialog/dialog.tscn" type="PackedScene" id=14]
 [ext_resource path="res://battle/familiars/mimic.png" type="Texture" id=15]
+[ext_resource path="res://ui/healthbars/enemy_healthbar.tscn" type="PackedScene" id=16]
 
 [node name="battle" type="Node2D"]
 script = ExtResource( 2 )
@@ -40,19 +41,19 @@ __meta__ = {
 
 [node name="1" type="Sprite" parent="enemy_sprites"]
 visible = false
-position = Vector2( 64, 58 )
+position = Vector2( -28, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="2" type="Sprite" parent="enemy_sprites"]
 visible = false
-position = Vector2( 166, 58 )
+position = Vector2( 100, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="3" type="Sprite" parent="enemy_sprites"]
 visible = false
-position = Vector2( 260, 58 )
+position = Vector2( 228, 58 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
@@ -191,57 +192,33 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="1" type="Label" parent="enemy_labels"]
+[node name="1" parent="enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 240.0
-margin_top = 116.0
+margin_left = 192.0
+margin_top = 130.0
+margin_right = 192.0
+margin_bottom = 130.0
+
+[node name="2" parent="enemy_labels" instance=ExtResource( 16 )]
+visible = false
+margin_left = 320.0
+margin_top = 130.0
 margin_right = 320.0
-margin_bottom = 132.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 3 )
-text = "HP 20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+margin_bottom = 130.0
 
-[node name="2" type="Label" parent="enemy_labels"]
+[node name="3" parent="enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 344.0
-margin_top = 116.0
-margin_right = 424.0
-margin_bottom = 132.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 3 )
-text = "HP 20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+margin_left = 448.0
+margin_top = 130.0
+margin_right = 448.0
+margin_bottom = 130.0
 
-[node name="3" type="Label" parent="enemy_labels"]
+[node name="4" parent="enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 436.0
-margin_top = 116.0
-margin_right = 516.0
-margin_bottom = 132.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 3 )
-text = "HP 20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="4" type="Label" parent="enemy_labels"]
-visible = false
-margin_left = 532.0
-margin_top = 116.0
-margin_right = 612.0
-margin_bottom = 132.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-custom_fonts/font = ExtResource( 3 )
-text = "HP 20"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+margin_left = 576.0
+margin_top = 130.0
+margin_right = 576.0
+margin_bottom = 130.0
 
 [node name="ui" type="CanvasLayer" parent="."]
 
@@ -274,10 +251,10 @@ margin_top = 30.0
 margin_right = 196.0
 margin_bottom = 62.0
 texture = ExtResource( 5 )
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -287,7 +264,7 @@ margin_left = 8.0
 margin_top = 10.0
 margin_right = 168.0
 margin_bottom = 26.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "APPLEFIGHT"
 
@@ -298,10 +275,10 @@ margin_top = 30.0
 margin_right = 406.0
 margin_bottom = 60.0
 texture = ExtResource( 5 )
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -311,7 +288,7 @@ margin_left = 8.0
 margin_top = 10.0
 margin_right = 168.0
 margin_bottom = 26.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "You win!"
 
@@ -320,6 +297,7 @@ visible = false
 texture = ExtResource( 10 )
 
 [node name="dialog" parent="ui" instance=ExtResource( 14 )]
+visible = false
 
 [node name="centered_familiar" type="Sprite" parent="ui"]
 visible = false
@@ -334,10 +312,10 @@ margin_top = 230.0
 margin_right = 630.0
 margin_bottom = 286.0
 texture = ExtResource( 5 )
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
 script = ExtResource( 12 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -359,7 +337,7 @@ margin_left = 22.0
 margin_top = 10.0
 margin_right = 70.0
 margin_bottom = 26.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "Yes"
 __meta__ = {
@@ -371,7 +349,7 @@ margin_left = 22.0
 margin_top = 32.0
 margin_right = 54.0
 margin_bottom = 48.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "No"
 __meta__ = {
@@ -390,10 +368,10 @@ margin_top = 174.0
 margin_right = 409.0
 margin_bottom = 208.0
 texture = ExtResource( 5 )
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -403,7 +381,7 @@ margin_left = 10.0
 margin_top = 12.0
 margin_right = 170.0
 margin_bottom = 28.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 3 )
 text = "APPLECHEST"
 align = 1

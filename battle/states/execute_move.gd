@@ -3,6 +3,7 @@ class_name ExecuteMove
 
 onready var director = get_node("/root/Director")
 
+onready var enemy_labels = get_parent().get_node("enemy_labels")
 onready var tween = get_parent().get_node("tween")
 
 const State = preload("res://battle/states/states.gd")
@@ -25,15 +26,18 @@ func begin(_params):
 func process(_delta):
     if current_action.who == "player":
         get_parent().update_player_label(current_action.familiar)
-    else:
-        get_parent().update_enemy_label(current_action.familiar)
     if current_action.target_who == "player":
         get_parent().update_player_label(current_action.target_familiar)
-    else:
-        get_parent().update_enemy_label(current_action.target_familiar)
+    var done_interpolating = true
+    for child in enemy_labels.get_children():
+        if child.is_interpolating():
+            done_interpolating = false
+            break
+    if done_interpolating:
+        get_parent().set_state(State.EVALUATE_MOVE, {})
 
 func handle_tween_finish():
-    get_parent().set_state(State.EVALUATE_MOVE, {})
+    pass
 
 func handle_timer_timeout():
     pass
@@ -85,17 +89,17 @@ func execute_use_move():
     var damage = base_damage * stab * type_mod * random
 
     # Remember old values
-    var old_defender_health = defender.health
-    var old_attacker_mana = attacker.mana
+    # var old_defender_health = defender.health
+    # var old_attacker_mana = attacker.mana
 
     # Apply damage and mana cost
     defender.change_health(-damage)
     attacker.change_mana(-move_info.cost)
 
     # Interpolate values so that it looks fancy
-    tween.interpolate_property(defender, "health", old_defender_health, defender.health, EXECUTE_MOVE_DURATION)
-    tween.interpolate_property(attacker, "mana", old_attacker_mana, attacker.mana, EXECUTE_MOVE_DURATION)
-    tween.start()
+    # tween.interpolate_property(defender, "health", old_defender_health, defender.health, EXECUTE_MOVE_DURATION)
+    # tween.interpolate_property(attacker, "mana", old_attacker_mana, attacker.mana, EXECUTE_MOVE_DURATION)
+    # tween.start()
 
 func execute_switch():
     if current_action.who == "player":
