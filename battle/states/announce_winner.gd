@@ -7,8 +7,13 @@ onready var success_log = get_parent().get_node("ui/success_log")
 onready var success_log_label = get_parent().get_node("ui/success_log/label")
 onready var timer = get_parent().get_node("timer")
 onready var dialog = get_parent().get_node("ui/dialog")
+onready var player_labels = get_parent().get_node("player_labels")
 
 const State = preload("res://battle/states/states.gd")
+
+enum SubState {
+    GIVE_EXP,
+}
 
 const SUCCESS_LOG_BASE_SIZE: int = 30
 const SUCCESS_LOG_GROW_SIZE: int = 20
@@ -19,6 +24,9 @@ var switch_index
 var success_log_messages = []
 var player_won
 var todos = []
+var participating_player_familiars = []
+var exp_to_give = []
+var substate = SubState.GIVE_EXP
 
 func begin(params):
     if not params.first_time_entering_state:
@@ -60,10 +68,11 @@ func handle_win():
     for familiar in get_parent().enemy_party.familiars:
         total_exp += familiar.get_experience_yield()
         
-    success_log_messages.append("Gained " + String(total_exp) + " experience!")
+    open_success_log()
+    success_log_add_message("Gained " + String(total_exp) + " experience!")
 
     # Get the list of participating player familiar indexes
-    var participating_player_familiars = []
+    participating_player_familiars = []
     for i in range(0, director.player_party.familiars.size()):
         if director.player_party.familiar_participated[i]:
             participating_player_familiars.append(i)
@@ -74,26 +83,9 @@ func handle_win():
     for i in range(0, participating_player_familiars.size()):
         # Determine how much exp to give
         # If the exp doesn't divide evenly, give the odd experience points to the first one on the list
-        var exp_to_give = exp_per_familiar
+        exp_to_give.append(exp_per_familiar)
         if i == 0:
-            exp_to_give += exp_per_familiar % participating_player_familiars.size()
-
-        var familiar_index = participating_player_familiars[i]
-        var familiar_old_level = director.player_party.familiars[familiar_index].level
-        director.player_party.familiars[i].add_experience(exp_to_give)
-
-        # If the familiar leveled up, add messages to the log
-        var amount_of_level_ups = director.player_party.familiars[familiar_index].level - familiar_old_level
-        var learned_moves = []
-        for levelup_number in range(1, amount_of_level_ups + 1):
-            learned_moves += director.player_party.familiars[familiar_index].get_level_up_moves(familiar_old_level + levelup_number)
-            success_log_messages.append(director.player_party.familiars[familiar_index].get_display_name() + " level " + String(familiar_old_level + levelup_number) + "!")
-
-        for learned_move in learned_moves:
-            todos.append({ "type": "learn_move", "familiar": director.player_party.familiars[familiar_index], "move": learned_move })
-
-    # Return party order to how it was before the fight started
-    director.player_party.recall_familiar_order()
+            exp_to_give[i] += exp_per_familiar % participating_player_familiars.size()
 
     # If the player captured any monsters, add them to the crew!
     for i in range(0, get_parent().enemy_captured.size()):
@@ -102,8 +94,6 @@ func handle_win():
             director.player_party.add_familiar(get_parent().enemy_party.familiars[i])
             todos.append({ "type": "capture", "familiar": get_parent().enemy_party.familiars[i] })
 
-    open_success_log()
-
 func handle_loss():
     dialog.open_with("All spirits were defeated! You lose!")
 
@@ -111,14 +101,15 @@ func open_success_log():
     success_log.rect_size.y = 30
     success_log.visible = true
     success_log_label.text = ""
-    success_log_pop_message()
-    timer.start(SUCCESS_LOG_TICK_DURATION)
 
-func success_log_pop_message():
+func success_log_add_message(message):
     if success_log_label.text != "":
         success_log_label.text += "\n"
         success_log.rect_size.y += SUCCESS_LOG_GROW_SIZE
-    success_log_label.text += success_log_messages.pop_front()
+    success_log_label.text += message
+
+func success_log_pop_message():
+    success_log_add_message(success_log_messages.pop_front())
 
 func process(_delta):
     if not player_won:
@@ -128,6 +119,22 @@ func process(_delta):
             else:
                 dialog.progress()
     else:
+        var done_giving_exp = true
+        for participating_familiar_index in participating_player_familiars:
+            if exp_to_give[participating_familiar_index] != 0:
+                done_giving_exp = false
+                var familiar = director.player_party.familiars[participating_familiar_index]
+
+                var familiar_old_level = familiar.get_level()
+                exp_to_give[participating_familiar_index] -= 1
+                familiar.add_experience(1)
+                if familiar.get_level() != familiar_old_level:
+                    success_log_add_message(familiar.get_display_name() + " level " + String(familiar.get_level()) + "!")
+                    var learned_moves = familiar.get_level_up_moves(familiar.get_level())
+                    for learned_move in learned_moves:
+                        todos.append({ "type": "learn_move", "familiar": familiar, "move": learned_move })
+        if not done_giving_exp:
+            return
         if Input.is_action_just_pressed("action"):
             if success_log_messages.size() != 0:
                 success_log_pop_message()
@@ -135,6 +142,8 @@ func process(_delta):
                 timer.start(SUCCESS_LOG_TICK_DURATION)
             else:
                 success_log.visible = false
+                # Return party order to how it was before the fight started
+                director.player_party.recall_familiar_order()
                 handle_todos()
     
 func handle_tween_finish():

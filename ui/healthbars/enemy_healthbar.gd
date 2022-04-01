@@ -35,7 +35,7 @@ func refresh():
     bar_full.region_rect.size.x = int(percent_full * bar_full.texture.get_width())
 
     name_label.text = familiar.get_display_name()
-    level_label.text = String(familiar.level)
+    level_label.text = String(familiar.get_level())
     health_label.text = String(int(displayed_health)) + "/" + String(displayed_max_health)
 
 func _process(delta):
@@ -55,5 +55,4 @@ func _process(delta):
         else:
             var percent_complete: float = 1 - (interpolate_timer / INTERPOLATE_DURATION)
             displayed_health = health_interpolate_from + (float(health_interpolate_to - health_interpolate_from) * percent_complete)
-            print(percent_complete, " ", displayed_health)
             refresh()

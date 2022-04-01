@@ -59,7 +59,7 @@ func open_list():
         choice.visible = false
     for i in range(0, director.player_party.familiars.size()):
         list_choices[i].text = director.player_party.familiars[i].get_display_name()
-        list_choices[i].find_node("level").text = "LVL " + String(director.player_party.familiars[i].level)
+        list_choices[i].find_node("level").text = "LVL " + String(director.player_party.familiars[i].get_level())
         list_choices[i].find_node("health").text = "HP:" + String(director.player_party.familiars[i].health) + "/" + String(director.player_party.familiars[i].max_health) + " MP:" + String(director.player_party.familiars[i].mana) + "/" + String(director.player_party.familiars[i].max_mana)
         list_choices[i].visible = true
     list.reset_choices()
@@ -111,7 +111,7 @@ func open_summary():
     var familiar = director.player_party.familiars[chosen_index]
 
     summary.get_node("name").text = familiar.get_display_name()
-    summary.get_node("level").text = "LVL " + String(familiar.level) + " (" + String(familiar.get_experience_tnl()) + ")"
+    summary.get_node("level").text = "LVL " + String(familiar.get_level()) + " (" + String(familiar.get_experience_tnl()) + ")"
     summary.get_node("type").text = familiar.get_type_name()
     summary.get_node("health").text = "HP " + String(familiar.health) + "/" + String(familiar.max_health)
     summary.get_node("mana").text = "MP " + String(familiar.mana) + "/" + String(familiar.max_mana)

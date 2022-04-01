@@ -29,7 +29,6 @@ func begin(params):
     centered_familiar.texture = load(naming_familiar.get_portrait_path())
     centered_familiar.visible = true
     dialog.open_with([["Give a nickname to the", "captured " + naming_familiar.get_display_name() + "?"]])
-    print("here", director.player_party.familiars.size())
 
 func _input(event):
     if not namebox.visible:

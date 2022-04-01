@@ -77,7 +77,6 @@ func _ready():
         open_move_callout("AMBUSH!")
     elif surprise_round == "enemy":
         open_move_callout("SURROUNDED!")
-    # set_state(State.NAME_FAMILIAR, { "familiar": enemy_party.familiars[0] })
     set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():
@@ -118,8 +117,7 @@ func get_choosing_familiar_index():
     return index
 
 func update_player_label(i):
-    player_labels.get_child(i).text = director.player_party.familiars[i].get_display_name()
-    player_labels.get_child(i).get_child(0).text = "HP " + String(director.player_party.familiars[i].health) + " MP " + String(director.player_party.familiars[i].mana)
+    player_labels.get_child(i).set_familiar(director.player_party.familiars[i])
     player_labels.get_child(i).visible = true
 
 func hide_all_enemy_labels():

@@ -3,7 +3,6 @@ class_name SummonFamiliar
 
 onready var director = get_node("/root/Director")
 onready var player_sprites = get_parent().get_node("player_sprites")
-onready var player_labels = get_parent().get_node("player_labels")
 onready var tween = get_parent().get_node("tween")
 onready var witch = get_parent().get_node("witch")
 onready var move_callout = get_parent().get_node("ui/move_callout")

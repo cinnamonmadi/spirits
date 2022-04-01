@@ -3,6 +3,7 @@ class_name ExecuteMove
 
 onready var director = get_node("/root/Director")
 
+onready var player_labels = get_parent().get_node("player_labels")
 onready var enemy_labels = get_parent().get_node("enemy_labels")
 onready var tween = get_parent().get_node("tween")
 
@@ -24,15 +25,16 @@ func begin(_params):
         execute_use_item()
 
 func process(_delta):
-    if current_action.who == "player":
-        get_parent().update_player_label(current_action.familiar)
-    if current_action.target_who == "player":
-        get_parent().update_player_label(current_action.target_familiar)
     var done_interpolating = true
+
+    for child in player_labels.get_children():
+        if child.is_interpolating():
+            done_interpolating = false
     for child in enemy_labels.get_children():
         if child.is_interpolating():
             done_interpolating = false
             break
+
     if done_interpolating:
         get_parent().set_state(State.EVALUATE_MOVE, {})
 
@@ -69,7 +71,7 @@ func execute_use_move():
     var move_info = Familiar.MOVE_INFO[move]
 
     # Compute base damage
-    var base_damage = (((((2 * attacker.level) / 5) + 2) * move_info.power * (attacker.attack / defender.defense)) / 50) + 2
+    var base_damage = (((((2 * attacker.get_level()) / 5) + 2) * move_info.power * (attacker.attack / defender.defense)) / 50) + 2
 
     # Compute STAB
     var stab = 1
@@ -88,18 +90,9 @@ func execute_use_move():
     var random = director.rng.randf_range(0.85, 1.0)
     var damage = base_damage * stab * type_mod * random
 
-    # Remember old values
-    # var old_defender_health = defender.health
-    # var old_attacker_mana = attacker.mana
-
     # Apply damage and mana cost
     defender.change_health(-damage)
     attacker.change_mana(-move_info.cost)
-
-    # Interpolate values so that it looks fancy
-    # tween.interpolate_property(defender, "health", old_defender_health, defender.health, EXECUTE_MOVE_DURATION)
-    # tween.interpolate_property(attacker, "mana", old_attacker_mana, attacker.mana, EXECUTE_MOVE_DURATION)
-    # tween.start()
 
 func execute_switch():
     if current_action.who == "player":
@@ -118,14 +111,8 @@ func execute_use_item():
             target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
 
     if target_familiar != null:
-        var target_old_health = target_familiar.health
-        var target_old_mana = target_familiar.mana
         director.player_inventory.use_item(current_action.item, target_familiar)
-        if target_familiar.health != target_old_health or target_familiar.mana != target_old_mana:
-            tween.interpolate_property(target_familiar, "health", target_old_health, target_familiar.health, EXECUTE_MOVE_DURATION)
-            tween.interpolate_property(target_familiar, "mana", target_old_mana, target_familiar.mana, EXECUTE_MOVE_DURATION)
-            tween.start()
-            return
+        return
 
     get_parent().set_state(State.EVALUATE_MOVE, {})
 

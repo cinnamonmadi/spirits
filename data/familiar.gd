@@ -191,8 +191,8 @@ const MAX_LEVEL = 100
 var species: int
 var nickname: String = ""
 var types 
-var level: int
 var experience: int
+var level: int
 
 var health: int
 var max_health: int
@@ -208,10 +208,10 @@ var moves = []
 
 func _init(as_species: int, at_level: int):
     species = as_species
+    experience = 0
     set_level(at_level)
     health = max_health
     mana = max_mana
-    experience = 0
     for move in SPECIES_INFO[species].moves:
         moves.append(move.move)
         if moves.size() == 4:
@@ -224,10 +224,14 @@ func get_catch_rate() -> float:
     return SPECIES_INFO[species].catch_rate
 
 func get_experience_yield() -> int:
-    return int((SPECIES_INFO[species].base_exp_yield * level) / 7.0)
+    return int((SPECIES_INFO[species].base_exp_yield * get_level()) / 7.0)
 
 func set_level(value: int):
+    experience = get_experience_at_level(value)
     level = value
+    update_stats()
+
+func update_stats():
     var species_info = SPECIES_INFO[species]
     types = species_info.types
     max_health = int((species_info.health * 2 * level) / 100) + level + 10
@@ -236,23 +240,34 @@ func set_level(value: int):
     defense = int((species_info.defense * 2 * level) / 100) + 5
     speed = int((species_info.speed * 2 * level) / 100) + 5
 
+func get_level() -> int:
+    return level
+
+func get_experience_at_level(the_level: int) -> int:
+    return int(pow((the_level), 3))
+
+func get_current_experience() -> int:
+    if get_level() == 1:
+        return experience
+    else:
+        return experience - get_experience_at_level(get_level())
+
 func get_experience_tnl() -> int:
-    return int(pow((level + 1), 3)) - experience
+    return get_experience_at_level(level + 1) - get_experience_at_level(level)
 
 # If the amount of experience gained is more than needed to reach the next level, the remaining EXP is returned
 # This allows experience gain to pause whenever there's a level up
 func add_experience(amount: int):
-    if level == MAX_LEVEL:
+    if get_level() == MAX_LEVEL:
         return 
-    while amount > 0: 
-        var tnl = get_experience_tnl()
-        if tnl > amount:
-            experience += amount
-            amount = 0
-        else:
-            experience = 0
-            set_level(level + 1)
-            amount -= tnl
+    var tnl = get_experience_tnl() - get_current_experience()
+    experience += amount
+    if tnl > amount:
+        return 0
+    else:
+        level += 1
+        update_stats()
+        return amount - tnl
 
 func change_health(amount: int):
     health += amount
