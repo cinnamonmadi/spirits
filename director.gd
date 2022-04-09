@@ -39,11 +39,11 @@ func _ready():
     var root = get_tree().get_root()
     world_instance = root.get_child(root.get_child_count() - 1)
 
-func start_battle():
+func start_battle(surprise_round):
     var root = get_tree().get_root()
     root.remove_child(world_instance)
     battle_instance = battle_scene.instance()
-    # battle_instance.surprise_round = "player"
+    battle_instance.surprise_round = surprise_round
     root.add_child(battle_instance)
     state = State.BATTLE
 

@@ -15,6 +15,8 @@ enum State {
 
 var state = State.WORLD
 var attacking_monster
+var attacking_player_effect
+var attack_surprise_round
 
 func _ready():
     timer.connect("timeout", self, "_on_timer_timeout")
@@ -64,19 +66,28 @@ func _process(delta):
         if party_menu.is_closed():
             set_state(State.PAUSE_MENU)
 
-func init_start_battle(monster):
+func init_start_battle(monster, player_effect, surprise_round):
     for child in get_children():
         if "visible" in child:
             child.visible = false
     get_node("tris").visible = true
     monster.visible = true
     attacking_monster = monster
+
+    if player_effect != null:
+        player_effect.visible = true
+        attacking_player_effect = player_effect
+
+    attack_surprise_round = surprise_round
+
     set_paused(true)
     timer.start(1.0)
 
 func _on_timer_timeout():
     attacking_monster.queue_free()
-    director.start_battle()
+    if attacking_player_effect != null:
+        attacking_player_effect.queue_free()
+    director.start_battle(attack_surprise_round)
 
 func end_battle():
     for child in get_children():

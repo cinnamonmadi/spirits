@@ -1,5 +1,7 @@
 extends Actor
 
+onready var attack_effect_scene = preload("res://actors/player/player_attack_effect.tscn")
+
 onready var dialog = get_parent().get_node("ui/dialog")
 
 onready var camera = $camera
@@ -8,7 +10,8 @@ onready var interact_scanbox = $interact_scanbox
 enum State {
     MOVING,
     ROLLING,
-    DIALOG
+    DIALOG,
+    ATTACK
 }
 
 const ROLL_SPEED: float = 256.0
@@ -87,7 +90,7 @@ func try_interact():
     interact_scanbox.get_node("collider_" + get_direction_name(facing_direction)).disabled = false
 
     # Finally, check if any NPCs are in the scanbox range
-    for npc in get_tree().get_nodes_in_group("npcs"):
+    for npc in get_tree().get_nodes_in_group("talkers"):
         if interact_scanbox.overlaps_body(npc):
             if npc.dialog != "":
                 npc.start_speaking(facing_direction)
@@ -95,14 +98,19 @@ func try_interact():
                 dialog.open(npc.dialog)
                 direction = Vector2.ZERO
                 state = State.DIALOG
-            break
+            return
+
+    # If we got all the way here and we haven't interacted with something, then try attacking instead
+    attack()
 
 func _physics_process(_delta):
     if paused:
         return false
     handle_input()
+
     if state == State.ROLLING and sprite.frame >= 10 and input_direction != Vector2.ZERO:
         state = State.MOVING
+
     if state == State.MOVING:
         speed = MOVE_SPEED
     elif state == State.ROLLING:
@@ -112,7 +120,7 @@ func _physics_process(_delta):
             speed = 64.0
         else:
             speed = ROLL_SPEED
-    elif state == State.DIALOG:
+    elif state == State.DIALOG or state == State.ATTACK:
         direction = Vector2.ZERO
 
     var is_invulnerable = state == State.ROLLING and speed != 0
@@ -121,12 +129,24 @@ func _physics_process(_delta):
 func update_animation():
     if state == State.ROLLING:
         update_sprite("roll")
+    elif state == State.ATTACK:
+        update_sprite("attack")
     else:
         .update_animation()
 
 func _on_animation_finished():
-    if state == State.ROLLING:
+    if state == State.ROLLING or state == State.ATTACK:
         state = State.MOVING
 
 func handle_monster_attack(monster):
-    get_parent().init_start_battle(monster)
+    get_parent().init_start_battle(monster, null, "enemy")
+
+func handle_attacked_monster(monster: Monster, effect):
+    get_parent().init_start_battle(monster, effect, "player")
+
+func attack():
+    var attack_effect = attack_effect_scene.instance()
+    attack_effect.direction = facing_direction
+    get_parent().add_child(attack_effect)
+
+    state = State.ATTACK

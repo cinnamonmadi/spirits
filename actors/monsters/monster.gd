@@ -1,4 +1,5 @@
 extends NPC
+class_name Monster
 
 onready var director = get_node("/root/Director")
 

@@ -4,6 +4,7 @@ class_name Talker
 export var dialog: String = ""
 
 func _ready():
+    add_to_group("talkers")
     speed = 64.0
 
 func start_speaking(player_direction: Vector2):
