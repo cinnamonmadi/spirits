@@ -51,7 +51,7 @@ func process(_delta):
                 "action": Action.USE_MOVE,
                 "move": chosen_move,
                 "target_who": target_who,
-                "target_familiar": target_index
+                "target_familiar": int(target_index)
             })
         elif targeting_action == Action.USE_ITEM:
             get_parent().actions.append({
@@ -60,7 +60,7 @@ func process(_delta):
                 "action": Action.USE_ITEM,
                 "item": chosen_item,
                 "target_who": target_who,
-                "target_familiar": target_index,
+                "target_familiar": int(target_index),
             })
             director.player_inventory.remove_item(chosen_item, 1)
 

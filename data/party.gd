@@ -3,6 +3,7 @@ class_name Party
 var familiars = []
 var old_familiar_order = []
 var familiar_participated = []
+var in_battle = false
 
 func get_living_familiar_count() -> int:
     var count = 0
@@ -31,10 +32,14 @@ func pre_battle_setup():
     for i in range(0, min(familiars.size(), 2)):
         familiar_participated[i] = true
 
+    in_battle = true
+
 func recall_familiar_order():
     familiars = []
     for i in range(0, old_familiar_order.size()):
         familiars.append(old_familiar_order[i])
+
+    in_battle = false
 
 func swap_familiars(a: int, b: int):
     var temp = familiars[a]
@@ -45,6 +50,10 @@ func swap_familiars(a: int, b: int):
 
     familiars[b] = temp
     familiar_participated[b] = temp_participated
+
+    if in_battle:
+        for i in range(0, min(familiars.size(), 2)):
+            familiar_participated[i] = true
 
 func sort_fighters_first():
     if not familiars[0].is_living():

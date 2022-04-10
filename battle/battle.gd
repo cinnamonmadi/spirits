@@ -66,8 +66,8 @@ func _ready():
 
     enemy_party.familiars.append(Familiar.new(Familiar.Species.GHOST, 3))
     enemy_party.familiars.append(Familiar.new(Familiar.Species.MIMIC, 3))
-    # for familiar in enemy_party.familiars:
-        # familiar.health = 1
+    for familiar in enemy_party.familiars:
+        familiar.health = 1
     for _i in range(0, enemy_party.familiars.size()):
         enemy_captured.append(false)
 

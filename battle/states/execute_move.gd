@@ -65,6 +65,7 @@ func execute_use_move():
         defending_party_size = defending_party.familiars.size()
     while not defending_party.familiars[current_action.target_familiar].is_living():
         current_action.target_familiar = (current_action.target_familiar + 1) % defending_party_size
+        print(current_action.target_familiar)
     defender = defending_party.familiars[current_action.target_familiar]
 
     var move = current_action.move

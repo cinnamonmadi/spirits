@@ -74,8 +74,10 @@ func handle_win():
     # Get the list of participating player familiar indexes
     participating_player_familiars = []
     for i in range(0, director.player_party.familiars.size()):
+        exp_to_give.append(0)
         if director.player_party.familiar_participated[i]:
             participating_player_familiars.append(i)
+            print("Familiar #" + String(i) + ", " + director.player_party.familiars[i].get_display_name() + " participated")
     
     # Divide the experience between familiars
     var exp_per_familiar = int(total_exp / participating_player_familiars.size())
@@ -83,9 +85,10 @@ func handle_win():
     for i in range(0, participating_player_familiars.size()):
         # Determine how much exp to give
         # If the exp doesn't divide evenly, give the odd experience points to the first one on the list
-        exp_to_give.append(exp_per_familiar)
+        var participating_familiar_index = participating_player_familiars[i]
+        exp_to_give[participating_familiar_index] = exp_per_familiar
         if i == 0:
-            exp_to_give[i] += exp_per_familiar % participating_player_familiars.size()
+            exp_to_give[participating_familiar_index] += exp_per_familiar % participating_player_familiars.size()
 
     # If the player captured any monsters, add them to the crew!
     for i in range(0, get_parent().enemy_captured.size()):

@@ -45,7 +45,6 @@ func set_familiar(value: Familiar):
     displayed_max_mana = familiar.max_mana
     displayed_exp = familiar.get_current_experience()
     displayed_max_exp = familiar.get_experience_tnl()
-    print(familiar.get_current_experience(), " ", familiar.get_experience_tnl())
     refresh()
 
 func refresh():
@@ -95,6 +94,7 @@ func _process(delta):
         if interpolate_timer <= 0:
             displayed_health = health_interpolate_to
             displayed_mana = mana_interpolate_to
+            interpolate_timer = 0
             refresh()
         else:
             var percent_complete: float = 1 - (interpolate_timer / INTERPOLATE_DURATION)
