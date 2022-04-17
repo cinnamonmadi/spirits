@@ -2,6 +2,7 @@ extends Node
 class_name AnnounceWinner
 
 onready var director = get_node("/root/Director")
+onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var success_log = get_parent().get_node("ui/success_log")
 onready var success_log_label = get_parent().get_node("ui/success_log/label")
@@ -77,7 +78,7 @@ func handle_win():
         exp_to_give.append(0)
         if director.player_party.familiar_participated[i]:
             participating_player_familiars.append(i)
-            print("Familiar #" + String(i) + ", " + director.player_party.familiars[i].get_display_name() + " participated")
+            print("Familiar #" + String(i) + ", " + familiar_factory.get_display_name(director.player_party.familiars[i]) + " participated")
     
     # Divide the experience between familiars
     var exp_per_familiar = int(total_exp / participating_player_familiars.size())
@@ -132,7 +133,7 @@ func process(_delta):
                 exp_to_give[participating_familiar_index] -= 1
                 familiar.add_experience(1)
                 if familiar.get_level() != familiar_old_level:
-                    success_log_add_message(familiar.get_display_name() + " level " + String(familiar.get_level()) + "!")
+                    success_log_add_message(familiar_factory.get_display_name(familiar) + " level " + String(familiar.get_level()) + "!")
                     var learned_moves = familiar.get_level_up_moves(familiar.get_level())
                     for learned_move in learned_moves:
                         todos.append({ "type": "learn_move", "familiar": familiar, "move": learned_move })

@@ -2,6 +2,7 @@ extends Node
 class_name ChooseMove
 
 onready var director = get_node("/root/Director")
+onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var move_select = get_parent().get_node("ui/move_select")
 onready var move_info = get_parent().get_node("ui/move_info")
@@ -13,7 +14,7 @@ var current_familiar
 func begin(_params):
     current_familiar = director.player_party.familiars[get_parent().get_choosing_familiar_index()]
     move_select.open()
-    move_select.set_labels([current_familiar.get_move_names()])
+    move_select.set_labels([familiar_factory.get_move_names(current_familiar)])
 
 func process(_delta):
     # If player pressed back, return to choose action screen
@@ -40,8 +41,8 @@ func process(_delta):
     get_parent().set_state(State.CHOOSE_TARGET, { "chosen_move": chosen_move, "action": Action.USE_MOVE })
 
 func open_move_info(move: int):
-    var move_info_values = Familiar.MOVE_INFO[move]
-    move_info.open(Familiar.Type.keys()[move_info_values["type"]], String(move_info_values["cost"]) + " MP")
+    var move_info_values = familiar_factory.MOVE_INFO[move]
+    move_info.open(familiar_factory.get_type_name(move_info_values.type), String(move_info_values.cost) + " MP")
 
 func handle_tween_finish():
     pass

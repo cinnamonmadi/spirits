@@ -1,6 +1,8 @@
 extends Node
 class_name SpritesEntering
 
+onready var familiar_factory = get_node("/root/FamiliarFactory")
+
 onready var witch = get_parent().get_node("witch")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
 onready var tween = get_parent().get_node("tween")
@@ -12,7 +14,7 @@ const SPRITES_ENTERING_DURATION: float = 1.0
 func begin(_params):
     # Setup the enemy familiar sprites
     for i in range(0, get_parent().enemy_party.familiars.size()):
-        enemy_sprites.get_child(3 - i).texture = load(get_parent().enemy_party.familiars[i].get_portrait_path())
+        enemy_sprites.get_child(3 - i).texture = load(familiar_factory.get_portrait_path(get_parent().enemy_party.familiars[i]))
         enemy_sprites.get_child(3 - i).visible = true
     # Set the sprites in their initial positions to enter from
     tween.interpolate_property(enemy_sprites, "rect_position", 

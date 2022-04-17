@@ -165,6 +165,7 @@ config/icon="res://icon.png"
 [autoload]
 
 Director="*res://director.gd"
+FamiliarFactory="*res://data/familiar_factory.gd"
 
 [display]
 

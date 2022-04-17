@@ -2,6 +2,8 @@ extends Control
 
 const INTERPOLATE_DURATION: float = 0.5
 
+onready var familiar_factory = get_node("/root/FamiliarFactory")
+
 onready var bar_full = $bar_full
 onready var name_label = $name_label
 onready var level_label = $level_label
@@ -34,7 +36,7 @@ func refresh():
     var percent_full: float = displayed_health / float(displayed_max_health)
     bar_full.region_rect.size.x = int(percent_full * bar_full.texture.get_width())
 
-    name_label.text = familiar.get_display_name()
+    name_label.text = familiar_factory.get_display_name(familiar)
     level_label.text = String(familiar.get_level())
     health_label.text = String(int(displayed_health)) + "/" + String(displayed_max_health)
 

@@ -2,6 +2,7 @@ extends Node
 class_name ExecuteMove
 
 onready var director = get_node("/root/Director")
+onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var player_labels = get_parent().get_node("player_labels")
 onready var enemy_labels = get_parent().get_node("enemy_labels")
@@ -69,7 +70,7 @@ func execute_use_move():
     defender = defending_party.familiars[current_action.target_familiar]
 
     var move = current_action.move
-    var move_info = Familiar.MOVE_INFO[move]
+    var move_info = familiar_factory.MOVE_INFO[move]
 
     # Compute base damage
     var base_damage = (((((2 * attacker.get_level()) / 5) + 2) * move_info.power * (attacker.attack / defender.defense)) / 50) + 2
@@ -82,7 +83,7 @@ func execute_use_move():
     # Compute weaknesses / resistances
     var type_mod = 1.0
     for type in defender.types:
-        var type_info = Familiar.TYPE_INFO[type]
+        var type_info = familiar_factory.TYPE_INFO[type]
         if type_info.weaknesses.has(move_info.type):
             type_mod *= 2.0
         elif type_info.resistances.has(move_info.type):

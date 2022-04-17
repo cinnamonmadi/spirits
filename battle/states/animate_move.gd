@@ -2,6 +2,7 @@ extends Node
 class_name AnimateMove
 
 onready var director = get_parent().get_node("/root/Director")
+onready var familiar_factory = get_parent().get_node("/root/FamiliarFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var player_labels = get_parent().get_node("player_labels")
@@ -72,7 +73,7 @@ func handle_effect_finish():
     get_parent().set_state(State.EXECUTE_MOVE, {})
 
 func begin_animate_attack():
-    get_parent().open_move_callout(Familiar.Move.keys()[current_action.move])
+    get_parent().open_move_callout(familiar_factory.get_move_name(current_action.move))
 
     var move_direction = 1
     if current_action.who == "enemy":
