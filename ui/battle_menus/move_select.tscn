@@ -1,14 +1,15 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://ui/frame.png" type="Texture" id=1]
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=2]
 [ext_resource path="res://ui/choice_menu/choice_menu.gd" type="Script" id=3]
 [ext_resource path="res://ui/cursor.png" type="Texture" id=4]
+[ext_resource path="res://ui/font_12.tres" type="DynamicFont" id=5]
 
 [node name="move_select" type="NinePatchRect"]
-margin_left = 270.0
+margin_left = 288.0
 margin_top = 240.0
-margin_right = 482.0
+margin_right = 640.0
 margin_bottom = 344.0
 texture = ExtResource( 1 )
 patch_margin_left = 12
@@ -32,34 +33,38 @@ margin_right = 40.0
 margin_bottom = 40.0
 
 [node name="choice_1" type="Label" parent="choices/col_1"]
-margin_left = 28.0
+margin_left = 18.0
 margin_top = 16.0
-margin_right = 188.0
+margin_right = 178.0
 margin_bottom = 32.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_fonts/font = ExtResource( 2 )
+custom_fonts/font = ExtResource( 5 )
 text = "SKULL BASH"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="choice_2" type="Label" parent="choices/col_1"]
-margin_left = 28.0
+margin_left = 18.0
 margin_top = 36.0
-margin_right = 124.0
+margin_right = 178.0
 margin_bottom = 52.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 2 )
-text = "TACKLE"
+text = "APPLEFIGHT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="choice_3" type="Label" parent="choices/col_1"]
-margin_left = 28.0
-margin_top = 56.0
-margin_right = 108.0
-margin_bottom = 72.0
+[node name="col_2" type="Control" parent="choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="choice_3" type="Label" parent="choices/col_2"]
+margin_left = 208.0
+margin_top = 16.0
+margin_right = 288.0
+margin_bottom = 32.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = ExtResource( 2 )
 text = "EMBER"
@@ -67,7 +72,26 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="choice_4" type="Label" parent="choices/col_1"]
+[node name="choice_4" type="Label" parent="choices/col_2"]
+margin_left = 208.0
+margin_top = 36.0
+margin_right = 352.0
+margin_bottom = 52.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = ExtResource( 2 )
+text = "WATER GUN"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="col_3" type="Control" parent="choices"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="choice_5" type="Label" parent="choices/col_3"]
 margin_left = 28.0
 margin_top = 76.0
 margin_right = 172.0

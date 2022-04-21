@@ -4,9 +4,6 @@ class_name AnnounceWinner
 onready var director = get_node("/root/Director")
 onready var familiar_factory = get_node("/root/FamiliarFactory")
 
-onready var success_log = get_parent().get_node("ui/success_log")
-onready var success_log_label = get_parent().get_node("ui/success_log/label")
-onready var timer = get_parent().get_node("timer")
 onready var dialog = get_parent().get_node("ui/dialog")
 onready var player_labels = get_parent().get_node("player_labels")
 
@@ -69,16 +66,14 @@ func handle_win():
     for familiar in get_parent().enemy_party.familiars:
         total_exp += familiar.get_experience_yield()
         
-    open_success_log()
-    success_log_add_message("Gained " + String(total_exp) + " experience!")
+    dialog.open("Gained " + String(total_exp) + " experience!")
 
     # Get the list of participating player familiar indexes
     participating_player_familiars = []
     for i in range(0, director.player_party.familiars.size()):
         exp_to_give.append(0)
-        if director.player_party.familiar_participated[i]:
+        if director.player_party.familiar_participated[i] and director.player_party.familiars[i].is_living():
             participating_player_familiars.append(i)
-            print("Familiar #" + String(i) + ", " + familiar_factory.get_display_name(director.player_party.familiars[i]) + " participated")
     
     # Divide the experience between familiars
     var exp_per_familiar = int(total_exp / participating_player_familiars.size())
@@ -101,27 +96,14 @@ func handle_win():
 func handle_loss():
     dialog.open_with("All spirits were defeated! You lose!")
 
-func open_success_log():
-    success_log.rect_size.y = 30
-    success_log.visible = true
-    success_log_label.text = ""
-
-func success_log_add_message(message):
-    if success_log_label.text != "":
-        success_log_label.text += "\n"
-        success_log.rect_size.y += SUCCESS_LOG_GROW_SIZE
-    success_log_label.text += message
-
-func success_log_pop_message():
-    success_log_add_message(success_log_messages.pop_front())
-
 func process(_delta):
-    if not player_won:
+    if dialog.is_open():
         if Input.is_action_just_pressed("action"):
-            if dialog.is_waiting():
-                end()
-            else:
-                dialog.progress()
+            dialog.progress()
+        return
+    if not player_won:
+        director.player_party.recall_familiar_order()
+        end()
     else:
         var done_giving_exp = true
         for participating_familiar_index in participating_player_familiars:
@@ -133,30 +115,20 @@ func process(_delta):
                 exp_to_give[participating_familiar_index] -= 1
                 familiar.add_experience(1)
                 if familiar.get_level() != familiar_old_level:
-                    success_log_add_message(familiar_factory.get_display_name(familiar) + " level " + String(familiar.get_level()) + "!")
+                    dialog.open(familiar_factory.get_display_name(familiar) + " level " + String(familiar.get_level()) + "!")
                     var learned_moves = familiar.get_level_up_moves(familiar.get_level())
                     for learned_move in learned_moves:
                         todos.append({ "type": "learn_move", "familiar": familiar, "move": learned_move })
-        if not done_giving_exp:
-            return
-        if Input.is_action_just_pressed("action"):
-            if success_log_messages.size() != 0:
-                success_log_pop_message()
-                timer.stop()
-                timer.start(SUCCESS_LOG_TICK_DURATION)
-            else:
-                success_log.visible = false
-                # Return party order to how it was before the fight started
-                director.player_party.recall_familiar_order()
-                handle_todos()
+                    return
+        if done_giving_exp:
+            director.player_party.recall_familiar_order()
+            handle_todos()
     
 func handle_tween_finish():
     pass
 
 func handle_timer_timeout():
-    if success_log_messages.size() != 0:
-        success_log_pop_message()
-        timer.start(SUCCESS_LOG_TICK_DURATION)
+    pass
 
 func end():
     director.end_battle()

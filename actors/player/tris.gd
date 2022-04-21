@@ -139,10 +139,10 @@ func _on_animation_finished():
         state = State.MOVING
 
 func handle_monster_attack(monster):
-    get_parent().init_start_battle(monster, null, "enemy")
+    get_parent().init_start_battle(monster, null)
 
 func handle_attacked_monster(monster: Monster, effect):
-    get_parent().init_start_battle(monster, effect, "player")
+    get_parent().init_start_battle(monster, effect)
 
 func attack():
     var attack_effect = attack_effect_scene.instance()

@@ -5,7 +5,6 @@ enum {
     CHOOSE_ACTION,
     PARTY_MENU,
     ITEM_MENU,
-    CHOOSE_MOVE,
     CHOOSE_TARGET,
     BEGIN_TURN,
     ANIMATE_MOVE,

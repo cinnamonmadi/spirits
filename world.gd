@@ -66,7 +66,7 @@ func _process(delta):
         if party_menu.is_closed():
             set_state(State.PAUSE_MENU)
 
-func init_start_battle(monster, player_effect, surprise_round):
+func init_start_battle(monster, player_effect):
     for child in get_children():
         if "visible" in child:
             child.visible = false
@@ -78,8 +78,6 @@ func init_start_battle(monster, player_effect, surprise_round):
         player_effect.visible = true
         attacking_player_effect = player_effect
 
-    attack_surprise_round = surprise_round
-
     set_paused(true)
     timer.start(1.0)
 
@@ -87,7 +85,7 @@ func _on_timer_timeout():
     attacking_monster.queue_free()
     if attacking_player_effect != null:
         attacking_player_effect.queue_free()
-    director.start_battle(attack_surprise_round)
+    director.start_battle()
 
 func end_battle():
     for child in get_children():

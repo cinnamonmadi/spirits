@@ -2,16 +2,15 @@ extends Node
 class_name ChooseTarget
 
 onready var director = get_node("/root/Director")
+onready var util = get_node("/root/Util")
 
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var target_cursor = get_parent().get_node("ui/target_cursor")
+onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
 
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
-
-const direction_names = ["up", "right", "down", "left"]
-const direction_vectors = [Vector2.UP, Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT]
 
 var target_who
 var target_index
@@ -31,13 +30,14 @@ func begin(params):
     target_index = 0
     wrap_target_cursor(-1)
     get_parent().set_target_cursor(target_who, target_index)
+    battle_dialog.open("Choose a target...")
 
 func process(_delta):
     # If player pressed back, return to choose move screen
     if Input.is_action_just_pressed("back"):
         target_cursor.visible = false
         if get_parent().targeting_for_action == Action.USE_MOVE:
-            get_parent().set_state(State.CHOOSE_MOVE, {})
+            get_parent().set_state(State.CHOOSE_ACTION, {})
         elif get_parent().targeting_for_action == Action.USE_ITEM:
             get_parent().set_state(State.ITEM_MENU, {})
         return
@@ -72,9 +72,9 @@ func process(_delta):
         return
     
     # Check if the player has pressed a directional key, and move the cursor accordingly
-    for i in range(0, 4):
-        if Input.is_action_just_pressed(direction_names[i]):
-            navigate_target_cursor(direction_vectors[i])
+    for direction in util.DIRECTIONS.keys():
+        if Input.is_action_just_pressed(direction):
+            navigate_target_cursor(util.DIRECTIONS[direction])
             break
 
 func handle_tween_finish():

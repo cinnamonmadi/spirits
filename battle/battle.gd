@@ -11,11 +11,9 @@ onready var player_sprites = $player_sprites
 onready var enemy_labels = $enemy_labels
 onready var player_labels = $player_labels
 
-onready var battle_actions = $ui/battle_actions
-onready var move_select = $ui/move_select
-onready var move_info = $ui/move_info
+onready var action_select = $ui/action_select
+onready var battle_dialog = $ui/battle_dialog
 onready var party_menu = $ui/party_menu
-onready var move_callout = $ui/move_callout
 onready var target_cursor = $ui/target_cursor
 onready var centered_familiar = $ui/centered_familiar
 onready var dialog = $ui/dialog
@@ -41,7 +39,6 @@ var states = [SpritesEntering.new(),
               ChooseAction.new(),
               PartyMenu.new(),
               ItemMenu.new(),
-              ChooseMove.new(),
               ChooseTarget.new(),
               BeginTurn.new(),
               AnimateMove.new(),
@@ -51,7 +48,6 @@ var states = [SpritesEntering.new(),
               NameFamiliar.new(),
               LearnMove.new()]
 
-var surprise_round = "none"
 var enemy_party = Party.new()
 var enemy_captured = []
 var actions = []
@@ -72,20 +68,17 @@ func _ready():
     for _i in range(0, enemy_party.familiars.size()):
         enemy_captured.append(false)
 
+    battle_dialog.ROW_CHAR_LEN = 18
+    battle_dialog.DIALOG_SPEED /= 3.0
+
     close_all_menus()
     director.player_party.pre_battle_setup()
-    if surprise_round == "player":
-        open_move_callout("AMBUSH!")
-    elif surprise_round == "enemy":
-        open_move_callout("SURROUNDED!")
     set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():
-    set_actions_menu_frame(-1)
-    move_select.close()
-    move_info.close()
+    action_select.close()
+    battle_dialog.close()
     party_menu.close()
-    move_callout.visible = false
     target_cursor.visible = false
     centered_familiar.visible = false
     dialog.close()
@@ -131,25 +124,14 @@ func update_enemy_label(i):
     enemy_labels.get_child(child_index).visible = true
 
 func set_target_cursor(target_who: String, target_index: int):
-    var offset_direction = 1
+    var offset = Vector2(0, 120)
     var cursor_base_position
     if target_who == "player":
         cursor_base_position = player_sprites.rect_position + player_sprites.get_child(target_index).position
-        offset_direction = -1
+        offset = Vector2(0, -80)
     else:
-        cursor_base_position = enemy_sprites.rect_position + enemy_sprites.get_child(3 - target_index).position
+        cursor_base_position = enemy_sprites.rect_position + enemy_sprites.get_child(1 - target_index).position
 
     target_cursor.flip_v = target_who == "player"
-    target_cursor.position = cursor_base_position + Vector2(0, 80 * offset_direction)
+    target_cursor.position = cursor_base_position + offset
     target_cursor.visible = true
-
-func open_move_callout(move: String):
-    move_callout.get_child(0).text = move
-    move_callout.visible = true
-
-func set_actions_menu_frame(frame: int):
-    if frame == -1:
-        battle_actions.visible = false
-    else: 
-        battle_actions.visible = true
-        battle_actions.frame = frame

@@ -99,7 +99,7 @@ func execute_use_move():
 func execute_switch():
     if current_action.who == "player":
         director.player_party.swap_familiars(current_action.familiar, current_action.with)
-        get_parent().set_state(State.SUMMON_FAMILIARS, { "trigger_witch_exit": false })
+    get_parent().set_state(State.SUMMON_FAMILIARS, { "trigger_witch_exit": false, "who": current_action.who })
 
 func execute_use_item():
     var target_familiar = null
@@ -139,6 +139,6 @@ func try_to_catch_familiar(gem_info):
     if catch_value < catch_rate:
         print("success! " + String(catch_value) + " vs " + String(catch_rate))
         get_parent().enemy_captured[current_action.target_familiar] = true
-        get_parent().enemy_sprites.get_child(3 - current_action.target_familiar).flip_h = true
+        get_parent().enemy_sprites.get_child(1 - current_action.target_familiar).flip_h = true
     else:
         print("fail! " + String(catch_value) + " vs " + String(catch_rate))

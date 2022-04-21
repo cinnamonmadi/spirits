@@ -7,9 +7,9 @@ onready var familiar_factory = get_node("/root/FamiliarFactory")
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var tween = get_parent().get_node("tween")
 onready var witch = get_parent().get_node("witch")
-onready var move_callout = get_parent().get_node("ui/move_callout")
+onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
 
-const WITCH_EXIT_DURATION: float = 1.0
+const WITCH_EXIT_DURATION: float = 0.5
 
 const State = preload("res://battle/states/states.gd")
 
@@ -17,18 +17,34 @@ func begin(params):
     if params.trigger_witch_exit:
         tween.interpolate_property(witch, "position", witch.position, witch.position - Vector2(witch.texture.get_size().x, 0), WITCH_EXIT_DURATION)
         tween.start()
-    else:
-        handle_tween_finish()
+    if params.who == "player":
+        var summoning_familiars = []
+        for familiar_index in range(0, 2):
+            if not player_sprites.get_child(familiar_index).visible:
+                summoning_familiars.append(director.player_party.familiars[familiar_index])
+        var dialog_message = ""
+        for i in range(0, summoning_familiars.size()):
+            if i != 0:
+                dialog_message += " "
+            dialog_message += familiar_factory.get_display_name(summoning_familiars[i]) + "!"
+        dialog_message += " Go!"
+        battle_dialog.open(dialog_message)
 
 func process(_delta):
-    return
+    if Input.is_action_just_pressed("action"):
+        if not battle_dialog.is_waiting():
+            battle_dialog.progress()
+        # If dialog is waiting and tween is not active
+        elif not tween.is_active(): 
+            summon_familiars_and_switch_states()
 
 func handle_tween_finish():
+    pass
+
+func summon_familiars_and_switch_states():
     for i in range(0, 2):
         if i < director.player_party.get_living_familiar_count():
             summon_player_familiar(i)
-    if get_parent().surprise_round != "none":
-        move_callout.visible = false
     if get_parent().current_turn == -1:
         get_parent().set_state(State.CHOOSE_ACTION, {})
     else:

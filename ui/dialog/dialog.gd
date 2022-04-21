@@ -1,6 +1,6 @@
 extends NinePatchRect
 
-onready var rows = [$row_one, $row_two]
+onready var rows = get_children()
 
 enum State {
     CLOSED,
@@ -35,10 +35,16 @@ func is_open() -> bool:
 func is_waiting() -> bool:
     return state == State.WAITING
 
+func create_empty_line():
+    var empty_line = []
+    for row in rows:
+        empty_line.append("")
+    return empty_line
+
 func load_lines(text: String):
     lines = []
     var words = text.split(" ")
-    var next_line = ["", ""]
+    var next_line = create_empty_line()
     var next_line_row = 0
 
     while words.size() != 0:
@@ -57,11 +63,11 @@ func load_lines(text: String):
         var space_left_in_row = ROW_CHAR_LEN - next_line[next_line_row].length()
         if space_left_in_row < next_word.length():
             # Increment rows
-            if next_line_row == 0:
-                next_line_row = 1
+            if next_line_row < rows.size() - 1:
+                next_line_row += 1
             else:
                 lines.append(next_line)
-                next_line = ["", ""]
+                next_line = create_empty_line()
                 next_line_row = 0
             # If we added a space before, remove it since we're going to the next line
             if next_word[0] ==  " ":
@@ -73,9 +79,9 @@ func load_lines(text: String):
         # And finally, if we had a newline in the word, that means we should end this line here
         if endline_after_word:
             lines.append(next_line)
-            next_line = ["", ""]
+            next_line = create_empty_line()
             next_line_row = 0
-    if next_line != ["", ""]:
+    if next_line[0] != "":
         lines.append(next_line)
 
 func _open():
@@ -92,8 +98,8 @@ func open(text: String):
     _open()
 
 func open_empty():
-    rows[0].text = ""
-    rows[1].text = ""
+    for row in rows:
+        row.text = ""
     visible = true
     state = State.WAITING
 
@@ -106,8 +112,8 @@ func pop_next_line():
     lines.remove(0)
     current_row = 0
     start_next_char_timer()
-    rows[0].text = ""
-    rows[1].text = "" 
+    for row in rows:
+        row.text = ""
 
 func start_next_char_timer():
     next_char_timer = DIALOG_SPEED
@@ -128,9 +134,8 @@ func progress():
             state = State.READING
     elif state == State.READING:
         # Read the rest of the line
-        if current_row == 0:
-            rows[0].text += current_line[0]
-        rows[1].text += current_line[1]
+        for i in range(current_row, rows.size()):
+            rows[i].text += current_line[i]
         state = State.WAITING
 
 func _process(delta):
@@ -142,7 +147,7 @@ func _process(delta):
         if next_char_timer <= 0:
             add_next_char()
             while state != State.WAITING and current_line[current_row].length() == 0:
-                if current_row == 0:
+                if current_row < rows.size() - 1:
                     current_row += 1
                 else:
                     state = State.WAITING

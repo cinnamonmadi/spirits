@@ -45,11 +45,6 @@ _global_script_classes=[ {
 "path": "res://battle/states/choose_action.gd"
 }, {
 "base": "Node",
-"class": "ChooseMove",
-"language": "GDScript",
-"path": "res://battle/states/choose_move.gd"
-}, {
-"base": "Node",
 "class": "ChooseTarget",
 "language": "GDScript",
 "path": "res://battle/states/choose_target.gd"
@@ -137,7 +132,6 @@ _global_script_class_icons={
 "Battle": "",
 "BeginTurn": "",
 "ChooseAction": "",
-"ChooseMove": "",
 "ChooseTarget": "",
 "EvaluateMove": "",
 "ExecuteMove": "",
@@ -166,6 +160,7 @@ config/icon="res://icon.png"
 
 Director="*res://director.gd"
 FamiliarFactory="*res://data/familiar_factory.gd"
+Util="*res://util.gd"
 
 [display]
 

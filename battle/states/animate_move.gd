@@ -7,7 +7,7 @@ onready var familiar_factory = get_parent().get_node("/root/FamiliarFactory")
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var player_labels = get_parent().get_node("player_labels")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
-onready var move_callout = get_parent().get_node("ui/move_callout")
+onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
 onready var tween = get_parent().get_node("tween")
 
 const State = preload("res://battle/states/states.gd")
@@ -33,7 +33,7 @@ func begin(_params):
     if current_action.who == "player":
         animating_sprite = player_sprites.get_child(current_action.familiar)
     if current_action.who == "enemy":
-        animating_sprite = enemy_sprites.get_child(3 - current_action.familiar)
+        animating_sprite = enemy_sprites.get_child(1 - current_action.familiar)
 
     # Check to make sure the acting familiar hasn't died before we perform their action
     if current_action.who == "player" and not director.player_party.familiars[current_action.familiar].is_living():
@@ -61,7 +61,6 @@ func handle_tween_finish():
                                         ANIMATE_MOVE_DURATION / 2)
             tween.start()
     else:
-        move_callout.visible = false
         get_parent().set_state(State.EXECUTE_MOVE, {})
 
 func handle_timer_timeout():
@@ -73,7 +72,14 @@ func handle_effect_finish():
     get_parent().set_state(State.EXECUTE_MOVE, {})
 
 func begin_animate_attack():
-    get_parent().open_move_callout(familiar_factory.get_move_name(current_action.move))
+    var battle_dialog_message = ""
+    if current_action.who == "player":
+        battle_dialog_message += familiar_factory.get_display_name(director.player_party.familiars[current_action.familiar])
+    if current_action.who == "enemy":
+        battle_dialog_message += "Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.familiar])
+    battle_dialog_message += " used " + familiar_factory.get_move_name(current_action.move) + "!"
+
+    battle_dialog.open(battle_dialog_message)
 
     var move_direction = 1
     if current_action.who == "enemy":
@@ -87,7 +93,7 @@ func begin_animate_attack():
     tween.start()
 
 func begin_animate_switch():
-    get_parent().open_move_callout("Switch")
+    battle_dialog.open("")
 
     animating_sprite.visible = false
     if current_action.who == "player":
@@ -96,7 +102,14 @@ func begin_animate_switch():
     tween.start()
 
 func begin_animate_item():
-    get_parent().open_move_callout(Inventory.Item.keys()[current_action.item])
+    var battle_dialog_message = ""
+    if current_action.who == "player":
+        battle_dialog_message += "You"
+    elif current_action.who == "enemy":
+        battle_dialog_message += "Enemy"
+    battle_dialog_message += " used " + Inventory.Item.keys()[current_action.item]
+
+    battle_dialog.open(battle_dialog_message)
 
     effect = item_effect_scene.instance()
     effect.connect("animation_finished", self, "handle_effect_finish")
@@ -105,6 +118,6 @@ func begin_animate_item():
     if current_action.target_who == "player":
         effect.position = player_sprites.get_child(current_action.target_familiar).position
     else:
-        effect.position = enemy_sprites.rect_position + enemy_sprites.get_child(3 - current_action.target_familiar).position
+        effect.position = enemy_sprites.rect_position + enemy_sprites.get_child(1 - current_action.target_familiar).position
 
     effect.play("default")

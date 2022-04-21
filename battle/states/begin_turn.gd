@@ -3,17 +3,13 @@ class_name BeginTurn
 
 onready var director = get_node("/root/Director")
 
-onready var move_select = get_parent().get_node("ui/move_select")
-onready var move_info = get_parent().get_node("ui/move_info")
-
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
 
 var current_familiar
 
 func begin(_params):
-    if get_parent().surprise_round != "player":
-        enemy_choose_actions()
+    enemy_choose_actions()
 
     # Compute the action speeds
     var action_speeds = []
@@ -35,7 +31,6 @@ func begin(_params):
 
             current_index -= 1
     
-    get_parent().surprise_round = "none"
     get_parent().current_turn = -1
     get_parent().set_state(State.ANIMATE_MOVE, {})
 
