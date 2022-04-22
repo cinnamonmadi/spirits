@@ -28,15 +28,13 @@ func begin(params):
                 dialog_message += " "
             dialog_message += familiar_factory.get_display_name(summoning_familiars[i]) + "!"
         dialog_message += " Go!"
-        battle_dialog.open(dialog_message)
+        battle_dialog.open_and_wait(dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func process(_delta):
+    if not battle_dialog.is_open() and not tween.is_active():
+        summon_familiars_and_switch_states()
     if Input.is_action_just_pressed("action"):
-        if not battle_dialog.is_waiting():
-            battle_dialog.progress()
-        # If dialog is waiting and tween is not active
-        elif not tween.is_active(): 
-            summon_familiars_and_switch_states()
+        battle_dialog.progress()
 
 func handle_tween_finish():
     pass

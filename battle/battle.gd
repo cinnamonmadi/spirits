@@ -24,6 +24,7 @@ onready var tween = $tween
 onready var timer = $timer
 
 const SCREEN_WIDTH: int = 640
+const BATTLE_DIALOG_WAIT_TIME: float = 0.5
 
 const State = preload("res://battle/states/states.gd")
 
@@ -63,13 +64,14 @@ func _ready():
 
     enemy_party.familiars.append(familiar_factory.create_familiar(familiar_factory.Species.GHOST, 3))
     enemy_party.familiars.append(familiar_factory.create_familiar(familiar_factory.Species.MIMIC, 3))
-    for familiar in enemy_party.familiars:
-        familiar.health = 1
+    # for familiar in enemy_party.familiars:
+        # familiar.health = 1
     for _i in range(0, enemy_party.familiars.size()):
         enemy_captured.append(false)
 
     battle_dialog.ROW_CHAR_LEN = 18
     battle_dialog.DIALOG_SPEED /= 3.0
+    battle_dialog.keep_open = true
 
     close_all_menus()
     director.player_party.pre_battle_setup()

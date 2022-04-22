@@ -15,6 +15,7 @@ var lines = []
 var current_line = []
 var current_row = 0
 var next_char_timer: float
+var wait_timer: float = -1
 
 var state = State.CLOSED
 var keep_open = false
@@ -97,6 +98,10 @@ func open(text: String):
     load_lines(text)
     _open()
 
+func open_and_wait(text: String, duration: float):
+    open(text)
+    wait_timer = duration
+
 func open_empty():
     for row in rows:
         row.text = ""
@@ -139,8 +144,15 @@ func progress():
         state = State.WAITING
 
 func _process(delta):
-    if state == State.CLOSED or state == State.WAITING:
+    if state == State.CLOSED:
         return
+    elif state == State.WAITING:
+        if wait_timer == -1:
+            return
+        wait_timer -= delta
+        if wait_timer <= 0:
+            wait_timer = -1
+            close()
     elif state == State.READING:
         # Decrement the dialog timer
         next_char_timer -= delta

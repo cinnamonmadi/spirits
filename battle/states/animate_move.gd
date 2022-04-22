@@ -79,7 +79,7 @@ func begin_animate_attack():
         battle_dialog_message += "Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.familiar])
     battle_dialog_message += " used " + familiar_factory.get_move_name(current_action.move) + "!"
 
-    battle_dialog.open(battle_dialog_message)
+    battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
     var move_direction = 1
     if current_action.who == "enemy":
@@ -93,7 +93,7 @@ func begin_animate_attack():
     tween.start()
 
 func begin_animate_switch():
-    battle_dialog.open("")
+    battle_dialog.close()
 
     animating_sprite.visible = false
     if current_action.who == "player":
@@ -109,7 +109,7 @@ func begin_animate_item():
         battle_dialog_message += "Enemy"
     battle_dialog_message += " used " + Inventory.Item.keys()[current_action.item]
 
-    battle_dialog.open(battle_dialog_message)
+    battle_dialog.open(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
     effect = item_effect_scene.instance()
     effect.connect("animation_finished", self, "handle_effect_finish")
