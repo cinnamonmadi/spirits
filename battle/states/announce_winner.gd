@@ -72,7 +72,7 @@ func handle_win():
     participating_player_familiars = []
     for i in range(0, director.player_party.familiars.size()):
         exp_to_give.append(0)
-        if director.player_party.familiar_participated[i] and director.player_party.familiars[i].is_living():
+        if director.player_party.familiars[i].participated and director.player_party.familiars[i].is_living():
             participating_player_familiars.append(i)
     
     # Divide the experience between familiars

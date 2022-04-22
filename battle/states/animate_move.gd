@@ -49,6 +49,8 @@ func begin(_params):
         begin_animate_switch()
     elif current_action.action == Action.USE_ITEM:
         begin_animate_item()
+    elif current_action.action == Action.REST:
+        begin_animate_rest()
 
 func process(_delta):
     pass
@@ -71,13 +73,14 @@ func handle_effect_finish():
     effect.queue_free()
     get_parent().set_state(State.EXECUTE_MOVE, {})
 
-func begin_animate_attack():
-    var battle_dialog_message = ""
+func message_familiar_name():
     if current_action.who == "player":
-        battle_dialog_message += familiar_factory.get_display_name(director.player_party.familiars[current_action.familiar])
+        return familiar_factory.get_display_name(director.player_party.familiars[current_action.familiar])
     if current_action.who == "enemy":
-        battle_dialog_message += "Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.familiar])
-    battle_dialog_message += " used " + familiar_factory.get_move_name(current_action.move) + "!"
+        return "Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.familiar])
+
+func begin_animate_attack():
+    var battle_dialog_message = message_familiar_name() + " used " + familiar_factory.get_move_name(current_action.move) + "!"
 
     battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
@@ -101,15 +104,16 @@ func begin_animate_switch():
     tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
     tween.start()
 
-func begin_animate_item():
-    var battle_dialog_message = ""
-    if current_action.who == "player":
-        battle_dialog_message += "You"
-    elif current_action.who == "enemy":
-        battle_dialog_message += "Enemy"
-    battle_dialog_message += " used " + Inventory.Item.keys()[current_action.item]
+func begin_animate_rest():
+    var battle_dialog_message = message_familiar_name() + " took a rest"
+    battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
-    battle_dialog.open(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+    tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
+    tween.start()
+
+func begin_animate_item():
+    var battle_dialog_message = message_familiar_name() + " used " + Inventory.Item.keys()[current_action.item]
+    battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
     effect = item_effect_scene.instance()
     effect.connect("animation_finished", self, "handle_effect_finish")

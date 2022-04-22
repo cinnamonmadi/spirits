@@ -8,16 +8,17 @@ onready var move_info_box = $move_info
 
 const CURSOR_POSITION_SWITCH = Vector2(2, 0)
 const CURSOR_POSITION_RUN = Vector2(3, 0)
-const CURSOR_POSITION_WAIT = Vector2(2, 1)
+const CURSOR_POSITION_REST = Vector2(2, 1)
 const CURSOR_POSITION_ITEM = Vector2(3, 1)
 
 var cursor_position: Vector2
 var move_info = []
+var familiar_is_burntout: bool
 
 func _ready():
     pass 
 
-func open(moves):
+func open(moves, is_burntout):
     move_info = []
     for i in range(0, 4):
         if i < moves.size():
@@ -26,6 +27,8 @@ func open(moves):
         else:
             move_info.append(null)
             move_boxes[i].get_child(0).text = ""
+
+    familiar_is_burntout = is_burntout
 
     reset_cursor_position()
     visible = true
@@ -82,7 +85,10 @@ func navigate(direction: Vector2):
             cursor_position += direction
 
     # Highlight the new action label
-    action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 1, 0, 1))
+    if familiar_is_burntout and cursor_position.x < 2:
+        action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 0, 0, 1))
+    else:
+        action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 1, 0, 1))
     update_move_info_box()
 
 func update_move_info_box():
@@ -94,8 +100,8 @@ func update_move_info_box():
         move_info_lines = ["SWITCH", "Switch current fighter with", "another spirit"]
     elif cursor_position == CURSOR_POSITION_RUN:
         move_info_lines = ["RUN", "Attempt to escape from", "battle"]
-    elif cursor_position == CURSOR_POSITION_WAIT:
-        move_info_lines = ["WAIT", "Do nothing and allow this", "spirit to recover energy"]
+    elif cursor_position == CURSOR_POSITION_REST:
+        move_info_lines = ["REST", "Do nothing and allow this", "spirit to recover energy"]
     elif cursor_position == CURSOR_POSITION_ITEM:
         move_info_lines = ["ITEM", "Use an item from your", "inventory"]
 

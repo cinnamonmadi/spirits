@@ -134,7 +134,7 @@ const SPECIES_INFO = {
 const MOVE_INFO = {
     Move.SPLASH: {
         "type": Type.WATER,
-        "cost": 2,
+        "cost": 6,
         "power": 0,
         "desc": "Splash water on your foe",
     },

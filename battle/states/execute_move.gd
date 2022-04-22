@@ -24,6 +24,8 @@ func begin(_params):
         execute_switch()
     elif current_action.action == Action.USE_ITEM:
         execute_use_item()
+    elif current_action.action == Action.REST:
+        execute_rest()
 
 func process(_delta):
     var done_interpolating = true
@@ -142,3 +144,9 @@ func try_to_catch_familiar(gem_info):
         get_parent().enemy_sprites.get_child(1 - current_action.target_familiar).flip_h = true
     else:
         print("fail! " + String(catch_value) + " vs " + String(catch_rate))
+
+func execute_rest():
+    if current_action.who == "player":
+        director.player_party.familiars[current_action.familiar].is_resting = true
+    elif current_action.who == "enemy":
+        get_parent().enemy_party.familiars[current_action.familiar].is_resting = true

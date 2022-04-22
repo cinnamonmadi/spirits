@@ -54,6 +54,7 @@ var enemy_captured = []
 var actions = []
 var current_turn = -1
 var chosen_item = 0
+var rests = []
 var targeting_for_action
 
 func _ready():
@@ -75,6 +76,7 @@ func _ready():
 
     close_all_menus()
     director.player_party.pre_battle_setup()
+    enemy_party.pre_battle_setup()
     set_state(State.SPRITES_ENTERING, {})
 
 func close_all_menus():
@@ -137,3 +139,22 @@ func set_target_cursor(target_who: String, target_index: int):
     target_cursor.flip_v = target_who == "player"
     target_cursor.position = cursor_base_position + offset
     target_cursor.visible = true
+
+func recharge_energy():
+    for familiar in director.player_party.familiars:
+        recharge_familiar_energy(familiar)
+    for familiar in enemy_party.familiars:
+        recharge_familiar_energy(familiar)
+
+func recharge_familiar_energy(familiar: Familiar):
+    if not familiar.is_living():
+        return
+    if familiar.is_burntout:
+        familiar.is_burntout = false
+        return
+    var percent_of_focus = 0.05
+    if familiar.is_resting:
+        percent_of_focus += 0.15
+        familiar.is_resting = false
+    var mana_to_recharge = int(ceil(float(familiar.focus) * percent_of_focus) + 1)
+    familiar.change_mana(mana_to_recharge)

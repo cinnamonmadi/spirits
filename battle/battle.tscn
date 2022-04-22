@@ -39,13 +39,13 @@ __meta__ = {
 
 [node name="1" type="Sprite" parent="enemy_sprites"]
 visible = false
-position = Vector2( 426, 58 )
+position = Vector2( 420, 64 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
 [node name="2" type="Sprite" parent="enemy_sprites"]
 visible = false
-position = Vector2( 566, 58 )
+position = Vector2( 560, 64 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 4 )
 
@@ -98,17 +98,19 @@ __meta__ = {
 
 [node name="1" parent="enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 436.0
-margin_top = 138.0
-margin_right = 436.0
-margin_bottom = 138.0
+margin_left = 426.0
+margin_top = 144.0
+margin_right = 426.0
+margin_bottom = 144.0
+is_player_healthbar = false
 
 [node name="2" parent="enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 576.0
-margin_top = 138.0
-margin_right = 576.0
-margin_bottom = 138.0
+margin_left = 566.0
+margin_top = 144.0
+margin_right = 566.0
+margin_bottom = 144.0
+is_player_healthbar = false
 
 [node name="ui" type="CanvasLayer" parent="."]
 

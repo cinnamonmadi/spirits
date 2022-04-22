@@ -3,5 +3,6 @@ enum {
     USE_MOVE,
     USE_ITEM,
     SWITCH,
+    REST,
     RUN
 }

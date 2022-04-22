@@ -6,7 +6,7 @@ onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var healthbar = $healthbar
 onready var manabar = $manabar
-onready var expbar = $expbar
+onready var expbar
 onready var name_label = $name_label
 onready var level_label = $level_label
 onready var health_label = $health_label
@@ -28,11 +28,15 @@ var exp_interpolate_to: int
 var exp_interpolate_from: int
 
 var familiar: Familiar = null
+export var is_player_healthbar: bool = true
 
 func _ready():
     healthbar.region_rect.size.y = healthbar.texture.get_height()
     manabar.region_rect.size.y = manabar.texture.get_height()
-    expbar.region_rect.size.y = expbar.texture.get_height()
+
+    if is_player_healthbar:
+        expbar = $expbar
+        expbar.region_rect.size.y = expbar.texture.get_height()
 
 func is_interpolating():
     if familiar == null:
@@ -45,8 +49,9 @@ func set_familiar(value: Familiar):
     displayed_max_health = familiar.max_health
     displayed_mana = familiar.mana
     displayed_max_mana = familiar.max_mana
-    displayed_exp = familiar.get_current_experience()
-    displayed_max_exp = familiar.get_experience_tnl()
+    if is_player_healthbar:
+        displayed_exp = familiar.get_current_experience()
+        displayed_max_exp = familiar.get_experience_tnl()
     refresh()
 
 func refresh():
@@ -64,12 +69,13 @@ func refresh():
         mana_percent_full = displayed_mana / float(displayed_max_mana)
     manabar.region_rect.size.x = int(mana_percent_full * manabar.texture.get_width())
 
-    var exp_percent_full: float
-    if displayed_max_exp == 0:
-        exp_percent_full = 0
-    else:
-        exp_percent_full = displayed_exp / float(displayed_max_exp)
-    expbar.region_rect.size.x = int(exp_percent_full * expbar.texture.get_width())
+    if is_player_healthbar:
+        var exp_percent_full: float
+        if displayed_max_exp == 0:
+            exp_percent_full = 0
+        else:
+            exp_percent_full = displayed_exp / float(displayed_max_exp)
+        expbar.region_rect.size.x = int(exp_percent_full * expbar.texture.get_width())
 
     name_label.text = familiar_factory.get_display_name(familiar)
     level_label.text = String(familiar.get_level())
@@ -86,7 +92,7 @@ func _process(delta):
         mana_interpolate_from = int(displayed_mana)
         mana_interpolate_to = familiar.mana
         interpolate_timer = INTERPOLATE_DURATION
-    if familiar.get_current_experience() != displayed_exp or familiar.get_experience_tnl() != displayed_max_exp:
+    if is_player_healthbar and (familiar.get_current_experience() != displayed_exp or familiar.get_experience_tnl() != displayed_max_exp):
         displayed_exp = familiar.get_current_experience()
         displayed_max_exp = familiar.get_experience_tnl()
         refresh()

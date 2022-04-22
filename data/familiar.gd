@@ -19,8 +19,13 @@ var max_mana: int
 var attack: int
 var defense: int
 var speed: int
+var focus: int
 
 var moves = []
+
+var is_resting: bool
+var participated: bool
+var is_burntout: bool
 
 func _init(as_species: int, with_species_info, at_level: int):
     species = as_species
@@ -34,6 +39,10 @@ func _init(as_species: int, with_species_info, at_level: int):
             moves.append(move.move)
         if moves.size() == 4:
             break
+
+    is_resting = false
+    participated = false
+    is_burntout = false
 
 func is_living() -> bool:
     return health > 0
@@ -52,10 +61,11 @@ func set_level(value: int):
 func update_stats():
     types = species_info.types
     max_health = int((species_info.health * 2 * level) / 100) + level + 10
-    max_mana = int((species_info.mana * 2 * level) / 100) + level + 5
+    max_mana = int((species_info.mana * 1.25 * level) / 100) + 5
     attack = int((species_info.attack * 2 * level) / 100) + 5
     defense = int((species_info.defense * 2 * level) / 100) + 5
     speed = int((species_info.speed * 2 * level) / 100) + 5
+    focus = int((species_info.focus * 2 * level) / 100) + 5
 
 func get_level() -> int:
     return level
@@ -93,7 +103,6 @@ func change_health(amount: int):
 func change_mana(amount: int):
     mana += amount
     mana = int(clamp(mana, 0, max_mana))
-
 
 func get_level_up_moves(for_level):
     var level_up_moves = []
