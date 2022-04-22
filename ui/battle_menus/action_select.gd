@@ -60,8 +60,7 @@ func reset_cursor_position():
     for action_box in action_boxes[1]:
         action_box.get_child(0).set("custom_colors/font_color", Color(1, 1, 1, 1))
     cursor_position = Vector2.ZERO
-    action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 1, 0, 1))
-    update_move_info_box()
+    update_selection()
 
 func navigate(direction: Vector2):
     # De-highlight the current action label
@@ -85,6 +84,9 @@ func navigate(direction: Vector2):
             cursor_position += direction
 
     # Highlight the new action label
+    update_selection()
+
+func update_selection():
     if familiar_is_burntout and cursor_position.x < 2:
         action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 0, 0, 1))
     else:

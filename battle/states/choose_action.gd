@@ -49,6 +49,7 @@ func process(_delta):
         if selected_move != -1:
             if current_familiar.mana == 0:
                 battle_dialog.open_and_wait("Cannot use moves! " + familiar_factory.get_display_name(current_familiar) + " is burnt out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+                return
             var chosen_move = current_familiar.moves[selected_move]
             get_parent().targeting_for_action = Action.USE_MOVE
             get_parent().set_state(State.CHOOSE_TARGET, { "chosen_move": chosen_move, "action": Action.USE_MOVE })

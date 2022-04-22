@@ -92,10 +92,12 @@ func _open():
 
 func open_with(set_lines):
     lines = set_lines
+    wait_timer = -1
     _open()
 
 func open(text: String):
     load_lines(text)
+    wait_timer = -1
     _open()
 
 func open_and_wait(text: String, duration: float):
