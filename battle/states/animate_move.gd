@@ -18,7 +18,6 @@ const item_effect_scene = preload("res://battle/effects/item_effect.tscn")
 const ANIMATE_MOVE_DURATION: float = 0.3
 const ANIMATE_MOVE_DISTANCE: int = 10
 
-var current_turn
 var current_action
 var animating_sprite
 var animate_move_start_position
@@ -26,22 +25,13 @@ var dummy_timer
 var effect
 
 func begin(_params):
-    get_parent().current_turn += 1
-    current_action = get_parent().actions[get_parent().current_turn]
+    current_action = get_parent().actions[0]
 
     # Determine animating sprite
     if current_action.who == "player":
         animating_sprite = player_sprites.get_child(current_action.familiar)
     if current_action.who == "enemy":
         animating_sprite = enemy_sprites.get_child(1 - current_action.familiar)
-
-    # Check to make sure the acting familiar hasn't died before we perform their action
-    if current_action.who == "player" and not director.player_party.familiars[current_action.familiar].is_living():
-        get_parent().set_state(State.EVALUATE_MOVE, {})
-        return
-    if current_action.who == "enemy" and not get_parent().enemy_party.familiars[current_action.familiar].is_living():
-        get_parent().set_state(State.EVALUATE_MOVE, {})
-        return
 
     if current_action.action == Action.USE_MOVE:
         begin_animate_attack()
@@ -105,7 +95,7 @@ func begin_animate_switch():
     tween.start()
 
 func begin_animate_rest():
-    var battle_dialog_message = message_familiar_name() + " took a rest"
+    var battle_dialog_message = message_familiar_name() + " took a rest."
     battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
     tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)

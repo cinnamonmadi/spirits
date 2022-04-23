@@ -11,8 +11,8 @@ const Action = preload("res://battle/states/action.gd")
 var requires_switch 
 var switch_index
 
-func begin(_params):
-    requires_switch = get_parent().current_turn != -1
+func begin(params):
+    requires_switch = params.switch_required
     if requires_switch:
         for i in range(0, 2):
             if not director.player_party.familiars[i].is_living():

@@ -16,7 +16,7 @@ const EXECUTE_MOVE_DURATION: float = 1.0
 var current_action 
 
 func begin(_params):
-    current_action = get_parent().actions[get_parent().current_turn]
+    current_action = get_parent().actions[0]
 
     if current_action.action == Action.USE_MOVE:
         execute_use_move()
@@ -39,7 +39,7 @@ func process(_delta):
             break
 
     if done_interpolating:
-        get_parent().set_state(State.EVALUATE_MOVE, {})
+        get_parent().set_state(State.EVALUATE_MOVE, { "initialize": true })
 
 func handle_tween_finish():
     pass
@@ -118,7 +118,7 @@ func execute_use_item():
         director.player_inventory.use_item(current_action.item, target_familiar)
         return
 
-    get_parent().set_state(State.EVALUATE_MOVE, {})
+    get_parent().set_state(State.EVALUATE_MOVE, { "initialize": true })
 
 func try_to_catch_familiar(gem_info):
     if get_parent().enemy_captured[current_action.target_familiar]:

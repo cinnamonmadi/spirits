@@ -48,14 +48,14 @@ func process(_delta):
         # If the player chose a move, transition to the CHOOSE_TARGET state
         if selected_move != -1:
             if current_familiar.mana == 0:
-                battle_dialog.open_and_wait("Cannot use moves! " + familiar_factory.get_display_name(current_familiar) + " is burnt out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+                battle_dialog.open_and_wait(familiar_factory.get_display_name(current_familiar) + " has no mana!", get_parent().BATTLE_DIALOG_WAIT_TIME)
                 return
             var chosen_move = current_familiar.moves[selected_move]
             get_parent().targeting_for_action = Action.USE_MOVE
             get_parent().set_state(State.CHOOSE_TARGET, { "chosen_move": chosen_move, "action": Action.USE_MOVE })
         # If the player chose the switch action, open the party menu
         elif action_select.cursor_position == action_select.CURSOR_POSITION_SWITCH:
-            get_parent().set_state(State.PARTY_MENU, {})
+            get_parent().set_state(State.PARTY_MENU, { "switch_required": false })
         # If the player chose the item action, open the inventory
         elif action_select.cursor_position == action_select.CURSOR_POSITION_ITEM:
             get_parent().set_state(State.ITEM_MENU, {})

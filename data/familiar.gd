@@ -26,6 +26,7 @@ var moves = []
 var is_resting: bool
 var participated: bool
 var is_burntout: bool
+var burnout: int
 
 func _init(as_species: int, with_species_info, at_level: int):
     species = as_species
@@ -43,6 +44,7 @@ func _init(as_species: int, with_species_info, at_level: int):
     is_resting = false
     participated = false
     is_burntout = false
+    burnout = 0
 
 func is_living() -> bool:
     return health > 0
@@ -102,6 +104,8 @@ func change_health(amount: int):
 
 func change_mana(amount: int):
     mana += amount
+    if mana < 0:
+        burnout = mana * -1
     mana = int(clamp(mana, 0, max_mana))
 
 func get_level_up_moves(for_level):

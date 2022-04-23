@@ -31,7 +31,6 @@ func begin(_params):
 
             current_index -= 1
     
-    get_parent().current_turn = -1
     get_parent().set_state(State.ANIMATE_MOVE, {})
 
 func process(_delta):
@@ -54,7 +53,9 @@ func get_action_speed(action) -> int:
         return get_parent().get_acting_familiar(action).speed
 
 func enemy_choose_actions():
-    for i in range(0, get_parent().enemy_party.familiars.size()):
+    for i in range(0, min(get_parent().enemy_party.familiars.size(), 2)):
+        if not get_parent().enemy_party.familiars[i].is_living():
+            continue
         var enemy_chosen_move = get_parent().enemy_party.familiars[i].moves[director.rng.randi_range(0, 3)]
         get_parent().actions.append({
             "who": "enemy",
@@ -62,5 +63,5 @@ func enemy_choose_actions():
             "action": Action.USE_MOVE,
             "move": enemy_chosen_move,
             "target_who": "player",
-            "target_familiar": 0
+            "target_familiar": 1
         })

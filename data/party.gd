@@ -24,6 +24,7 @@ func pre_battle_setup():
         old_familiar_order.append(familiars[i])
         familiars[i].is_resting = false
         familiars[i].participated = false
+        familiars[i].is_burntout = false
 
     sort_fighters_first()
 
@@ -38,6 +39,14 @@ func recall_familiar_order():
     for i in range(0, old_familiar_order.size()):
         familiars.append(old_familiar_order[i])
 
+func post_battle_setup():
+    recall_familiar_order()
+    for familiar in familiars:
+        familiar.is_resting = false
+        familiar.participated = false
+        familiar.is_burntout = false
+        familiar.mana = familiar.max_mana
+
     in_battle = false
 
 func swap_familiars(a: int, b: int):
@@ -47,7 +56,8 @@ func swap_familiars(a: int, b: int):
 
     if in_battle:
         for i in range(0, min(familiars.size(), 2)):
-            familiars[i].particpated = true
+            if familiars[i].is_living():
+                familiars[i].participated = true
 
 func sort_fighters_first():
     if not familiars[0].is_living():

@@ -32,8 +32,7 @@ func begin(params):
         return
 
     # If there are any pending moves that would have involved using items, make sure to give the item back to the player
-    for i in range(get_parent().current_turn + 1, get_parent().actions.size()):
-        var action = get_parent().actions[i]
+    for action in get_parent().actions:
         if action.action == Action.USE_ITEM and action.who == "player":
             director.player_inventory.add_item(action.item, 1)
 
@@ -102,7 +101,7 @@ func process(_delta):
             dialog.progress()
         return
     if not player_won:
-        director.player_party.recall_familiar_order()
+        director.player_party.post_battle_setup()
         end()
     else:
         var done_giving_exp = true
@@ -121,7 +120,7 @@ func process(_delta):
                         todos.append({ "type": "learn_move", "familiar": familiar, "move": learned_move })
                     return
         if done_giving_exp:
-            director.player_party.recall_familiar_order()
+            director.player_party.post_battle_setup()
             handle_todos()
     
 func handle_tween_finish():

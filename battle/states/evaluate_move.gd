@@ -14,87 +14,117 @@ onready var timer = get_parent().get_node("timer")
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
 
+enum Todo {
+    BURNOUT_PLAYER,
+    BURNOUT_ENEMY,
+    FAINT_PLAYER,
+    FAINT_ENEMY
+}
+
 var current_action 
-var familiar_died 
+var player_familiar_died 
+var enemy_familiar_died
+var todos
 var announcements
 
-func begin(_params):
-    current_action = get_parent().actions[get_parent().current_turn]
+func begin(params):
+    if not params.initialize:
+        return
 
-    familiar_died = false
-    announcements = []
+    current_action = get_parent().actions.pop_front()
+    player_familiar_died = false
+    enemy_familiar_died = false
+    todos = []
 
     if current_action.action == Action.USE_MOVE:
         # Check if the attacking familiar burnt themselves out or died
         if current_action.who == "player":
-            if director.player_party.familiars[current_action.familiar].mana == 0:
-                burnout_player_familiar(current_action.familiar)
-            if not director.player_party.familiars[current_action.familiar].is_living():
-                faint_player_familiar(current_action.familiar)
+            if director.player_party.familiars[current_action.familiar].burnout != 0:
+                todos.append({ "todo": Todo.BURNOUT_PLAYER, "familiar": current_action.familiar })
         if current_action.who == "enemy":
-            if get_parent().enemy_party.familiars[current_action.familiar].mana == 0:
-                burnout_enemy_familiar(current_action.familiar)
-            if not get_parent().enemy_party.familiars[current_action.familiar].is_living():
-                faint_enemy_familiar(current_action.familiar)
+            if get_parent().enemy_party.familiars[current_action.familiar].burnout != 0:
+                todos.append({ "todo": Todo.BURNOUT_ENEMY, "familiar": current_action.familiar })
 
         # Check if target familiar died
         if current_action.target_who == "player":
             if not director.player_party.familiars[current_action.target_familiar].is_living():
-                faint_player_familiar(current_action.target_familiar)
+                todos.append({ "todo": Todo.FAINT_PLAYER, "familiar": current_action.target_familiar })
         if current_action.target_who == "enemy":
             if not get_parent().enemy_party.familiars[current_action.target_familiar].is_living():
-                faint_enemy_familiar(current_action.target_familiar)
+                todos.append({ "todo": Todo.FAINT_ENEMY, "familiar": current_action.target_familiar })
 
 func burnout_familiar(familiar: Familiar):
-    familiar.is_burntout = true
-    var burnout_damage = ceil(familiar.get_level() / 25.0) + 1
+    var burnout_damage = familiar.burnout * (ceil(familiar.get_level() / 25.0) + 1)
     familiar.change_health(-burnout_damage)
 
 func burnout_player_familiar(familiar_index: int):
     var familiar = director.player_party.familiars[familiar_index]
     burnout_familiar(familiar)
-    announcements.append(familiar_factory.get_display_name(familiar) + " burned out!")
+    if not director.player_party.familiars[current_action.familiar].is_living():
+        todos.push_front({ "todo": Todo.FAINT_PLAYER, "familiar": current_action.familiar })
+    battle_dialog.open_and_wait(familiar_factory.get_display_name(familiar) + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func burnout_enemy_familiar(familiar_index: int):
     var familiar = get_parent().enemy_party.familiars[familiar_index]
     burnout_familiar(familiar)
-    announcements.append("Enemy " + familiar_factory.get_display_name(familiar) + " burned out!")
+    if not get_parent().enemy_party.familiars[current_action.familiar].is_living():
+        todos.push_front({ "todo": Todo.FAINT_ENEMY, "familiar": current_action.familiar })
+    battle_dialog.open_and_wait("Enemy " + familiar_factory.get_display_name(familiar) + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func faint_player_familiar(familiar_index: int):
+    for action_index in range(0, get_parent().actions.size()):
+        if get_parent().actions[action_index].who == "player" and get_parent().actions[action_index].familiar == familiar_index:
+            get_parent().actions.remove(action_index)
     player_sprites.get_child(familiar_index).visible = false
     player_labels.get_child(familiar_index).visible = false
-    announcements.append(familiar_factory.get_display_name(director.player_party.familiars[familiar_index]) + " fainted!")
-    familiar_died = true
+    battle_dialog.open_and_wait(familiar_factory.get_display_name(director.player_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+    player_familiar_died = true
 
 func faint_enemy_familiar(familiar_index: int):
+    for action_index in range(0, get_parent().actions.size()):
+        if get_parent().actions[action_index].who == "enemy" and get_parent().actions[action_index].familiar == familiar_index:
+            get_parent().actions.remove(action_index)
     enemy_sprites.get_child(1 - familiar_index).visible = false
     enemy_labels.get_child(1 - familiar_index).visible = false
-    announcements.append("Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[familiar_index]) + " fainted!")
-    familiar_died = true
+    battle_dialog.open_and_wait("Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+    enemy_familiar_died = true
 
 func end_state():
     if director.player_party.get_living_familiar_count() == 0 or get_parent().enemy_party.get_living_familiar_count() == 0:
         battle_dialog.keep_open = false
         battle_dialog.close()
         get_parent().set_state(State.ANNOUNCE_WINNER, { "first_time_entering_state": true })
-    elif familiar_died and current_action.target_who == "player" and director.player_party.get_living_familiar_count() >= 2:
-        get_parent().set_state(State.PARTY_MENU, {})
-    elif get_parent().current_turn == get_parent().actions.size() - 1:
-        get_parent().actions = []
-        get_parent().current_turn = -1
+    if director.player_party.get_living_familiar_count() >= 2:
+        for i in range(0, min(director.player_party.familiars.size(), 2)):
+            if not director.player_party.familiars[i].is_living():
+                get_parent().set_state(State.PARTY_MENU, { "switch_required": true })
+                return
+    if get_parent().actions.size() == 0:
         get_parent().recharge_energy()
         get_parent().set_state(State.CHOOSE_ACTION, {})
     else:
         get_parent().set_state(State.ANIMATE_MOVE, {})
 
+func pop_next_todo():
+    var next_todo = todos.pop_front()
+    print("next: ", next_todo)
+    if next_todo.todo == Todo.BURNOUT_PLAYER:
+        burnout_player_familiar(next_todo.familiar)
+    elif next_todo.todo == Todo.BURNOUT_ENEMY:
+        burnout_enemy_familiar(next_todo.familiar)
+    elif next_todo.todo == Todo.FAINT_PLAYER:
+        faint_player_familiar(next_todo.familiar)
+    elif next_todo.todo == Todo.FAINT_ENEMY:
+        faint_enemy_familiar(next_todo.familiar)
+
 func process(_delta):
     if Input.is_action_just_pressed("action"):
         battle_dialog.progress()
     if not battle_dialog.is_open():
-        if announcements.size() == 0:
+        if todos.size() == 0:
             end_state()
         else:
-            battle_dialog.open_and_wait(announcements.pop_front(), get_parent().BATTLE_DIALOG_WAIT_TIME)
+            pop_next_todo()
 
 func handle_tween_finish():
     pass
