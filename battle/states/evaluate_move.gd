@@ -3,6 +3,7 @@ class_name EvaluateMove
 
 onready var director = get_node("/root/Director")
 onready var familiar_factory = get_node("/root/FamiliarFactory")
+onready var effect_factory = get_node("/root/EffectFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var player_labels = get_parent().get_node("player_labels")
@@ -78,6 +79,7 @@ func faint_player_familiar(familiar_index: int):
             break
     player_sprites.get_child(familiar_index).visible = false
     player_labels.get_child(familiar_index).visible = false
+    create_death_effect(player_sprites.get_child(familiar_index).position)
     battle_dialog.open_and_wait(familiar_factory.get_display_name(director.player_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
     player_familiar_died = true
 
@@ -88,8 +90,15 @@ func faint_enemy_familiar(familiar_index: int):
             break
     enemy_sprites.get_child(1 - familiar_index).visible = false
     enemy_labels.get_child(1 - familiar_index).visible = false
+    create_death_effect(enemy_sprites.get_child(1 - familiar_index).position)
     battle_dialog.open_and_wait("Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
     enemy_familiar_died = true
+
+func create_death_effect(death_position: Vector2):
+    var effect = effect_factory.create_effect(effect_factory.Effect.MONSTER_DEATH)
+    get_parent().add_child(effect)
+    effect.position = death_position
+    effect.start()
 
 func end_state():
     if director.player_party.get_living_familiar_count() == 0 or get_parent().enemy_party.get_living_familiar_count() == 0:

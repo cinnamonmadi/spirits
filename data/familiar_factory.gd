@@ -24,6 +24,10 @@ enum Move {
     BANANA
 }
 
+enum Condition {
+    PARALYZED,
+}
+
 # Stat constants
 const SPECIES_INFO = {
     Species.SPHYNX: {
@@ -189,6 +193,12 @@ const TYPE_INFO = {
     }
 }
 
+const CONDITION_DURATION_INDEFINITE = -1
+const CONDITION_INFO = {
+    Condition.PARALYZED: {
+        "duration": CONDITION_DURATION_INDEFINITE,
+    }
+}
 
 func _ready():
     pass

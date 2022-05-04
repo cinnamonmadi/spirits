@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://battle/effects/effect.gd" type="Script" id=1]
+[ext_resource path="res://battle/effects/item.png" type="Texture" id=2]
+
+[node name="effect" type="Sprite"]
+texture = ExtResource( 2 )
+hframes = 8
+script = ExtResource( 1 )
+
+[node name="timer" type="Timer" parent="."]

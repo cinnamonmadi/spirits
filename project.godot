@@ -161,6 +161,7 @@ config/icon="res://icon.png"
 Director="*res://director.gd"
 FamiliarFactory="*res://data/familiar_factory.gd"
 Util="*res://util.gd"
+EffectFactory="*res://battle/effects/effect_factory.gd"
 
 [display]
 

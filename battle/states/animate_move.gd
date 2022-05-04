@@ -3,6 +3,7 @@ class_name AnimateMove
 
 onready var director = get_parent().get_node("/root/Director")
 onready var familiar_factory = get_parent().get_node("/root/FamiliarFactory")
+onready var effect_factory = get_parent().get_node("/root/EffectFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var player_labels = get_parent().get_node("player_labels")
@@ -13,8 +14,6 @@ onready var tween = get_parent().get_node("tween")
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
 
-const item_effect_scene = preload("res://battle/effects/item_effect.tscn")
-
 const ANIMATE_MOVE_DURATION: float = 0.3
 const ANIMATE_MOVE_DISTANCE: int = 10
 
@@ -22,7 +21,6 @@ var current_action
 var animating_sprite
 var animate_move_start_position
 var dummy_timer
-var effect
 
 func begin(_params):
     current_action = get_parent().actions[0]
@@ -59,8 +57,6 @@ func handle_timer_timeout():
     pass
 
 func handle_effect_finish():
-    effect.stop()
-    effect.queue_free()
     get_parent().set_state(State.EXECUTE_MOVE, {})
 
 func message_familiar_name():
@@ -105,13 +101,15 @@ func begin_animate_item():
     var battle_dialog_message = message_familiar_name() + " used " + Inventory.Item.keys()[current_action.item]
     battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
-    effect = item_effect_scene.instance()
+    print(effect_factory)
+    var effect = effect_factory.create_effect(effect_factory.Effect.ITEM)
     effect.connect("animation_finished", self, "handle_effect_finish")
     get_parent().add_child(effect)
+    effect.start()
 
     if current_action.target_who == "player":
         effect.position = player_sprites.get_child(current_action.target_familiar).position
     else:
         effect.position = enemy_sprites.rect_position + enemy_sprites.get_child(1 - current_action.target_familiar).position
 
-    effect.play("default")
+    effect.start()

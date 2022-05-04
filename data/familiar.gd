@@ -23,6 +23,8 @@ var focus: int
 
 var moves = []
 
+var status_conditions = []
+
 var is_resting: bool
 var participated: bool
 var is_burntout: bool
