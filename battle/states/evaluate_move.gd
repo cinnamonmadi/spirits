@@ -75,6 +75,7 @@ func faint_player_familiar(familiar_index: int):
     for action_index in range(0, get_parent().actions.size()):
         if get_parent().actions[action_index].who == "player" and get_parent().actions[action_index].familiar == familiar_index:
             get_parent().actions.remove(action_index)
+            break
     player_sprites.get_child(familiar_index).visible = false
     player_labels.get_child(familiar_index).visible = false
     battle_dialog.open_and_wait(familiar_factory.get_display_name(director.player_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
@@ -84,6 +85,7 @@ func faint_enemy_familiar(familiar_index: int):
     for action_index in range(0, get_parent().actions.size()):
         if get_parent().actions[action_index].who == "enemy" and get_parent().actions[action_index].familiar == familiar_index:
             get_parent().actions.remove(action_index)
+            break
     enemy_sprites.get_child(1 - familiar_index).visible = false
     enemy_labels.get_child(1 - familiar_index).visible = false
     battle_dialog.open_and_wait("Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
@@ -94,16 +96,20 @@ func end_state():
         battle_dialog.keep_open = false
         battle_dialog.close()
         get_parent().set_state(State.ANNOUNCE_WINNER, { "first_time_entering_state": true })
+        return
+
     if director.player_party.get_living_familiar_count() >= 2:
         for i in range(0, min(director.player_party.familiars.size(), 2)):
             if not director.player_party.familiars[i].is_living():
                 get_parent().set_state(State.PARTY_MENU, { "switch_required": true })
                 return
+
     if get_parent().actions.size() == 0:
         get_parent().recharge_energy()
         get_parent().set_state(State.CHOOSE_ACTION, {})
-    else:
-        get_parent().set_state(State.ANIMATE_MOVE, {})
+        return
+
+    get_parent().set_state(State.ANIMATE_MOVE, {})
 
 func pop_next_todo():
     var next_todo = todos.pop_front()
