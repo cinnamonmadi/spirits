@@ -14,7 +14,6 @@ func setup(path: String, frames: int, fps: float):
     hframes = frames
     frame = 0
     duration = 1.0 / fps
-    print(duration)
 
 func start():
     timer.start(duration)

@@ -101,7 +101,7 @@ func create_death_effect(death_position: Vector2):
     effect.start()
 
 func end_state():
-    if director.player_party.get_living_familiar_count() == 0 or get_parent().enemy_party.get_living_familiar_count() == 0:
+    if director.player_party.get_living_familiar_count() == 0 or get_parent().get_enemy_living_familiar_count() == 0:
         battle_dialog.keep_open = false
         battle_dialog.close()
         get_parent().set_state(State.ANNOUNCE_WINNER, { "first_time_entering_state": true })
@@ -122,7 +122,6 @@ func end_state():
 
 func pop_next_todo():
     var next_todo = todos.pop_front()
-    print("next: ", next_todo)
     if next_todo.todo == Todo.BURNOUT_PLAYER:
         burnout_player_familiar(next_todo.familiar)
     elif next_todo.todo == Todo.BURNOUT_ENEMY:

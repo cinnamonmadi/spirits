@@ -7,6 +7,8 @@ onready var familiar_factory = get_node("/root/FamiliarFactory")
 onready var player_labels = get_parent().get_node("player_labels")
 onready var enemy_labels = get_parent().get_node("enemy_labels")
 onready var tween = get_parent().get_node("tween")
+onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
+onready var catch_effect = get_parent().get_node("catch_effect")
 
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
@@ -14,6 +16,10 @@ const Action = preload("res://battle/states/action.gd")
 const EXECUTE_MOVE_DURATION: float = 1.0
 
 var current_action 
+var catch_successful: bool
+
+func _ready():
+    catch_effect.connect("animation_finished", self, "_on_catch_effect_finished")
 
 func begin(_params):
     current_action = get_parent().actions[0]
@@ -29,6 +35,15 @@ func begin(_params):
 
 func process(_delta):
     var done_interpolating = true
+
+    if catch_effect.is_playing: 
+        done_interpolating = false
+
+    if battle_dialog.is_open():
+        if Input.is_action_just_pressed("action"):
+            battle_dialog.progress()
+    if battle_dialog.is_open():
+        done_interpolating = false
 
     for child in player_labels.get_children():
         if child.is_interpolating():
@@ -111,6 +126,7 @@ func execute_use_item():
         var item_info = Inventory.ITEM_INFO[current_action.item]
         if item_info.action == Inventory.ItemAction.CAPTURE_MONSTER:
             try_to_catch_familiar(item_info)
+            return
         else:
             target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
 
@@ -122,10 +138,9 @@ func execute_use_item():
 
 func try_to_catch_familiar(gem_info):
     if get_parent().enemy_captured[current_action.target_familiar]:
-        # TODO handle this somehow with a message or visual cue?
-        # TODO similarly, do a type comparison check
-        print("already caught!")
+        battle_dialog.open("Wild " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.target_familiar]) + " is already caught!")
         return
+
     var target_familiar = get_parent().enemy_party.familiars[current_action.target_familiar]
 
     # Calculate the catch rate
@@ -138,12 +153,29 @@ func try_to_catch_familiar(gem_info):
     var catch_value = director.rng.randf_range(0.0, 1.0)
 
     # If the catch value is less than the catch rate, success! (So lower catch rate means lower chances of success)
-    if catch_value < catch_rate:
+    var catch_effect_ticks: int
+    catch_successful = catch_value < catch_rate
+    if catch_successful:
         print("success! " + String(catch_value) + " vs " + String(catch_rate))
         get_parent().enemy_captured[current_action.target_familiar] = true
-        get_parent().enemy_sprites.get_child(1 - current_action.target_familiar).flip_h = true
+        catch_effect_ticks = 3
     else:
         print("fail! " + String(catch_value) + " vs " + String(catch_rate))
+        var tick_zone_size = (1 - catch_rate) / 4
+        for zone in range(0, 4):
+            if catch_value < catch_rate + (tick_zone_size * (zone + 1)) :
+                catch_effect_ticks = 3 - zone 
+
+    catch_effect.position = get_parent().enemy_sprites.get_child(1 - current_action.target_familiar).position
+    catch_effect.start(catch_effect_ticks, catch_successful, get_parent().enemy_sprites.get_child(1 - current_action.target_familiar))
+
+func _on_catch_effect_finished():
+    var dialog_message = "Wild " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.target_familiar]) 
+    if catch_successful:
+        dialog_message += " was caught!"
+    else:
+        dialog_message += " broke free!"
+    battle_dialog.open(dialog_message)
 
 func execute_rest():
     if current_action.who == "player":

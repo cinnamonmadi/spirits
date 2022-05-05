@@ -78,6 +78,13 @@ func _ready():
     enemy_party.pre_battle_setup()
     set_state(State.SPRITES_ENTERING, {})
 
+func get_enemy_living_familiar_count():
+    var count = 0
+    for i in range(0, enemy_party.familiars.size()):
+        if not enemy_captured[i] and enemy_party.familiars[i].is_living():
+            count += 1
+    return count
+
 func close_all_menus():
     action_select.close()
     battle_dialog.close()

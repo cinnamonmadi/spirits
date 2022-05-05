@@ -101,7 +101,6 @@ func begin_animate_item():
     var battle_dialog_message = message_familiar_name() + " used " + Inventory.Item.keys()[current_action.item]
     battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
-    print(effect_factory)
     var effect = effect_factory.create_effect(effect_factory.Effect.ITEM)
     effect.connect("animation_finished", self, "handle_effect_finish")
     get_parent().add_child(effect)

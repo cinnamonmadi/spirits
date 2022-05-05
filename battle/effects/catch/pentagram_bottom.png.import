@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/pentagram_loop.png-a72cf57db5efeabfa72a9468cc2bf5f8.stex"
+path="res://.import/pentagram_bottom.png-4589a5804dba7a63062b16c98313d97e.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://pentagram_loop.png"
-dest_files=[ "res://.import/pentagram_loop.png-a72cf57db5efeabfa72a9468cc2bf5f8.stex" ]
+source_file="res://battle/effects/catch/pentagram_bottom.png"
+dest_files=[ "res://.import/pentagram_bottom.png-4589a5804dba7a63062b16c98313d97e.stex" ]
 
 [params]
 

@@ -4,6 +4,7 @@
 [ext_resource path="res://battle/effects/item.png" type="Texture" id=2]
 
 [node name="effect" type="Sprite"]
+scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 hframes = 8
 script = ExtResource( 1 )
