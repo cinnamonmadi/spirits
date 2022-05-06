@@ -21,11 +21,11 @@ enum Move {
     EMBER,
     TACKLE,
     VINE_WHIP,
-    BANANA
+    GROWL
 }
 
 enum Condition {
-    PARALYZED,
+    ATTACK_DEBUFF,
 }
 
 # Stat constants
@@ -44,8 +44,7 @@ const SPECIES_INFO = {
             { "level": 1, "move": Move.SPLASH },
             { "level": 1, "move": Move.EMBER },
             { "level": 1, "move": Move.TACKLE },
-            { "level": 1, "move": Move.VINE_WHIP },
-            { "level": 6, "move": Move.BANANA },
+            { "level": 1, "move": Move.GROWL },
         ]
     },
     Species.GOBLIN: {
@@ -141,25 +140,41 @@ const MOVE_INFO = {
         "cost": 7,
         "power": 0,
         "desc": "Splash water on your foe",
+        "conditions": [],
     },
     Move.EMBER: {
         "type": Type.FIRE,
         "cost": 3,
         "power": 40,
         "desc": "Light your foe on fire",
+        "conditions": [],
     },
     Move.TACKLE: {
         "type": Type.NORMAL,
         "cost": 1,
         "power": 40,
         "desc": "Tackle your foe",
+        "conditions": [],
     },
     Move.VINE_WHIP: {
         "type": Type.GRASS,
         "cost": 0,
         "power": 40,
         "desc": "Whip your foe with vine",
-    }
+        "conditions": [],
+    },
+    Move.GROWL: {
+        "type": Type.NORMAL,
+        "cost": 2,
+        "power": 0,
+        "desc": "Lower your foe's attack",
+        "conditions": [
+            {
+                "type": Condition.ATTACK_DEBUFF,
+                "rate": 1.0,
+            }
+        ],
+    },
 }
 
 const TYPE_INFO = {
@@ -195,8 +210,11 @@ const TYPE_INFO = {
 
 const CONDITION_DURATION_INDEFINITE = -1
 const CONDITION_INFO = {
-    Condition.PARALYZED: {
-        "duration": CONDITION_DURATION_INDEFINITE,
+    Condition.ATTACK_DEBUFF: {
+        "success_message": "'s attack was lowered!",
+        "failure_message": "'s attack is already lowered!",
+        "expire_message": "'s attack returned to normal.",
+        "duration": 4, 
     }
 }
 

@@ -8,8 +8,8 @@ onready var familiar_factory = get_node("/root/FamiliarFactory")
 onready var witch = $witch
 onready var enemy_sprites = $enemy_sprites
 onready var player_sprites = $player_sprites
-onready var enemy_labels = $enemy_labels
-onready var player_labels = $player_labels
+onready var enemy_labels = $ui/enemy_labels
+onready var player_labels = $ui/player_labels
 
 onready var action_select = $ui/action_select
 onready var battle_dialog = $ui/battle_dialog

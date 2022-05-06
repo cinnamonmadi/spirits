@@ -6,7 +6,7 @@ onready var familiar_factory = get_parent().get_node("/root/FamiliarFactory")
 onready var effect_factory = get_parent().get_node("/root/EffectFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
-onready var player_labels = get_parent().get_node("player_labels")
+onready var player_labels = get_parent().get_node("ui/player_labels")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
 onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
 onready var tween = get_parent().get_node("tween")

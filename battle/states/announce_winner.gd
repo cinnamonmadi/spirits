@@ -5,7 +5,7 @@ onready var director = get_node("/root/Director")
 onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var dialog = get_parent().get_node("ui/dialog")
-onready var player_labels = get_parent().get_node("player_labels")
+onready var player_labels = get_parent().get_node("ui/player_labels")
 
 const State = preload("res://battle/states/states.gd")
 

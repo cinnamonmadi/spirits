@@ -46,10 +46,17 @@ func post_battle_setup():
         familiar.participated = false
         familiar.is_burntout = false
         familiar.mana = familiar.max_mana
+        familiar.clear_temporary_conditions()
 
     in_battle = false
 
 func swap_familiars(a: int, b: int):
+    if in_battle:
+        if a == 0 or a == 1:
+            familiars[a].clear_temporary_conditions()
+        elif b == 0 or b == 1:
+            familiars[b].clear_temporary_conditions()
+
     var temp = familiars[a]
     familiars[a] = familiars[b]
     familiars[b] = temp

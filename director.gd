@@ -30,7 +30,6 @@ func _ready():
     player_party.familiars[1].nickname = "Deputy"
     player_party.add_familiar(familiar_factory.create_familiar(familiar_factory.Species.MIMIC, 5))
     player_party.familiars[2].nickname = "Cat"
-    player_party.familiars[1].health = 1
 
     player_inventory.add_item(Inventory.Item.POTION, 5)
     player_inventory.add_item(Inventory.Item.HI_POTION, 2)

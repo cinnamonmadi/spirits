@@ -23,7 +23,7 @@ var focus: int
 
 var moves = []
 
-var status_conditions = []
+var conditions = []
 
 var is_resting: bool
 var participated: bool
@@ -103,6 +103,8 @@ func add_experience(amount: int):
 func change_health(amount: int):
     health += amount
     health = int(clamp(health, 0, max_health))
+    if health == 0:
+        conditions = []
 
 func change_mana(amount: int):
     mana += amount
@@ -116,3 +118,26 @@ func get_level_up_moves(for_level):
         if move.level == for_level:
             level_up_moves.append(move.move)
     return level_up_moves
+
+func get_attack():
+    var attack_mod = 1
+    if conditions.has(FamiliarFactory.Condition.ATTACK_DEBUFF):
+        attack_mod = 0.5
+    return attack * attack_mod
+
+func get_defense():
+    return defense
+
+func get_focus():
+    return focus
+
+func get_speed():
+    return speed
+
+func clear_temporary_conditions():
+    var conditions_to_remove = []
+    for i in range(0, conditions.size()):
+        if conditions[i].duration != FamiliarFactory.CONDITION_DURATION_INDEFINITE:
+            conditions_to_remove.append(i)
+    for condition_index in conditions_to_remove:
+        conditions.remove(condition_index)

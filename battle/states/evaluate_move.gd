@@ -6,9 +6,9 @@ onready var familiar_factory = get_node("/root/FamiliarFactory")
 onready var effect_factory = get_node("/root/EffectFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
-onready var player_labels = get_parent().get_node("player_labels")
+onready var player_labels = get_parent().get_node("ui/player_labels")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
-onready var enemy_labels = get_parent().get_node("enemy_labels")
+onready var enemy_labels = get_parent().get_node("ui/enemy_labels")
 onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
 onready var timer = get_parent().get_node("timer")
 
@@ -19,7 +19,8 @@ enum Todo {
     BURNOUT_PLAYER,
     BURNOUT_ENEMY,
     FAINT_PLAYER,
-    FAINT_ENEMY
+    FAINT_ENEMY,
+    CURE_CONDITION,
 }
 
 var current_action 
@@ -53,6 +54,10 @@ func begin(params):
         if current_action.target_who == "enemy":
             if not get_parent().enemy_party.familiars[current_action.target_familiar].is_living():
                 todos.append({ "todo": Todo.FAINT_ENEMY, "familiar": current_action.target_familiar })
+
+    var battle_is_over = director.player_party.get_living_familiar_count() == 0 or get_parent().get_enemy_living_familiar_count() == 0
+    if not battle_is_over and get_parent().actions.size() == 0:
+        countdown_temporary_conditions()
 
 func burnout_familiar(familiar: Familiar):
     var burnout_damage = familiar.burnout * (ceil(familiar.get_level() / 25.0) + 1)
@@ -100,6 +105,39 @@ func create_death_effect(death_position: Vector2):
     effect.position = death_position
     effect.start()
 
+func countdown_temporary_conditions():
+    for familiar_index in range(0, min(2, director.player_party.get_living_familiar_count())):
+        var familiar = director.player_party.familiars[familiar_index]
+        countdown_conditions_for_familiar(familiar, "player", familiar_index)
+    for familiar_index in range(0, min(2, get_parent().enemy_party.get_living_familiar_count())):
+        var familiar = get_parent().enemy_party.familiars[familiar_index]
+        countdown_conditions_for_familiar(familiar, "enemy", familiar_index)
+
+func countdown_conditions_for_familiar(familiar, who, familiar_index):
+    if not familiar.is_living():
+        return
+    for condition_index in range(0, familiar.conditions.size()):
+        if familiar.conditions[condition_index].duration == familiar_factory.CONDITION_DURATION_INDEFINITE:
+            continue
+        familiar.conditions[condition_index].duration -= 1
+        if familiar.conditions[condition_index].duration == 0:
+            todos.append({
+                "todo": Todo.CURE_CONDITION,
+                "who": who,
+                "familiar": familiar_index,
+                "condition": condition_index,
+            })
+
+func cure_condition(who: String, familiar_index: int, condition_index: int):
+    var familiar
+    if who == "player":
+        familiar = director.player_party.familiars[familiar_index]
+    else:
+        familiar = get_parent().enemy_party.familiars[familiar_index]
+    var message = familiar_factory.get_display_name(familiar) + familiar_factory.CONDITION_INFO[familiar.conditions[condition_index].type].expire_message
+    familiar.conditions.remove(condition_index)
+    battle_dialog.open_and_wait(message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+
 func end_state():
     if director.player_party.get_living_familiar_count() == 0 or get_parent().get_enemy_living_familiar_count() == 0:
         battle_dialog.keep_open = false
@@ -130,6 +168,8 @@ func pop_next_todo():
         faint_player_familiar(next_todo.familiar)
     elif next_todo.todo == Todo.FAINT_ENEMY:
         faint_enemy_familiar(next_todo.familiar)
+    elif next_todo.todo == Todo.CURE_CONDITION:
+        cure_condition(next_todo.who, next_todo.familiar, next_todo.condition)
 
 func process(_delta):
     if Input.is_action_just_pressed("action"):

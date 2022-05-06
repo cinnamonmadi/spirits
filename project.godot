@@ -105,6 +105,11 @@ _global_script_classes=[ {
 "path": "res://battle/states/party_menu.gd"
 }, {
 "base": "Node",
+"class": "SpriteEffect",
+"language": "GDScript",
+"path": "res://battle/effects/sprite_effect.gd"
+}, {
+"base": "Node",
 "class": "SpritesEntering",
 "language": "GDScript",
 "path": "res://battle/states/sprites_entering.gd"
@@ -144,6 +149,7 @@ _global_script_class_icons={
 "NameFamiliar": "",
 "Party": "",
 "PartyMenu": "",
+"SpriteEffect": "",
 "SpritesEntering": "",
 "State": "",
 "SummonFamiliar": "",

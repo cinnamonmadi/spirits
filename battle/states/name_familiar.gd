@@ -10,7 +10,7 @@ onready var dialog_yes_no = get_parent().get_node("ui/dialog_yes_no")
 onready var namebox = get_parent().get_node("ui/namebox")
 onready var namebox_label = get_parent().get_node("ui/namebox/label")
 onready var player_sprites = get_parent().get_node("player_sprites")
-onready var player_labels = get_parent().get_node("player_labels")
+onready var player_labels = get_parent().get_node("ui/player_labels")
 
 const State = preload("res://battle/states/states.gd")
 

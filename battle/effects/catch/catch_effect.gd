@@ -1,6 +1,7 @@
 extends Node2D
 
 signal animation_finished
+signal hide_enemy
 
 onready var back_layer = $back_layer
 onready var front_layer = $front_layer
@@ -9,17 +10,15 @@ var num_ticks: int
 var ticks: int 
 var success: bool
 var is_playing: bool
-var sprite_to_hide
 
 func _ready():
     front_layer.connect("animation_finished", self, "_front_animation_finished")
     back_layer.connect("animation_finished", self, "_back_animation_finished")
 
-func start(number_of_ticks: int, is_successful: bool, sprite):
+func start(number_of_ticks: int, is_successful: bool):
     num_ticks = number_of_ticks
     ticks = 0
     success = is_successful
-    sprite_to_hide = sprite
 
     visible = true
     back_layer.visible = true
@@ -53,7 +52,7 @@ func _back_animation_finished():
         if success:
             back_layer.visible = false
             front_layer.visible = true
-            sprite_to_hide.visible = false
+            emit_signal("hide_enemy")
             front_layer.play("catch")
         else:
             finish()

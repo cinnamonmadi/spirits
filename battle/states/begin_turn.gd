@@ -50,7 +50,7 @@ func get_action_speed(action) -> int:
     elif action.action == Action.SWITCH:
         return 998
     else:
-        return get_parent().get_acting_familiar(action).speed
+        return get_parent().get_acting_familiar(action).get_speed()
 
 func enemy_choose_actions():
     for i in range(0, min(get_parent().enemy_party.familiars.size(), 2)):
