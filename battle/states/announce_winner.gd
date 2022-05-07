@@ -62,8 +62,10 @@ func handle_win():
 
     # Count experience from defeated monsters
     var total_exp = 0
-    for familiar in get_parent().enemy_party.familiars:
-        total_exp += familiar.get_experience_yield()
+    for familiar_index in range(0, get_parent().enemy_party.familiars.size()):
+        if get_parent().enemy_captured[familiar_index]:
+            continue
+        total_exp += get_parent().enemy_party.familiars[familiar_index].get_experience_yield()
         
     dialog.open("Gained " + String(total_exp) + " experience!")
 

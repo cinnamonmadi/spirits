@@ -11,6 +11,7 @@ onready var enemy_labels = get_parent().get_node("ui/enemy_labels")
 onready var tween = get_parent().get_node("tween")
 onready var battle_dialog = get_parent().get_node("ui/battle_dialog")
 onready var catch_effect = get_parent().get_node("catch_effect")
+onready var battle_sound_player = get_parent().get_node("battle_sound_player")
 
 const State = preload("res://battle/states/states.gd")
 const Action = preload("res://battle/states/action.gd")
@@ -158,10 +159,13 @@ func execute_move_effect_damage():
     else:
         target_familiar_sprite = enemy_sprites.get_child(1 - current_action.target_familiar)
     sprite_effect.begin(SpriteEffect.SpriteEffectType.FLICKER, target_familiar_sprite, current_action.target_who == "enemy")
+    battle_sound_player.play_sound(battle_sound_player.HIT_NORMAL)
 
 func execute_move_effect_condition(condition):
     if not defender.is_living():
         return
+
+    var move_info = familiar_factory.MOVE_INFO[current_action.move]
 
     var defender_already_has_condition = false
     for defender_condition in defender.conditions:
@@ -171,7 +175,9 @@ func execute_move_effect_condition(condition):
     var condition_info = familiar_factory.CONDITION_INFO[condition.type]
 
     if defender_already_has_condition:
-        battle_dialog.open_and_wait(familiar_factory.get_display_name(defender) + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+        if move_info.power == 0:
+            battle_dialog.open_and_wait(familiar_factory.get_display_name(defender) + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+        return
 
     var apply_condition_value = director.rng.randf_range(0.0, 1.0)
     if apply_condition_value <= condition.rate:
@@ -180,6 +186,8 @@ func execute_move_effect_condition(condition):
             "duration": condition_info.duration,
         })
         battle_dialog.open_and_wait(familiar_factory.get_display_name(defender) + condition_info.success_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+    elif move_info.power == 0:
+        battle_dialog.open_and_wait(familiar_factory.get_display_name(attacker) + "'s attack missed!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func execute_switch():
     if current_action.who == "player":
