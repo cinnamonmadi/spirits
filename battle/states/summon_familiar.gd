@@ -2,7 +2,6 @@ extends Node
 class_name SummonFamiliar
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var tween = get_parent().get_node("tween")
@@ -26,7 +25,7 @@ func begin(params):
         for i in range(0, summoning_familiars.size()):
             if i != 0:
                 dialog_message += " "
-            dialog_message += familiar_factory.get_display_name(summoning_familiars[i]) + "!"
+            dialog_message += summoning_familiars[i].get_display_name() + "!"
         dialog_message += " Go!"
         battle_dialog.open_and_wait(dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
@@ -52,6 +51,6 @@ func handle_timer_timeout():
     pass
 
 func summon_player_familiar(i):
-    player_sprites.get_child(i).texture = load(familiar_factory.get_portrait_path(director.player_party.familiars[i]))
+    player_sprites.get_child(i).texture = load(director.player_party.familiars[i].get_portrait_path())
     player_sprites.get_child(i).visible = true
     get_parent().update_player_label(i)

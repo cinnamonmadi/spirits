@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://data/move.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+name = "TACKLE"
+desc = "Tackle your foe"
+type = 8
+cost = 2
+power = 40
+targets = 3
+conditions = [  ]
+condition_rates = [  ]

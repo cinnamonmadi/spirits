@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://data/move.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+name = "HARDEN"
+desc = "Raise target's defense"
+type = 8
+cost = 2
+power = 0
+targets = 1
+conditions = [ 2 ]
+condition_rates = [ 1.0 ]

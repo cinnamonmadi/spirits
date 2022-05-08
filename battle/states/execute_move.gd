@@ -2,7 +2,6 @@ extends Node
 class_name ExecuteMove
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
@@ -106,16 +105,15 @@ func execute_use_move():
         current_action.target_familiar = (current_action.target_familiar + 1) % defending_party_size
     defender = defending_party.familiars[current_action.target_familiar]
 
-    var move_info = familiar_factory.MOVE_INFO[current_action.move]
-
     move_effects = []
-    for condition in move_info.conditions:
+    for i in range(0, current_action.move.conditions.size()):
         move_effects.append({
             "effect": MoveEffect.CONDITION,
-            "condition": condition,
+            "condition": current_action.move.conditions[i],
+            "rate": current_action.move.condition_rates[i]
         })
 
-    if move_info.power != 0:
+    if current_action.move.power != 0:
         execute_move_effect_damage()
 
 func execute_next_move_effect():
@@ -124,26 +122,24 @@ func execute_next_move_effect():
     print(move_effects)
 
     if next.effect == MoveEffect.CONDITION:
-        execute_move_effect_condition(next.condition)
+        execute_move_effect_condition(next.condition, next.rate)
 
 func execute_move_effect_damage():
-    var move_info = familiar_factory.MOVE_INFO[current_action.move]
-
     # Compute base damage
-    var base_damage = (((((2 * attacker.get_level()) / 5) + 2) * move_info.power * (attacker.get_attack() / defender.get_defense())) / 50) + 2
+    var base_damage = (((((2 * attacker.get_level()) / 5) + 2) * current_action.move.power * (attacker.get_attack() / defender.get_defense())) / 50) + 2
 
     # Compute STAB
     var stab = 1
-    if attacker.types.has(move_info.type):
+    if attacker.species.types.has(current_action.move.type):
         stab = 1.5 
     
     # Compute weaknesses / resistances
     var type_mod = 1.0
-    for type in defender.types:
-        var type_info = familiar_factory.TYPE_INFO[type]
-        if type_info.weaknesses.has(move_info.type):
+    for type in defender.species.types:
+        var type_info = Types.TYPE_INFO[type]
+        if type_info.weaknesses.has(current_action.move.type):
             type_mod *= 2.0
-        elif type_info.resistances.has(move_info.type):
+        elif type_info.resistances.has(current_action.move.type):
             type_mod *= 0.5
 
     var random = director.rng.randf_range(0.85, 1.0)
@@ -151,7 +147,7 @@ func execute_move_effect_damage():
 
     # Apply damage and mana cost
     defender.change_health(-damage)
-    attacker.change_mana(-move_info.cost)
+    attacker.change_mana(-current_action.move.cost)
 
     var target_familiar_sprite: Sprite
     if current_action.target_who == "player":
@@ -161,33 +157,31 @@ func execute_move_effect_damage():
     sprite_effect.begin(SpriteEffect.SpriteEffectType.FLICKER, target_familiar_sprite, current_action.target_who == "enemy")
     battle_sound_player.play_sound(battle_sound_player.HIT_NORMAL)
 
-func execute_move_effect_condition(condition):
+func execute_move_effect_condition(condition, rate):
     if not defender.is_living():
         return
 
-    var move_info = familiar_factory.MOVE_INFO[current_action.move]
-
     var defender_already_has_condition = false
     for defender_condition in defender.conditions:
-        if condition.type == defender_condition.type:
+        if condition == defender_condition.type:
             defender_already_has_condition = true
             break
-    var condition_info = familiar_factory.CONDITION_INFO[condition.type]
+    var condition_info = Conditions.CONDITION_INFO[condition]
 
     if defender_already_has_condition:
-        if move_info.power == 0:
-            battle_dialog.open_and_wait(familiar_factory.get_display_name(defender) + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+        if current_action.move.power == 0:
+            battle_dialog.open_and_wait(defender.get_display_name() + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
         return
 
     var apply_condition_value = director.rng.randf_range(0.0, 1.0)
-    if apply_condition_value <= condition.rate:
+    if apply_condition_value <= rate:
         defender.conditions.append({
-            "type": condition.type,
+            "type": condition,
             "duration": condition_info.duration,
         })
-        battle_dialog.open_and_wait(familiar_factory.get_display_name(defender) + condition_info.success_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
-    elif move_info.power == 0:
-        battle_dialog.open_and_wait(familiar_factory.get_display_name(attacker) + "'s attack missed!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+        battle_dialog.open_and_wait(defender.get_display_name() + condition_info.success_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+    elif current_action.move.power == 0:
+        battle_dialog.open_and_wait(attacker.get_display_name() + "'s attack missed!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func execute_switch():
     if current_action.who == "player":
@@ -214,7 +208,7 @@ func execute_use_item():
 
 func try_to_catch_familiar(gem_info):
     if get_parent().enemy_captured[current_action.target_familiar]:
-        battle_dialog.open("Wild " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.target_familiar]) + " is already caught!")
+        battle_dialog.open("Wild " + get_parent().enemy_party.familiars[current_action.target_familiar].get_display_name() + " is already caught!")
         return
 
     var target_familiar = get_parent().enemy_party.familiars[current_action.target_familiar]
@@ -254,7 +248,7 @@ func _on_catch_hide_enemy():
     enemy_labels.get_child(1 - current_action.target_familiar).visible = false
 
 func _on_catch_effect_finished():
-    var dialog_message = "Wild " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.target_familiar]) 
+    var dialog_message = "Wild " + get_parent().enemy_party.familiars[current_action.target_familiar].get_display_name() 
     if catch_successful:
         dialog_message += " was caught!"
     else:

@@ -3,10 +3,8 @@ class_name Familiar
 const MAX_LEVEL = 100
 
 # Stats
-var species: int
-var species_info
-var nickname: String = ""
-var types 
+var species: Species
+var nickname: String
 var experience: int
 var level: int
 
@@ -30,16 +28,15 @@ var participated: bool
 var is_burntout: bool
 var burnout: int
 
-func _init(as_species: int, with_species_info, at_level: int):
+func _init(as_species: Species, at_level: int):
     species = as_species
-    species_info = with_species_info
     experience = 0
     set_level(at_level)
     health = max_health
     mana = max_mana
-    for move in species_info.moves:
-        if move.level <= level:
-            moves.append(move.move)
+    for i in range(0, species.levelup_moves.size()):
+        if species.levelup_move_levels[i] <= level:
+            moves.append(species.levelup_moves[i])
         if moves.size() == 4:
             break
 
@@ -48,14 +45,20 @@ func _init(as_species: int, with_species_info, at_level: int):
     is_burntout = false
     burnout = 0
 
+func get_display_name() -> String:
+    if nickname == "":
+        return species.name
+    else: 
+        return nickname
+
+func get_portrait_path() -> String:
+    return "res://battle/familiars/" + species.name.to_lower() + ".png"
+
 func is_living() -> bool:
     return health > 0
 
-func get_catch_rate() -> float:
-    return species_info.catch_rate
-
 func get_experience_yield() -> int:
-    return int((species_info.base_exp_yield * get_level()) / 7.0)
+    return int((species.base_exp_yield * get_level()) / 7.0)
 
 func set_level(value: int):
     experience = get_experience_at_level(value)
@@ -63,13 +66,12 @@ func set_level(value: int):
     update_stats()
 
 func update_stats():
-    types = species_info.types
-    max_health = int((species_info.health * 2 * level) / 100) + level + 10
-    max_mana = int((species_info.mana * 1.25 * level) / 100) + 5
-    attack = int((species_info.attack * 2 * level) / 100) + 5
-    defense = int((species_info.defense * 2 * level) / 100) + 5
-    speed = int((species_info.speed * 2 * level) / 100) + 5
-    focus = int((species_info.focus * 2 * level) / 100) + 5
+    max_health = int((species.base_health * 2 * level) / 100) + level + 10
+    max_mana = int((species.base_mana * 1.25 * level) / 100) + 5
+    attack = int((species.base_attack * 2 * level) / 100) + 5
+    defense = int((species.base_defense * 2 * level) / 100) + 5
+    speed = int((species.base_speed * 2 * level) / 100) + 5
+    focus = int((species.base_focus * 2 * level) / 100) + 5
 
 func get_level() -> int:
     return level
@@ -113,15 +115,15 @@ func change_mana(amount: int):
     mana = int(clamp(mana, 0, max_mana))
 
 func get_level_up_moves(for_level):
-    var level_up_moves = []
-    for move in species_info.moves:
-        if move.level == for_level:
-            level_up_moves.append(move.move)
-    return level_up_moves
+    var returned_level_up_moves = []
+    for i in range(0, species.levelup_moves.size()):
+        if species.levelup_move_levels[i] == for_level:
+            returned_level_up_moves.append(species.levelup_moves[i])
+    return returned_level_up_moves
 
 func get_attack():
     var attack_mod = 1
-    if conditions.has(FamiliarFactory.Condition.ATTACK_DEBUFF):
+    if conditions.has(Conditions.Condition.ATTACK_DEBUFF):
         attack_mod = 0.5
     return attack * attack_mod
 
@@ -137,7 +139,7 @@ func get_speed():
 func clear_temporary_conditions():
     var conditions_to_remove = []
     for i in range(0, conditions.size()):
-        if conditions[i].duration != FamiliarFactory.CONDITION_DURATION_INDEFINITE:
+        if conditions[i].duration != Conditions.CONDITION_DURATION_INDEFINITE:
             conditions_to_remove.append(i)
     for condition_index in conditions_to_remove:
         conditions.remove(condition_index)

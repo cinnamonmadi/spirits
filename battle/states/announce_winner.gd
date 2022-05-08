@@ -2,7 +2,6 @@ extends Node
 class_name AnnounceWinner
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var dialog = get_parent().get_node("ui/dialog")
 onready var player_labels = get_parent().get_node("ui/player_labels")
@@ -116,7 +115,7 @@ func process(_delta):
                 exp_to_give[participating_familiar_index] -= 1
                 familiar.add_experience(1)
                 if familiar.get_level() != familiar_old_level:
-                    dialog.open(familiar_factory.get_display_name(familiar) + " level " + String(familiar.get_level()) + "!")
+                    dialog.open(familiar.get_display_name() + " level " + String(familiar.get_level()) + "!")
                     var learned_moves = familiar.get_level_up_moves(familiar.get_level())
                     for learned_move in learned_moves:
                         todos.append({ "type": "learn_move", "familiar": familiar, "move": learned_move })

@@ -2,7 +2,6 @@ extends Node
 class_name AnimateMove
 
 onready var director = get_parent().get_node("/root/Director")
-onready var familiar_factory = get_parent().get_node("/root/FamiliarFactory")
 onready var effect_factory = get_parent().get_node("/root/EffectFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
@@ -61,12 +60,12 @@ func handle_effect_finish():
 
 func message_familiar_name():
     if current_action.who == "player":
-        return familiar_factory.get_display_name(director.player_party.familiars[current_action.familiar])
+        return director.player_party.familiars[current_action.familiar].get_display_name()
     if current_action.who == "enemy":
-        return "Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[current_action.familiar])
+        return "Enemy " + get_parent().enemy_party.familiars[current_action.familiar].get_display_name()
 
 func begin_animate_attack():
-    var battle_dialog_message = message_familiar_name() + " used " + familiar_factory.get_move_name(current_action.move) + "!"
+    var battle_dialog_message = message_familiar_name() + " used " + current_action.move.name + "!"
 
     battle_dialog.open_and_wait(battle_dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 

@@ -2,7 +2,6 @@ extends Node
 class_name EvaluateMove
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 onready var effect_factory = get_node("/root/EffectFactory")
 
 onready var player_sprites = get_parent().get_node("player_sprites")
@@ -68,14 +67,14 @@ func burnout_player_familiar(familiar_index: int):
     burnout_familiar(familiar)
     if not director.player_party.familiars[current_action.familiar].is_living():
         todos.push_front({ "todo": Todo.FAINT_PLAYER, "familiar": current_action.familiar })
-    battle_dialog.open_and_wait(familiar_factory.get_display_name(familiar) + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+    battle_dialog.open_and_wait(familiar.get_display_name() + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func burnout_enemy_familiar(familiar_index: int):
     var familiar = get_parent().enemy_party.familiars[familiar_index]
     burnout_familiar(familiar)
     if not get_parent().enemy_party.familiars[current_action.familiar].is_living():
         todos.push_front({ "todo": Todo.FAINT_ENEMY, "familiar": current_action.familiar })
-    battle_dialog.open_and_wait("Enemy " + familiar_factory.get_display_name(familiar) + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+    battle_dialog.open_and_wait("Enemy " + familiar.get_display_name() + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func faint_player_familiar(familiar_index: int):
     for action_index in range(0, get_parent().actions.size()):
@@ -85,7 +84,7 @@ func faint_player_familiar(familiar_index: int):
     player_sprites.get_child(familiar_index).visible = false
     player_labels.get_child(familiar_index).visible = false
     create_death_effect(player_sprites.get_child(familiar_index).position)
-    battle_dialog.open_and_wait(familiar_factory.get_display_name(director.player_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+    battle_dialog.open_and_wait(director.player_party.familiars[familiar_index].get_display_name() + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
     player_familiar_died = true
 
 func faint_enemy_familiar(familiar_index: int):
@@ -96,7 +95,7 @@ func faint_enemy_familiar(familiar_index: int):
     enemy_sprites.get_child(1 - familiar_index).visible = false
     enemy_labels.get_child(1 - familiar_index).visible = false
     create_death_effect(enemy_sprites.get_child(1 - familiar_index).position)
-    battle_dialog.open_and_wait("Enemy " + familiar_factory.get_display_name(get_parent().enemy_party.familiars[familiar_index]) + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+    battle_dialog.open_and_wait("Enemy " + get_parent().enemy_party.familiars[familiar_index].get_display_name() + " fainted!", get_parent().BATTLE_DIALOG_WAIT_TIME)
     enemy_familiar_died = true
 
 func create_death_effect(death_position: Vector2):
@@ -117,7 +116,7 @@ func countdown_conditions_for_familiar(familiar, who, familiar_index):
     if not familiar.is_living():
         return
     for condition_index in range(0, familiar.conditions.size()):
-        if familiar.conditions[condition_index].duration == familiar_factory.CONDITION_DURATION_INDEFINITE:
+        if familiar.conditions[condition_index].duration == Conditions.CONDITION_DURATION_INDEFINITE:
             continue
         familiar.conditions[condition_index].duration -= 1
         if familiar.conditions[condition_index].duration == 0:
@@ -134,7 +133,7 @@ func cure_condition(who: String, familiar_index: int, condition_index: int):
         familiar = director.player_party.familiars[familiar_index]
     else:
         familiar = get_parent().enemy_party.familiars[familiar_index]
-    var message = familiar_factory.get_display_name(familiar) + familiar_factory.CONDITION_INFO[familiar.conditions[condition_index].type].expire_message
+    var message = familiar.get_display_name() + Conditions.CONDITION_INFO[familiar.conditions[condition_index].type].expire_message
     familiar.conditions.remove(condition_index)
     battle_dialog.open_and_wait(message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 

@@ -3,7 +3,6 @@ extends Node2D
 class_name Battle
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var witch = $witch
 onready var enemy_sprites = $enemy_sprites
@@ -62,8 +61,8 @@ func _ready():
     for state_node in states:
         add_child(state_node)
 
-    enemy_party.familiars.append(familiar_factory.create_familiar(familiar_factory.Species.GHOST, 3))
-    enemy_party.familiars.append(familiar_factory.create_familiar(familiar_factory.Species.MIMIC, 3))
+    enemy_party.familiars.append(Familiar.new(load("res://data/species/mimic.tres"), 3))
+    enemy_party.familiars.append(Familiar.new(load("res://data/species/mimic.tres"), 3))
     # for familiar in enemy_party.familiars:
         # familiar.health = 1
     for _i in range(0, enemy_party.familiars.size()):

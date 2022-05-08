@@ -2,7 +2,6 @@ extends Node
 class_name LearnMove
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var dialog = get_parent().get_node("ui/dialog")
 onready var dialog_yes_no = get_parent().get_node("ui/dialog_yes_no")
@@ -45,19 +44,22 @@ func set_state(new_state):
     substate = new_state
 
     if substate == SubState.PROMPT_REPLACE:
-        dialog.open(familiar_factory.get_display_name(familiar) + " is trying to learn " + familiar_factory.get_move_name(move) + ", but " + familiar_factory.get_display_name(familiar) + " already knows 4 moves. Should a move be forgotten and replaced with " + familiar_factory.get_move_name(move) + "?")
+        dialog.open(familiar.get_display_name() + " is trying to learn " + move.name + ", but " + familiar.get_display_name() + " already knows 4 moves. Should a move be forgotten and replaced with " + move.name + "?")
     elif substate == SubState.ANNOUNCE_LEARN:
-        dialog.open_with([[familiar_factory.get_display_name(familiar) + " learned", familiar_factory.get_move_name(move) + "!"]])
+        dialog.open_with([[familiar.get_display_name() + " learned", move.name + "!"]])
     elif substate == SubState.ANNOUNCE_DIDNT_LEARN:
-        dialog.open_with([[familiar_factory.get_display_name(familiar) + " did not learn", familiar_factory.get_move_name(move) + "."]])
+        dialog.open_with([[familiar.get_display_name() + " did not learn", move.name + "."]])
     elif substate == SubState.REPLACE:
         dialog.open("Which move should be forgotten?")
         forget_move_select.open()
-        forget_move_select.set_labels([familiar_factory.get_move_names(familiar)])
+        var move_names = []
+        for familiar_move in familiar.moves:
+            move_names.append(familiar_move.name)
+        forget_move_select.set_labels([move_names])
     elif substate == SubState.CONFIRM_FORGET_MOVE:
-        dialog.open_with([["Forget " + familiar_factory.get_move_names(familiar)[forget_move_index], "and learn " + familiar_factory.get_move_name(move) + "?"]])
+        dialog.open_with([["Forget " + familiar.moves[forget_move_index].name, "and learn " + move.name + "?"]])
     elif substate == SubState.CONFIRM_GIVE_UP:
-        dialog.open_with([["Give up on learning", familiar_factory.get_move_name(move) + "?"]])
+        dialog.open_with([["Give up on learning", move.name + "?"]])
 
 func process(_delta):
     var dialog_is_finished = dialog.is_waiting() and dialog.lines.size() == 0

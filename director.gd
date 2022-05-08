@@ -1,8 +1,5 @@
 extends Node
 
-onready var familiar_factory = get_node("/root/FamiliarFactory")
-
-
 var battle_scene = preload("res://battle/battle.tscn")
 var transition_scene = preload("res://transition.tscn")
 
@@ -23,12 +20,12 @@ var state = State.WORLD
 var rng = RandomNumberGenerator.new()
 
 func _ready():
-    player_party.add_familiar(familiar_factory.create_familiar(familiar_factory.Species.SPHYNX, 5))
+    player_party.add_familiar(Familiar.new(load("res://data/species/mimic.tres"), 5))
     player_party.familiars[0].nickname = "Beerus"
     player_party.familiars[0].add_experience(player_party.familiars[0].get_experience_tnl() - 3)
-    player_party.add_familiar(familiar_factory.create_familiar(familiar_factory.Species.SLIME, 5))
+    player_party.add_familiar(Familiar.new(load("res://data/species/mimic.tres"), 5))
     player_party.familiars[1].nickname = "Deputy"
-    player_party.add_familiar(familiar_factory.create_familiar(familiar_factory.Species.MIMIC, 5))
+    player_party.add_familiar(Familiar.new(load("res://data/species/mimic.tres"), 5))
     player_party.familiars[2].nickname = "Cat"
 
     player_inventory.add_item(Inventory.Item.POTION, 5)

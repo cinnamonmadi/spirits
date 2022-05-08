@@ -1,7 +1,5 @@
 extends Control
 
-onready var familiar_factory = get_node("/root/FamiliarFactory")
-
 onready var action_boxes = [[$move_1, $move_2, $switch, $run], [$move_3, $move_4, $wait, $item]]
 onready var move_boxes = [$move_1, $move_2, $move_3, $move_4]
 onready var move_info_box = $move_info
@@ -22,8 +20,8 @@ func open(moves, is_burntout):
     move_info = []
     for i in range(0, 4):
         if i < moves.size():
-            move_info.append(familiar_factory.get_stringified_move_info(moves[i], 28))
-            move_boxes[i].get_child(0).text = familiar_factory.get_move_name(moves[i])
+            move_info.append(stringified_move_info(moves[i], 28))
+            move_boxes[i].get_child(0).text = moves[i].name
         else:
             move_info.append(null)
             move_boxes[i].get_child(0).text = ""
@@ -32,6 +30,35 @@ func open(moves, is_burntout):
 
     reset_cursor_position()
     visible = true
+
+func stringified_move_info(move: Resource, row_char_length: int):
+    var stringified_move_info = ["", "", ""]
+    stringified_move_info[0] = Types.name_of(move.type) + "  COST " + String(move.cost) + "  POWER "
+    if move.power == 0:
+        stringified_move_info[0] += "N/A"
+    else: 
+        stringified_move_info[0] += String(move.power)
+
+    var words = move.desc.split(" ")
+    var current_index = 1
+    while words.size() != 0:
+        var next_word = words[0]
+        words.remove(0)
+
+        if stringified_move_info[current_index].length() != 0:
+            next_word = " " + next_word
+        
+        var space_left_in_row = row_char_length - stringified_move_info[current_index].length()
+        if space_left_in_row < next_word.length():
+            if current_index == stringified_move_info.size() - 1:
+                break
+            current_index += 1
+            if next_word[0] == " ":
+                next_word = next_word.substr(1)
+        
+        stringified_move_info[current_index] += next_word
+    
+    return stringified_move_info
 
 func close():
     visible = false

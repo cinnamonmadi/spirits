@@ -2,7 +2,6 @@ extends Node
 class_name NameFamiliar
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var centered_familiar = get_parent().get_node("ui/centered_familiar")
 onready var dialog = get_parent().get_node("ui/dialog")
@@ -27,9 +26,9 @@ func begin(params):
         label.visible = false
 
     get_parent().close_all_menus()
-    centered_familiar.texture = load(familiar_factory.get_portrait_path(naming_familiar))
+    centered_familiar.texture = load(naming_familiar.get_portrait_path())
     centered_familiar.visible = true
-    dialog.open_with([["Give a nickname to the", "captured " + familiar_factory.get_display_name(naming_familiar) + "?"]])
+    dialog.open_with([["Give a nickname to the", "captured " + naming_familiar.species.name + "?"]])
 
 func _input(event):
     if not namebox.visible:

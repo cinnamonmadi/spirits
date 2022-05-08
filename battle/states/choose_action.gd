@@ -2,7 +2,6 @@ extends Node
 class_name ChooseAction
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 onready var util = get_node("/root/Util")
 
 onready var action_select = get_parent().get_node("ui/action_select")
@@ -26,7 +25,7 @@ func begin(_params):
 
 func open_prompt():
     current_familiar = director.player_party.familiars[get_parent().get_choosing_familiar_index()]
-    battle_dialog.open("What will " + familiar_factory.get_display_name(current_familiar) + " do?")
+    battle_dialog.open("What will " + current_familiar.get_display_name() + " do?")
 
 func process(_delta):
     # This check is for the open_and_wait() for when a familiar is burnt out: if a player tries to use a move
@@ -48,7 +47,7 @@ func process(_delta):
         # If the player chose a move, transition to the CHOOSE_TARGET state
         if selected_move != -1:
             if current_familiar.mana == 0:
-                battle_dialog.open_and_wait(familiar_factory.get_display_name(current_familiar) + " has no mana!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+                battle_dialog.open_and_wait(current_familiar.get_display_name() + " has no mana!", get_parent().BATTLE_DIALOG_WAIT_TIME)
                 return
             var chosen_move = current_familiar.moves[selected_move]
             get_parent().targeting_for_action = Action.USE_MOVE

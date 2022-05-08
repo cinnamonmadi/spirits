@@ -1,7 +1,6 @@
 extends ColorRect
 
 onready var director = get_node("/root/Director")
-onready var familiar_factory = get_node("/root/FamiliarFactory")
 
 onready var list = $choice_menu
 onready var list_choices = $choice_menu/choices/col_1.get_children()
@@ -59,7 +58,7 @@ func open_list():
     for choice in list_choices:
         choice.visible = false
     for i in range(0, director.player_party.familiars.size()):
-        list_choices[i].text = familiar_factory.get_display_name(director.player_party.familiars[i])
+        list_choices[i].text = director.player_party.familiars[i].get_display_name()
         list_choices[i].find_node("level").text = "LVL " + String(director.player_party.familiars[i].get_level())
         list_choices[i].find_node("health").text = "HP:" + String(director.player_party.familiars[i].health) + "/" + String(director.player_party.familiars[i].max_health) + " MP:" + String(director.player_party.familiars[i].mana) + "/" + String(director.player_party.familiars[i].max_mana)
         list_choices[i].visible = true
@@ -111,27 +110,24 @@ func set_state(new_state):
 func open_summary():
     var familiar = director.player_party.familiars[chosen_index]
 
-    summary.get_node("name").text = familiar_factory.get_display_name(familiar)
+    summary.get_node("name").text = familiar.get_display_name()
     summary.get_node("level").text = "LVL " + String(familiar.get_level()) + " (" + String(familiar.get_experience_tnl()) + ")"
-    summary.get_node("type").text = familiar_factory.get_type_name(familiar.types[0]) 
+    summary.get_node("type").text = Types.name_of(familiar.species.types[0])
     summary.get_node("health").text = "HP " + String(familiar.health) + "/" + String(familiar.max_health)
     summary.get_node("mana").text = "MP " + String(familiar.mana) + "/" + String(familiar.max_mana)
     summary.get_node("attack").text = "ATTACK " + String(familiar.attack)
     summary.get_node("defense").text = "DEFENSE " + String(familiar.defense)
     summary.get_node("speed").text = "SPEED " + String(familiar.speed)
-    var move_names = familiar_factory.get_move_names(familiar)
-    var move_type_names = familiar_factory.get_move_type_names(familiar)
     for i in range(0, 4):
         var move_label = summary.get_node("move_" + String(i + 1))
         if i >= familiar.moves.size():
             move_label.visible = false
             continue
-        var move_info = familiar_factory.MOVE_INFO[familiar.moves[i]]
-        move_label.text = move_names[i] + " / " + move_type_names[i]
-        move_label.get_node("details").text = "POWER " + String(move_info.power) + " COST " + String(move_info.cost) + "MP"
+        move_label.text = familiar.moves[i].name + " / " + Types.name_of(familiar.moves[i].type)
+        move_label.get_node("details").text = "POWER " + String(familiar.moves[i].power) + " COST " + String(familiar.moves[i].cost) + "MP"
         move_label.visible = true
 
-    summary.get_node("sprite").texture = load(familiar_factory.get_portrait_path(familiar))
+    summary.get_node("sprite").texture = load(familiar.get_portrait_path())
 
     summary.visible = true
 

@@ -1,8 +1,6 @@
 extends Node
 class_name SpritesEntering
 
-onready var familiar_factory = get_node("/root/FamiliarFactory")
-
 onready var witch = get_parent().get_node("witch")
 onready var enemy_sprites = get_parent().get_node("enemy_sprites")
 onready var tween = get_parent().get_node("tween")
@@ -15,7 +13,7 @@ const SPRITES_ENTERING_DURATION: float = 1.0
 func begin(_params):
     # Setup the enemy familiar sprites
     for i in range(0, get_parent().enemy_party.familiars.size()):
-        enemy_sprites.get_child(1 - i).texture = load(familiar_factory.get_portrait_path(get_parent().enemy_party.familiars[i]))
+        enemy_sprites.get_child(1 - i).texture = load(get_parent().enemy_party.familiars[i].get_portrait_path())
         enemy_sprites.get_child(1 - i).visible = true
 
     # Set the sprites in their initial positions to enter from
@@ -42,10 +40,12 @@ func handle_tween_finish():
         get_parent().update_enemy_label(i)
     
     # Create dialog message based on enemy names
-    var enemy_fighters = []
+    var enemy_fighters = ""
     for i in range(0, min(2, get_parent().enemy_party.familiars.size())):
-        enemy_fighters.append(get_parent().enemy_party.familiars[i])
-    var battle_dialog_message = "A wild " + familiar_factory.get_and_join_display_names(enemy_fighters) + " appeared!"
+        if enemy_fighters != "":
+            enemy_fighters += " and "
+        enemy_fighters += get_parent().enemy_party.familiars[i].get_display_name()
+    var battle_dialog_message = "A wild " + enemy_fighters + " appeared!"
 
     battle_dialog.open(battle_dialog_message)
 
