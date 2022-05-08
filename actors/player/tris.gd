@@ -7,25 +7,16 @@ onready var dialog = get_parent().get_node("ui/dialog")
 onready var camera = $camera
 onready var interact_scanbox = $interact_scanbox
 
-enum State {
-    MOVING,
-    ROLLING,
-    DIALOG,
-    ATTACK
-}
-
-const ROLL_SPEED: float = 256.0
-const END_ROLL_SPEED: float = 64.0
 const MOVE_SPEED: float = 128.0
 
-var state = State.MOVING
 var input_direction: Vector2
 var speaking_npc = null
+var is_speaking: bool = false
 
 func _ready():
-    sprite.connect("animation_finished", self, "_on_animation_finished")
     input_direction = Vector2.ZERO
     set_camera_bounds()
+    speed = MOVE_SPEED
 
 func set_camera_bounds():
     var tilemap = get_parent().find_node("tilemap")
@@ -66,20 +57,19 @@ func handle_input():
             input_direction.x = 1
         else:
             input_direction.x = 0
-    if state == State.MOVING:
-        direction = input_direction
-        if direction != Vector2.ZERO and Input.is_action_just_pressed("back"):
-            state = State.ROLLING
-        elif Input.is_action_just_pressed("action"):
+    if not is_speaking:
+        if Input.is_action_just_pressed("action"):
             try_interact()
-    elif state == State.DIALOG:
+        else:
+            direction = input_direction
+    else:
         if Input.is_action_just_pressed("action"):
             direction = Vector2.ZERO
             dialog.progress()
             if not dialog.is_open():
                 if speaking_npc != null:
                     speaking_npc.stop_speaking()
-                state = State.MOVING
+                is_speaking = false
 
 func try_interact():
     # Disable all scanbox colliders
@@ -95,58 +85,12 @@ func try_interact():
             if npc.dialog != "":
                 npc.start_speaking(facing_direction)
                 speaking_npc = npc
+                is_speaking = true
                 dialog.open(npc.dialog)
                 direction = Vector2.ZERO
-                state = State.DIALOG
             return
-
-    # If we got all the way here and we haven't interacted with something, then try attacking instead
-    attack()
 
 func _physics_process(_delta):
     if paused:
         return false
     handle_input()
-
-    if state == State.ROLLING and sprite.frame >= 10 and input_direction != Vector2.ZERO:
-        state = State.MOVING
-
-    if state == State.MOVING:
-        speed = MOVE_SPEED
-    elif state == State.ROLLING:
-        if sprite.frame < 3 or sprite.frame >= 13:
-            speed = 0
-        elif sprite.frame >= 10:
-            speed = 64.0
-        else:
-            speed = ROLL_SPEED
-    elif state == State.DIALOG or state == State.ATTACK:
-        direction = Vector2.ZERO
-
-    var is_invulnerable = state == State.ROLLING and speed != 0
-    set_collision_layer_bit(0, not is_invulnerable)
-
-func update_animation():
-    if state == State.ROLLING:
-        update_sprite("roll")
-    elif state == State.ATTACK:
-        update_sprite("attack")
-    else:
-        .update_animation()
-
-func _on_animation_finished():
-    if state == State.ROLLING or state == State.ATTACK:
-        state = State.MOVING
-
-func handle_monster_attack(monster):
-    get_parent().init_start_battle(monster, null)
-
-func handle_attacked_monster(monster: Monster, effect):
-    get_parent().init_start_battle(monster, effect)
-
-func attack():
-    var attack_effect = attack_effect_scene.instance()
-    attack_effect.direction = facing_direction
-    get_parent().add_child(attack_effect)
-
-    state = State.ATTACK
