@@ -116,7 +116,7 @@ func countdown_conditions_for_familiar(familiar, who, familiar_index):
     if not familiar.is_living():
         return
     for condition_index in range(0, familiar.conditions.size()):
-        if familiar.conditions[condition_index].duration == Conditions.CONDITION_DURATION_INDEFINITE:
+        if familiar.conditions[condition_index].duration == Conditions.DURATION_INDEFINITE:
             continue
         familiar.conditions[condition_index].duration -= 1
         if familiar.conditions[condition_index].duration == 0:

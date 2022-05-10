@@ -123,23 +123,52 @@ func get_level_up_moves(for_level):
 
 func get_attack():
     var attack_mod = 1
-    if conditions.has(Conditions.Condition.ATTACK_DEBUFF):
-        attack_mod = 0.5
+    for condition in conditions:
+        if condition == Conditions.Condition.ATTACK_BUFF:
+            attack_mod = 2
+            break
+        if condition == Conditions.Condition.ATTACK_DEBUFF:
+            attack_mod = 0.5
+            break
     return attack * attack_mod
 
 func get_defense():
-    return defense
+    var defense_mod
+    for condition in conditions:
+        if condition == Conditions.Condition.DEFENSE_BUFF:
+            defense_mod = 2
+            break
+        if condition == Conditions.Condition.DEFENSE_DEBUFF:
+            defense_mod = 0.5
+            break
+    return defense * defense_mod
 
 func get_focus():
-    return focus
+    var focus_mod
+    for condition in conditions:
+        if condition == Conditions.Condition.FOCUS_BUFF:
+            focus_mod = 2
+            break
+        if condition == Conditions.Condition.FOCUS_DEBUFF:
+            focus_mod = 0.5
+            break
+    return focus * focus_mod
 
 func get_speed():
+    var speed_mod
+    for condition in conditions:
+        if condition == Conditions.Condition.SPEED_BUFF:
+            speed_mod = 2
+            break
+        if condition == Conditions.Condition.SPEED_DEBUFF:
+            speed_mod = 0.5
+            break
     return speed
 
 func clear_temporary_conditions():
     var conditions_to_remove = []
     for i in range(0, conditions.size()):
-        if conditions[i].duration != Conditions.CONDITION_DURATION_INDEFINITE:
+        if conditions[i].duration != Conditions.DURATION_INDEFINITE:
             conditions_to_remove.append(i)
     for condition_index in conditions_to_remove:
         conditions.remove(condition_index)

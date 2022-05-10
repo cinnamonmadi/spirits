@@ -39,7 +39,9 @@ func _ready():
 func begin(_params):
     current_action = get_parent().actions[0]
 
-    if current_action.action == Action.USE_MOVE:
+    if get_parent().get_acting_familiar().conditions.has(Conditions.Condition.PARALYZED):
+        execute_paralyzed()
+    elif current_action.action == Action.USE_MOVE:
         execute_use_move()
     elif current_action.action == Action.SWITCH:
         execute_switch()
@@ -162,9 +164,13 @@ func execute_move_effect_condition(condition, rate):
         return
 
     var defender_already_has_condition = false
-    for defender_condition in defender.conditions:
-        if condition == defender_condition.type:
+    var reverse_condition_index = -1
+    for condition_index in range(0, defender.conditions.size()):
+        if condition == defender.conditions[condition_index].type:
             defender_already_has_condition = true
+            break
+        if condition == defender.conditions[condition_index].reverse:
+            reverse_condition_index = condition_index
             break
     var condition_info = Conditions.CONDITION_INFO[condition]
 
@@ -172,12 +178,18 @@ func execute_move_effect_condition(condition, rate):
         if current_action.move.power == 0:
             battle_dialog.open_and_wait(defender.get_display_name() + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
         return
+    if reverse_condition_index != -1:
+        defender.conditions.remove(reverse_condition_index)
+        if current_action.move.power == 0:
+            battle_dialog.open_and_wait(defender.get_display_name() + condition_info.expire_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+        return
 
     var apply_condition_value = director.rng.randf_range(0.0, 1.0)
     if apply_condition_value <= rate:
         defender.conditions.append({
             "type": condition,
             "duration": condition_info.duration,
+            "value": 0, # Value is used in certain conditions, like Bide
         })
         battle_dialog.open_and_wait(defender.get_display_name() + condition_info.success_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
     elif current_action.move.power == 0:
@@ -260,3 +272,10 @@ func execute_rest():
         director.player_party.familiars[current_action.familiar].is_resting = true
     elif current_action.who == "enemy":
         get_parent().enemy_party.familiars[current_action.familiar].is_resting = true
+
+func execute_paralyzed():
+    var dialog_message = ""
+    if current_action.who == "enemy":
+        dialog_message += "Wild "
+    dialog_message += get_parent().get_acting_familiar().get_display_name() + " is paralyzed. It can't move!"
+    battle_dialog.open_and_wait(dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)

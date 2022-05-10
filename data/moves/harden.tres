@@ -12,3 +12,4 @@ power = 0
 targets = 1
 conditions = [ 2 ]
 condition_rates = [ 1.0 ]
+condition_targets = [ 0 ]

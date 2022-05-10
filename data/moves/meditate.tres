@@ -4,12 +4,12 @@
 
 [resource]
 script = ExtResource( 1 )
-name = "LICK"
-desc = "Lick your foe and deal damage. Chance to paralyze."
+name = "MEDITATE"
+desc = "Raise target's focus"
 type = 8
 cost = 2
-power = 20
-targets = 3
-conditions = [ 8 ]
-condition_rates = [ 0.25 ]
+power = 0
+targets = 1
+conditions = [ 6 ]
+condition_rates = [ 1.0 ]
 condition_targets = [ 0 ]

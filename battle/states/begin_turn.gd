@@ -8,28 +8,30 @@ const Action = preload("res://battle/states/action.gd")
 
 var current_familiar
 
+func priority_of(action) -> int:
+    if action.action == Action.RUN:
+        return 20
+    elif action.action == Action.USE_ITEM:
+        return 19
+    elif action.action == Action.SWITCH:
+        return 18
+    elif action.action == Action.USE_MOVE:
+        return action.move.priority
+    else:
+        return 2
+
+func action_sorter(a, b):
+    if priority_of(a) < priority_of(b):
+        return true
+    elif priority_of(b) < priority_of(a):
+        return false
+    else:
+        return get_parent().get_acting_familiar(a).get_speed() < get_parent().get_acting_familiar(b).get_speed():
+
 func begin(_params):
     enemy_choose_actions()
 
-    # Compute the action speeds
-    var action_speeds = []
-    for action in get_parent().actions:
-        action_speeds.append(get_action_speed(action))
-
-    # Sort actions on their speed
-    for i in range(1, get_parent().actions.size()):
-        var current_index = i
-        while current_index != 0 and action_speeds[current_index] > action_speeds[current_index - 1]:
-            var temp = get_parent().actions[current_index]
-            var temp_speed = action_speeds[current_index]
-
-            get_parent().actions[current_index] = get_parent().actions[current_index - 1]
-            action_speeds[current_index] = action_speeds[current_index - 1]
-
-            get_parent().actions[current_index - 1] = temp
-            action_speeds[current_index - 1] = temp_speed
-
-            current_index -= 1
+    get_parent().actions.sort_custom(self, "action_sorter")
     
     get_parent().set_state(State.ANIMATE_MOVE, {})
 
@@ -41,16 +43,6 @@ func handle_tween_finish():
 
 func handle_timer_timeout():
     pass
-
-func get_action_speed(action) -> int:
-    if action.action == Action.RUN:
-        return 1000
-    elif action.action == Action.USE_ITEM: 
-        return 999
-    elif action.action == Action.SWITCH:
-        return 998
-    else:
-        return get_parent().get_acting_familiar(action).get_speed()
 
 func enemy_choose_actions():
     for i in range(0, min(get_parent().enemy_party.familiars.size(), 2)):
