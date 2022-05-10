@@ -156,10 +156,10 @@ func recharge_familiar_energy(familiar: Familiar):
         return
     if familiar.burnout != 0:
         familiar.burnout = 0
-        familiar.is_burntout = true
+        familiar.is_burnedout = true
         return
-    if familiar.is_burntout:
-        familiar.is_burntout = false
+    if familiar.is_burnedout:
+        familiar.is_burnedout = false
     var percent_of_focus = 0.05
     if familiar.is_resting:
         percent_of_focus += 0.15

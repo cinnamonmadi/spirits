@@ -25,7 +25,7 @@ var conditions = []
 
 var is_resting: bool
 var participated: bool
-var is_burntout: bool
+var is_burnedout: bool
 var burnout: int
 
 func _init(as_species: Species, at_level: int):
@@ -42,7 +42,7 @@ func _init(as_species: Species, at_level: int):
 
     is_resting = false
     participated = false
-    is_burntout = false
+    is_burnedout = false
     burnout = 0
 
 func get_display_name() -> String:
@@ -66,12 +66,12 @@ func set_level(value: int):
     update_stats()
 
 func update_stats():
-    max_health = int((species.base_health * 2 * level) / 100) + level + 10
+    max_health = int((species.base_health * 2.0 * level) / 100) + level + 10
     max_mana = int((species.base_mana * 1.25 * level) / 100) + 5
-    attack = int((species.base_attack * 2 * level) / 100) + 5
-    defense = int((species.base_defense * 2 * level) / 100) + 5
-    speed = int((species.base_speed * 2 * level) / 100) + 5
-    focus = int((species.base_focus * 2 * level) / 100) + 5
+    attack = int((species.base_attack * 2.0 * level) / 100) + 5
+    defense = int((species.base_defense * 2.0 * level) / 100) + 5
+    speed = int((species.base_speed * 2.0 * level) / 100) + 5
+    focus = int((species.base_focus * 2.0 * level) / 100) + 5
 
 func get_level() -> int:
     return level
@@ -124,46 +124,46 @@ func get_level_up_moves(for_level):
 func get_attack():
     var attack_mod = 1
     for condition in conditions:
-        if condition == Conditions.Condition.ATTACK_BUFF:
+        if condition.type == Conditions.Condition.ATTACK_BUFF:
             attack_mod = 2
             break
-        if condition == Conditions.Condition.ATTACK_DEBUFF:
+        if condition.type == Conditions.Condition.ATTACK_DEBUFF:
             attack_mod = 0.5
             break
     return attack * attack_mod
 
 func get_defense():
-    var defense_mod
+    var defense_mod = 1
     for condition in conditions:
-        if condition == Conditions.Condition.DEFENSE_BUFF:
+        if condition.type == Conditions.Condition.DEFENSE_BUFF:
             defense_mod = 2
             break
-        if condition == Conditions.Condition.DEFENSE_DEBUFF:
+        if condition.type == Conditions.Condition.DEFENSE_DEBUFF:
             defense_mod = 0.5
             break
     return defense * defense_mod
 
 func get_focus():
-    var focus_mod
+    var focus_mod = 1
     for condition in conditions:
-        if condition == Conditions.Condition.FOCUS_BUFF:
+        if condition.type == Conditions.Condition.FOCUS_BUFF:
             focus_mod = 2
             break
-        if condition == Conditions.Condition.FOCUS_DEBUFF:
+        if condition.type == Conditions.Condition.FOCUS_DEBUFF:
             focus_mod = 0.5
             break
     return focus * focus_mod
 
 func get_speed():
-    var speed_mod
+    var speed_mod = 1
     for condition in conditions:
-        if condition == Conditions.Condition.SPEED_BUFF:
+        if condition.type == Conditions.Condition.SPEED_BUFF:
             speed_mod = 2
             break
-        if condition == Conditions.Condition.SPEED_DEBUFF:
+        if condition.type == Conditions.Condition.SPEED_DEBUFF:
             speed_mod = 0.5
             break
-    return speed
+    return speed * speed_mod
 
 func clear_temporary_conditions():
     var conditions_to_remove = []

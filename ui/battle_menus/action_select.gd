@@ -11,22 +11,21 @@ const CURSOR_POSITION_ITEM = Vector2(3, 1)
 
 var cursor_position: Vector2
 var move_info = []
-var familiar_is_burntout: bool
+var is_move_label_red = []
 
 func _ready():
     pass 
 
-func open(moves, is_burntout):
+func open(moves, familiar_mana_remaining, familiar_is_burnedout):
     move_info = []
     for i in range(0, 4):
         if i < moves.size():
             move_info.append(stringified_move_info(moves[i], 28))
             move_boxes[i].get_child(0).text = moves[i].name
+            is_move_label_red.append(familiar_is_burnedout or (familiar_mana_remaining == 0 and moves[i].cost != 0))
         else:
             move_info.append(null)
             move_boxes[i].get_child(0).text = ""
-
-    familiar_is_burntout = is_burntout
 
     reset_cursor_position()
     visible = true
@@ -114,7 +113,7 @@ func navigate(direction: Vector2):
     update_selection()
 
 func update_selection():
-    if familiar_is_burntout and cursor_position.x < 2:
+    if cursor_position.x < 2 and is_move_label_red[get_selected_move_index()]:
         action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 0, 0, 1))
     else:
         action_boxes[cursor_position.y][cursor_position.x].get_child(0).set("custom_colors/font_color", Color(1, 1, 0, 1))

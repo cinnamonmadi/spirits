@@ -26,7 +26,7 @@ func begin(_params):
     for condition in current_familiar.conditions:
         if condition.type == Conditions.Condition.TRAPPING:
             familiar_moves = [load("res://data/moves/trap_release.tres")]
-    action_select.open(familiar_moves, current_familiar.mana == 0)
+    action_select.open(familiar_moves, current_familiar.mana, current_familiar.is_burnedout)
 
 func open_prompt():
     current_familiar = director.player_party.familiars[get_parent().get_choosing_familiar_index()]
@@ -51,7 +51,9 @@ func process(_delta):
         var selected_move = action_select.get_selected_move_index()
         # If the player chose a move, transition to the CHOOSE_TARGET state
         if selected_move != -1:
-            if current_familiar.mana == 0:
+            if current_familiar.is_burnedout: 
+                battle_dialog.open_and_wait(current_familiar.get_display_name() + " is burnedout!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+            elif current_familiar.mana == 0 and current_familiar.moves[selected_move].cost != 0:
                 battle_dialog.open_and_wait(current_familiar.get_display_name() + " has no mana!", get_parent().BATTLE_DIALOG_WAIT_TIME)
                 return
             var chosen_move = current_familiar.moves[selected_move]

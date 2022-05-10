@@ -21,12 +21,12 @@ func priority_of(action) -> int:
         return 2
 
 func action_sorter(a, b):
-    if priority_of(a) < priority_of(b):
+    if priority_of(a) > priority_of(b):
         return true
-    elif priority_of(b) < priority_of(a):
+    elif priority_of(a) < priority_of(b):
         return false
     else:
-        return get_parent().get_acting_familiar(a).get_speed() < get_parent().get_acting_familiar(b).get_speed():
+        return get_parent().get_acting_familiar(a).get_speed() > get_parent().get_acting_familiar(b).get_speed()
 
 func begin(_params):
     enemy_choose_actions()

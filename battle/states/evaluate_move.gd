@@ -25,17 +25,18 @@ enum Todo {
 var current_action 
 var player_familiar_died 
 var enemy_familiar_died
-var todos
+var todos = []
 var announcements
 
 func begin(params):
+    current_action = get_parent().actions.pop_front()
+    todos = []
+
     if not params.initialize:
         return
 
-    current_action = get_parent().actions.pop_front()
     player_familiar_died = false
     enemy_familiar_died = false
-    todos = []
 
     if current_action.action == Action.USE_MOVE:
         # Check if the attacking familiar burnt themselves out or died

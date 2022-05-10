@@ -24,7 +24,7 @@ func pre_battle_setup():
         old_familiar_order.append(familiars[i])
         familiars[i].is_resting = false
         familiars[i].participated = false
-        familiars[i].is_burntout = false
+        familiars[i].is_burnedout = false
 
     sort_fighters_first()
 
@@ -44,7 +44,7 @@ func post_battle_setup():
     for familiar in familiars:
         familiar.is_resting = false
         familiar.participated = false
-        familiar.is_burntout = false
+        familiar.is_burnedout = false
         familiar.mana = familiar.max_mana
         familiar.clear_temporary_conditions()
 

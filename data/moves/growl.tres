@@ -9,6 +9,7 @@ desc = "Lower target's attack"
 type = 8
 cost = 2
 power = 0
+priority = 2
 targets = 3
 conditions = [ 1 ]
 condition_rates = [ 1.0 ]

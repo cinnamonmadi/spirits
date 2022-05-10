@@ -39,7 +39,7 @@ func _ready():
 func begin(_params):
     current_action = get_parent().actions[0]
 
-    if get_parent().get_acting_familiar().conditions.has(Conditions.Condition.PARALYZED):
+    if get_parent().get_acting_familiar(current_action).conditions.has(Conditions.Condition.PARALYZED):
         execute_paralyzed()
     elif current_action.action == Action.USE_MOVE:
         execute_use_move()
