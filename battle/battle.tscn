@@ -173,6 +173,10 @@ visible = false
 visible = false
 texture = ExtResource( 10 )
 
+[node name="target_cursor_2" type="Sprite" parent="ui"]
+visible = false
+texture = ExtResource( 10 )
+
 [node name="dialog" parent="ui" instance=ExtResource( 14 )]
 visible = false
 

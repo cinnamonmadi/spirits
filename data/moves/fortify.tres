@@ -9,6 +9,7 @@ desc = "Raise teams's defense"
 type = 8
 cost = 2
 power = 0
+priority = 2
 targets = 2
 conditions = [ 2 ]
 condition_rates = [ 1.0 ]

@@ -132,19 +132,6 @@ func update_enemy_label(i):
     enemy_labels.get_child(child_index).set_familiar(enemy_party.familiars[i])
     enemy_labels.get_child(child_index).visible = true
 
-func set_target_cursor(target_who: String, target_index: int):
-    var offset = Vector2(0, 120)
-    var cursor_base_position
-    if target_who == "player":
-        cursor_base_position = player_sprites.rect_position + player_sprites.get_child(target_index).position
-        offset = Vector2(0, -80)
-    else:
-        cursor_base_position = enemy_sprites.rect_position + enemy_sprites.get_child(1 - target_index).position
-
-    target_cursor.flip_v = target_who == "player"
-    target_cursor.position = cursor_base_position + offset
-    target_cursor.visible = true
-
 func recharge_energy():
     for familiar in director.player_party.familiars:
         recharge_familiar_energy(familiar)

@@ -28,7 +28,7 @@ var sprite_effect
 var move_effects = []
 
 var attacker  
-var defender
+var defenders
 
 func _ready():
     sprite_effect = SpriteEffect.new()
@@ -96,27 +96,36 @@ func execute_use_move():
     # Assign the defender, but if the defender is dead, choose another defender from the defending party
     # Note that this code assumes that if all members of a given party are dead, then we would have never reached this code
     var defending_party
-    var defending_party_size
     if current_action.target_who == "player":
         defending_party = director.player_party
-        defending_party_size = 2
     else:
         defending_party = get_parent().enemy_party
-        defending_party_size = defending_party.familiars.size()
-    while not defending_party.familiars[current_action.target_familiar].is_living():
-        current_action.target_familiar = (current_action.target_familiar + 1) % defending_party_size
-    defender = defending_party.familiars[current_action.target_familiar]
+    defenders = []
+    if current_action.move.targets == Move.MoveTargets.TARGETS_ONE_ALLY or current_action.move.targets == Move.MoveTargets.TARGETS_ONE_ENEMY:
+        var target_familiar_index = current_action.target_familiar
+        if not defending_party.familiars[current_action.target_familiar].is_living():
+            target_familiar_index = (target_familiar_index + 1) % 2
+        defenders.append(defending_party.familiars[target_familiar_index])
+    elif current_action.move.targets == Move.MoveTargets.TARGETS_SELF:
+        defenders.append(attacker)
+    elif current_action.move.targets == Move.MoveTargets.TARGETS_ALL_ALLIES or current_action.move.targets == Move.MoveTargets.TARGETS_ALL_ENEMIES:
+        for i in range(0, min(2, defending_party.familiars.size())):
+            if defending_party.familiars[i].is_living():
+                defenders.append(defending_party.familiars[i])
 
     move_effects = []
-    for i in range(0, current_action.move.conditions.size()):
-        move_effects.append({
-            "effect": MoveEffect.CONDITION,
-            "condition": current_action.move.conditions[i],
-            "rate": current_action.move.condition_rates[i]
-        })
+    for defender in defenders:
+        for i in range(0, current_action.move.conditions.size()):
+            move_effects.append({
+                "effect": MoveEffect.CONDITION,
+                "defender": defender,
+                "condition": current_action.move.conditions[i],
+                "rate": current_action.move.condition_rates[i]
+            })
 
     if current_action.move.power != 0:
-        execute_move_effect_damage()
+        for defender in defenders:
+            execute_move_effect_damage(defender)
 
 func execute_next_move_effect():
     var next = move_effects[0]
@@ -124,9 +133,9 @@ func execute_next_move_effect():
     print(move_effects)
 
     if next.effect == MoveEffect.CONDITION:
-        execute_move_effect_condition(next.condition, next.rate)
+        execute_move_effect_condition(next.defender, next.condition, next.rate)
 
-func execute_move_effect_damage():
+func execute_move_effect_damage(defender):
     # Compute base damage
     var base_damage = (((((2 * attacker.get_level()) / 5) + 2) * current_action.move.power * (attacker.get_attack() / defender.get_defense())) / 50) + 2
 
@@ -159,21 +168,29 @@ func execute_move_effect_damage():
     sprite_effect.begin(SpriteEffect.SpriteEffectType.FLICKER, target_familiar_sprite, current_action.target_who == "enemy")
     battle_sound_player.play_sound(battle_sound_player.HIT_NORMAL)
 
-func execute_move_effect_condition(condition, rate):
+func execute_move_effect_condition(defender, condition, rate):
     if not defender.is_living():
         return
 
+    var condition_extended = false
     var defender_already_has_condition = false
     var reverse_condition_index = -1
     for condition_index in range(0, defender.conditions.size()):
         if condition == defender.conditions[condition_index].type:
-            defender_already_has_condition = true
+            var condition_info = Conditions.CONDITION_INFO[defender.conditions[condition_index].type]
+            if condition_info.is_extendable and defender.conditions[condition_index].duration != condition_info.duration:
+                condition_extended = true
+                defender.conditions[condition_index].duration = condition_info.duration
+            else:
+                defender_already_has_condition = true
             break
-        if condition == defender.conditions[condition_index].reverse:
+        if condition == Conditions.CONDITION_INFO[defender.conditions[condition_index].type].reverse:
             reverse_condition_index = condition_index
             break
     var condition_info = Conditions.CONDITION_INFO[condition]
 
+    if condition_extended:
+        battle_dialog.open_and_wait(defender.get_display_name() + condition_info.extend_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
     if defender_already_has_condition:
         if current_action.move.power == 0:
             battle_dialog.open_and_wait(defender.get_display_name() + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)

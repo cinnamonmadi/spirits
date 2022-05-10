@@ -9,6 +9,7 @@ desc = "Raise teams's speed"
 type = 8
 cost = 2
 power = 0
+priority = 2
 targets = 2
 conditions = [ 4 ]
 condition_rates = [ 1.0 ]
