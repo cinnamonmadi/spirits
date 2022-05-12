@@ -1,12 +1,24 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://ui/healthbars/playerhealth_experience.png" type="Texture" id=1]
-[ext_resource path="res://ui/healthbars/playerhealth_frame.png" type="Texture" id=2]
-[ext_resource path="res://ui/healthbars/playerhealth_health.png" type="Texture" id=3]
-[ext_resource path="res://ui/healthbars/playerhealth_mana.png" type="Texture" id=4]
-[ext_resource path="res://ui/healthbars/playerhealth_bottom.png" type="Texture" id=5]
+[ext_resource path="res://ui/healthbars/player_heathbar_mana.png" type="Texture" id=1]
+[ext_resource path="res://ui/healthbars/player_heathbar_middle.png" type="Texture" id=2]
+[ext_resource path="res://ui/healthbars/player_healthbar_health.png" type="Texture" id=3]
+[ext_resource path="res://ui/healthbars/player_healthbar_xp.png" type="Texture" id=4]
+[ext_resource path="res://ui/healthbars/player_heathbar_front.png" type="Texture" id=5]
 [ext_resource path="res://ui/font_8.tres" type="DynamicFont" id=6]
 [ext_resource path="res://ui/healthbars/player_healthbar.gd" type="Script" id=7]
+[ext_resource path="res://ui/healthbars/player_healthbar_back.png" type="Texture" id=8]
+[ext_resource path="res://ui/gba_font.ttf" type="DynamicFontData" id=9]
+
+[sub_resource type="DynamicFont" id=1]
+size = 8
+use_mipmaps = true
+font_data = ExtResource( 9 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 4
+use_mipmaps = true
+font_data = ExtResource( 9 )
 
 [node name="player_healthbar" type="Control"]
 margin_right = 40.0
@@ -16,76 +28,81 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="background" type="Sprite" parent="."]
-texture = ExtResource( 5 )
-
-[node name="healthbar" type="Sprite" parent="."]
-position = Vector2( -59, -3.5 )
-texture = ExtResource( 3 )
-centered = false
-region_enabled = true
+[node name="back" type="Sprite" parent="."]
+position = Vector2( 0.5, 0.5 )
+texture = ExtResource( 8 )
 
 [node name="expbar" type="Sprite" parent="."]
-position = Vector2( -59, 11.5 )
-texture = ExtResource( 1 )
-centered = false
-region_enabled = true
-
-[node name="manabar" type="Sprite" parent="."]
-position = Vector2( 32, -10.5 )
+position = Vector2( -14, 9 )
 texture = ExtResource( 4 )
 centered = false
 region_enabled = true
 
-[node name="frame" type="Sprite" parent="."]
+[node name="manabar" type="Sprite" parent="."]
+position = Vector2( -43, -15 )
+texture = ExtResource( 1 )
+centered = false
+region_enabled = true
+
+[node name="middle" type="Sprite" parent="."]
+position = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
 
+[node name="healthbar" type="Sprite" parent="."]
+position = Vector2( -64, -13 )
+texture = ExtResource( 3 )
+centered = false
+region_enabled = true
+
+[node name="front" type="Sprite" parent="."]
+position = Vector2( 0.5, 0.5 )
+texture = ExtResource( 5 )
+
 [node name="name_label" type="Label" parent="."]
-margin_left = -68.0
-margin_top = -13.0
-margin_right = 12.0
-margin_bottom = 1.0
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_fonts/font = ExtResource( 6 )
+margin_left = -14.0
+margin_right = 66.0
+margin_bottom = 14.0
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+custom_fonts/font = SubResource( 1 )
 text = "APPLEFIGHT"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="level_label" type="Label" parent="."]
-margin_left = 3.0
-margin_top = -13.0
-margin_right = 43.0
-margin_bottom = 1.0
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_fonts/font = ExtResource( 6 )
-text = "20"
+margin_left = -47.0
+margin_top = 14.0
+margin_right = -7.0
+margin_bottom = 28.0
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+custom_fonts/font = SubResource( 2 )
+text = "100"
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="health_label" type="Label" parent="."]
-margin_left = -29.0
-margin_right = 27.0
-margin_bottom = 14.0
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+margin_left = -63.0
+margin_top = 8.0
+margin_right = -7.0
+margin_bottom = 22.0
+custom_colors/font_color = Color( 1, 1, 0, 1 )
 custom_fonts/font = ExtResource( 6 )
-text = "100/100"
-align = 1
+text = "100"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="mana_label" type="Label" parent="."]
-margin_left = 29.0
-margin_top = -10.0
-margin_right = 69.0
-margin_bottom = 4.0
-custom_colors/font_color = Color( 1, 1, 1, 1 )
+margin_left = -55.0
+margin_top = 4.0
+margin_right = -15.0
+margin_bottom = 18.0
+custom_colors/font_color = Color( 1, 1, 0, 1 )
 custom_fonts/font = ExtResource( 6 )
-text = "200"
-align = 1
+text = "99"
+align = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/enemyhealth_bottom.png-86aa80243479bb941b7e0cdea2b4da6d.stex"
+path="res://.import/enemy_healthbar_middle.png-3dadc4bd7feed80cc9376c80f9bb2e90.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://ui/healthbars/enemyhealth_bottom.png"
-dest_files=[ "res://.import/enemyhealth_bottom.png-86aa80243479bb941b7e0cdea2b4da6d.stex" ]
+source_file="res://ui/healthbars/enemy_healthbar_middle.png"
+dest_files=[ "res://.import/enemy_healthbar_middle.png-3dadc4bd7feed80cc9376c80f9bb2e90.stex" ]
 
 [params]
 

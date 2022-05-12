@@ -10,6 +10,9 @@ onready var level_label = $level_label
 onready var health_label = $health_label
 onready var mana_label = $mana_label
 
+var healthbar_base_y: int
+var manabar_base_y: int
+
 var displayed_health: float = 0
 var displayed_max_health: int
 var displayed_mana: float = 0
@@ -29,8 +32,10 @@ var familiar: Familiar = null
 export var is_player_healthbar: bool = true
 
 func _ready():
-    healthbar.region_rect.size.y = healthbar.texture.get_height()
-    manabar.region_rect.size.y = manabar.texture.get_height()
+    healthbar.region_rect.size.x = healthbar.texture.get_width()
+    healthbar_base_y = healthbar.position.y
+    manabar.region_rect.size.x = manabar.texture.get_width()
+    manabar_base_y = manabar.position.y
 
     if is_player_healthbar:
         expbar = $expbar
@@ -58,14 +63,18 @@ func refresh():
         health_percent_full = 0
     else:
         health_percent_full = displayed_health / float(displayed_max_health)
-    healthbar.region_rect.size.x = int(health_percent_full * healthbar.texture.get_width())
+    healthbar.region_rect.size.y = int(health_percent_full * healthbar.texture.get_height())
+    healthbar.region_rect.position.y = healthbar.texture.get_height() - healthbar.region_rect.size.y
+    healthbar.position.y = healthbar_base_y + healthbar.region_rect.position.y
 
     var mana_percent_full: float
     if displayed_max_mana == 0:
         mana_percent_full = 0
     else:
         mana_percent_full = displayed_mana / float(displayed_max_mana)
-    manabar.region_rect.size.x = int(mana_percent_full * manabar.texture.get_width())
+    manabar.region_rect.size.y = int(mana_percent_full * manabar.texture.get_height())
+    manabar.region_rect.position.y = manabar.texture.get_height() - manabar.region_rect.size.y
+    manabar.position.y = manabar_base_y + manabar.region_rect.position.y
 
     if is_player_healthbar:
         var exp_percent_full: float
@@ -77,7 +86,7 @@ func refresh():
 
     name_label.text = familiar.get_display_name()
     level_label.text = String(familiar.get_level())
-    health_label.text = String(int(displayed_health)) + "/" + String(displayed_max_health)
+    health_label.text = String(int(displayed_health)) 
     mana_label.text = String(int(displayed_mana))
 
 func _process(delta):
