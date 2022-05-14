@@ -139,7 +139,7 @@ func get_focus() -> int:
 func get_speed() -> int:
     return int(speed * speed_mod)
 
-func apply_condition(condition_type: int, skip_fail_message: bool = false) -> String:
+func apply_condition(condition_type: int, params, skip_fail_message: bool = false) -> String:
     var condition = Conditions.new_condition(condition_type)
 
     for existing_condition in conditions:
@@ -155,7 +155,7 @@ func apply_condition(condition_type: int, skip_fail_message: bool = false) -> St
         elif existing_condition.type == condition.reverse:
             remove_condition(existing_condition)
             return existing_condition.expire_message
-    condition.on_apply(self)
+    condition.on_apply(params, self)
     if condition.duration_type != Condition.DurationType.INSTANT:
         conditions.append(condition)
     return condition.success_message

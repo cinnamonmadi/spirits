@@ -19,7 +19,8 @@ const EXECUTE_MOVE_DURATION: float = 1.0
 
 enum MoveEffect {
     DAMAGE,
-    CONDITION
+    CONDITION,
+    MESSAGE
 }
 
 var current_action 
@@ -111,6 +112,22 @@ func execute_use_move():
                 defenders.append(defending_party.familiars[i])
 
     move_effects = []
+
+    var interrupted_defenders = []
+    for defender in defenders:
+        for condition in defender.conditions:
+            var response = condition.on_attacked(attacker, defender, current_action.move)
+            if response.type == Condition.ResponseType.INTERRUPT:
+                interrupted_defenders.append(defender)
+            if response.message != "":
+                move_effects.append({
+                    "effect": MoveEffect.MESSAGE,
+                    "defender": defender,
+                    "message": response.message,
+                })
+    for defender in interrupted_defenders:
+        defenders.erase(defender)
+
     for defender in defenders:
         for i in range(0, current_action.move.conditions.size()):
             move_effects.append({
@@ -130,6 +147,22 @@ func execute_next_move_effect():
 
     if next.effect == MoveEffect.CONDITION:
         execute_move_effect_condition(next.defender, next.condition, next.rate)
+    elif next.effect == MoveEffect.MESSAGE:
+        execute_move_effect_interrupted(next.defender, next.message)
+
+func check_condition_interrupts_attack(defender) -> String:
+    for condition in defender.conditions:
+        var interrupt = condition.on_attacked(attacker, defender, current_action.move)
+        if interrupt != "":
+            return interrupt
+    return ""
+
+func execute_move_effect_interrupted(defender, message):
+    var familiar_name = defender.get_display_name()
+    if current_action.target_who == "enemy":
+        familiar_name = "Enemy " + familiar_name
+    battle_dialog.open_and_wait(familiar_name + message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+
 
 func execute_move_effect_damage(defender):
     # Compute base damage
@@ -171,7 +204,7 @@ func execute_move_effect_condition(defender, condition_type, rate):
     var apply_condition_value = director.rng.randf_range(0.0, 1.0)
     var response_message = ""
     if apply_condition_value <= rate:
-        response_message = defender.apply_condition(condition_type, current_action.move.power != 0)
+        response_message = defender.apply_condition(condition_type, {}, current_action.move.power != 0)
 
     if response_message != "":
         var familiar_name = defender.get_display_name()
@@ -261,10 +294,3 @@ func execute_rest():
         director.player_party.familiars[current_action.familiar].is_resting = true
     elif current_action.who == "enemy":
         get_parent().enemy_party.familiars[current_action.familiar].is_resting = true
-
-func execute_paralyzed():
-    var dialog_message = ""
-    if current_action.who == "enemy":
-        dialog_message += "Wild "
-    dialog_message += get_parent().get_acting_familiar().get_display_name() + " is paralyzed. It can't move!"
-    battle_dialog.open_and_wait(dialog_message, get_parent().BATTLE_DIALOG_WAIT_TIME)

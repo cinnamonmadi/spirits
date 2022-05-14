@@ -23,6 +23,7 @@ func _ready():
     player_party.add_familiar(Familiar.new(load("res://data/species/mimic.tres"), 5))
     player_party.familiars[0].nickname = "Beerus"
     player_party.familiars[0].add_experience(player_party.familiars[0].get_experience_tnl() - 3)
+    player_party.familiars[0].moves.append(load("res://data/moves/trap.tres"))
     player_party.add_familiar(Familiar.new(load("res://data/species/mimic.tres"), 5))
     player_party.familiars[1].nickname = "Deputy"
     player_party.add_familiar(Familiar.new(load("res://data/species/mimic.tres"), 5))

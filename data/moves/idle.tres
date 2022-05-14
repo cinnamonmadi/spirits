@@ -4,13 +4,13 @@
 
 [resource]
 script = ExtResource( 1 )
-name = "TRAP"
-desc = "Traps the first foe who attacks"
-type = 9
-cost = 2
+name = "IDLE"
+desc = "Do nothing this turn."
+type = 8
+cost = 0
 power = 0
-priority = 3
+priority = 2
 targets = 0
-conditions = [ 11 ]
-condition_rates = [ 1.0 ]
-condition_targets = [ 0 ]
+conditions = [  ]
+condition_rates = [  ]
+condition_targets = [  ]

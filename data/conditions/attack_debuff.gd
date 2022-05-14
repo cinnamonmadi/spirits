@@ -1,6 +1,6 @@
 extends Condition
 
-func _init():
+func config():
     type = Type.ATTACK_DEBUFF
     reverse = Type.ATTACK_BUFF
     duration_type = DurationType.EXTENDABLE
@@ -10,7 +10,7 @@ func _init():
     expire_message = "'s attack returned to normal."
     extend_message = "'s attack debuff was extended!"
 
-func on_apply(familiar):
+func on_apply(_params, familiar):
     familiar.attack_mod = 0.5
 
 func on_remove(familiar):

@@ -1,6 +1,6 @@
 extends Condition
 
-func _init():
+func config():
     type = Type.SPEED_BUFF
     reverse = Type.SPEED_DEBUFF
     duration_type = DurationType.EXTENDABLE
@@ -10,7 +10,7 @@ func _init():
     expire_message = "'s speed returned to normal."
     extend_message = "'s speed buff was extended!"
 
-func on_apply(familiar):
+func on_apply(_params, familiar):
     familiar.speed_mod = 2.0
 
 func on_remove(familiar):

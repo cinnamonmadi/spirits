@@ -72,6 +72,8 @@ func sort_fighters_first():
             if familiars[i].is_living():
                 swap_familiars(0, i)
                 break
+    if familiars.size() == 1:
+        return
     if not familiars[1].is_living():
         for i in range(2, familiars.size()):
             if familiars[i].is_living():

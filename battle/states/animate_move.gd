@@ -31,9 +31,23 @@ func begin(_params):
     if current_action.who == "enemy":
         animating_sprite = enemy_sprites.get_child(1 - current_action.familiar)
 
-    skip_action = check_conditions_interrupt_action()
+    skip_action = false
+    var familiar = get_parent().get_acting_familiar(current_action)
+    for condition in familiar.conditions:
+        var response = condition.on_perform_action(current_action, familiar)
+        if response.message != "":
+            var familiar_name = familiar.get_display_name()
+            if current_action.who == "enemy":
+                familiar_name = "Enemy " + familiar_name
+            battle_dialog.open_and_wait(familiar_name + response.message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+
+        if response.type == Condition.ResponseType.INTERRUPT:
+            skip_action = true
+            break
 
     if skip_action:
+        tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
+        tween.start()
         return
     elif current_action.action == Action.USE_MOVE:
         begin_animate_attack()
@@ -118,20 +132,3 @@ func begin_animate_item():
         effect.position = enemy_sprites.rect_position + enemy_sprites.get_child(1 - current_action.target_familiar).position
 
     effect.start()
-
-func check_conditions_interrupt_action():
-    var familiar = get_parent().get_acting_familiar(current_action)
-    for condition in familiar.conditions:
-        var interrupt = condition.on_perform_action(current_action, familiar)
-        if interrupt != "":
-            var familiar_name = familiar.get_display_name()
-            if current_action.who == "enemy":
-                familiar_name = "Enemy " + familiar_name
-            battle_dialog.open_and_wait(familiar_name + interrupt, get_parent().BATTLE_DIALOG_WAIT_TIME)
-
-            tween.interpolate_property(self, "dummy_timer", 0, ANIMATE_MOVE_DURATION, ANIMATE_MOVE_DURATION)
-            tween.start()
-
-            return true
-    
-    return false

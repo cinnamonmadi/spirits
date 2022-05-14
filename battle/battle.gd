@@ -62,7 +62,7 @@ func _ready():
         add_child(state_node)
 
     enemy_party.familiars.append(Familiar.new(load("res://data/species/mimic.tres"), 3))
-    enemy_party.familiars.append(Familiar.new(load("res://data/species/mimic.tres"), 3))
+    # enemy_party.familiars.append(Familiar.new(load("res://data/species/mimic.tres"), 3))
     # for familiar in enemy_party.familiars:
         # familiar.health = 1
     for _i in range(0, enemy_party.familiars.size()):

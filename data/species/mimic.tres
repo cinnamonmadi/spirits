@@ -1,9 +1,8 @@
-[gd_resource type="Resource" load_steps=5 format=2]
+[gd_resource type="Resource" load_steps=4 format=2]
 
 [ext_resource path="res://data/species.gd" type="Script" id=1]
 [ext_resource path="res://data/moves/growl.tres" type="Resource" id=2]
 [ext_resource path="res://data/moves/tackle.tres" type="Resource" id=3]
-[ext_resource path="res://data/moves/lick.tres" type="Resource" id=4]
 
 [resource]
 script = ExtResource( 1 )
@@ -17,5 +16,5 @@ base_speed = 40
 base_focus = 20
 catch_rate = 0.75
 base_exp_yield = 50.0
-levelup_moves = [ ExtResource( 2 ), ExtResource( 3 ), ExtResource( 4 ) ]
-levelup_move_levels = [ 1, 1, 1 ]
+levelup_moves = [ ExtResource( 2 ), ExtResource( 3 ) ]
+levelup_move_levels = [ 1, 1 ]

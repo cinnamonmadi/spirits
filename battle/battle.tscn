@@ -19,6 +19,7 @@
 [ext_resource path="res://ui/dialog/dialog.gd" type="Script" id=17]
 
 [node name="battle" type="Node2D"]
+position = Vector2( 1, 0 )
 script = ExtResource( 2 )
 
 [node name="ColorRect" type="ColorRect" parent="."]

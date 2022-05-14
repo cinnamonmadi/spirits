@@ -1,6 +1,6 @@
 extends Condition
 
-func _init():
+func config():
     type = Type.FOCUS_BUFF
     reverse = Type.FOCUS_DEBUFF
     duration_type = DurationType.EXTENDABLE
@@ -10,7 +10,7 @@ func _init():
     expire_message = "'s focus returned to normal."
     extend_message = "'s focus buff was extended!"
 
-func on_apply(familiar):
+func on_apply(_params, familiar):
     familiar.focus_mod = 2.0
 
 func on_remove(familiar):

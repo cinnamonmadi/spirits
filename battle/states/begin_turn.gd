@@ -56,5 +56,5 @@ func enemy_choose_actions():
             "action": Action.USE_MOVE,
             "move": enemy_chosen_move,
             "target_who": "player",
-            "target_familiar": 1
+            "target_familiar": 0
         })

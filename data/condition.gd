@@ -13,8 +13,8 @@ enum Type {
     FOCUS_DEBUFF,
     PARALYZED,
     DECOY,
-    IS_TRAP,
-    IS_TRAP_RELEASE,
+    TRAP,
+    TRAP_RELEASE,
     TRAPPED,
     TRAPPING,
     TRAPPING_RELEASE,
@@ -30,6 +30,12 @@ enum DurationType {
     INSTANT
 }
 
+enum ResponseType {
+    NONE,
+    INTERRUPT,
+    REPLACE_ACTION,
+}
+
 var type
 var reverse = Type.NONE
 
@@ -42,15 +48,28 @@ var duration_type = DurationType.FIXED
 var duration: int = 4
 var ttl: int = 0
 
+func config():
+    pass
+
 func _init():
+    config()
     if duration_type != DurationType.INDEFINITE:
         ttl = duration
 
-func on_apply(_familiar):
+func on_apply(_params, _familiar):
     pass
 
 func on_remove(_familiar):
     pass
 
-func on_perform_action(_action, _familiar) -> String:
-    return ""
+func on_perform_action(_action, _familiar):
+    return {
+        "type": ResponseType.NONE,
+        "message": "",
+    }
+
+func on_attacked(_attacker, _familiar, _move):
+    return {
+        "type": ResponseType.NONE,
+        "message": "",
+    }
