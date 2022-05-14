@@ -36,9 +36,11 @@ func _ready():
     catch_effect.connect("animation_finished", self, "_on_catch_effect_finished")
     catch_effect.connect("hide_enemy", self, "_on_catch_hide_enemy")
 
-func begin(_params):
+func begin(params):
     current_action = get_parent().actions[0]
 
+    if params.skip_action:
+        return
     if current_action.action == Action.USE_MOVE:
         execute_use_move()
     elif current_action.action == Action.SWITCH:
@@ -86,10 +88,7 @@ func handle_timer_timeout():
 
 func execute_use_move():
     # Determine attacker and defender
-    if current_action.who == "player":
-        attacker = director.player_party.familiars[current_action.familiar]
-    else:
-        attacker = get_parent().enemy_party.familiars[current_action.familiar]
+    attacker = get_parent().get_acting_familiar(current_action)
 
     # Assign the defender, but if the defender is dead, choose another defender from the defending party
     # Note that this code assumes that if all members of a given party are dead, then we would have never reached this code
@@ -172,12 +171,18 @@ func execute_move_effect_condition(defender, condition_type, rate):
     var apply_condition_value = director.rng.randf_range(0.0, 1.0)
     var response_message = ""
     if apply_condition_value <= rate:
-        response_message = defender.apply_condition(condition_type, current_action.move.power == 0)
+        response_message = defender.apply_condition(condition_type, current_action.move.power != 0)
 
     if response_message != "":
-        battle_dialog.open_and_wait(defender.get_display_name() + response_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+        var familiar_name = defender.get_display_name()
+        if current_action.target_who == "enemy":
+            familiar_name = "Enemy " + familiar_name
+        battle_dialog.open_and_wait(familiar_name + response_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
     elif current_action.move.power == 0:
-        battle_dialog.open_and_wait(attacker.get_display_name() + "'s attack missed!", get_parent().BATTLE_DIALOG_WAIT_TIME)
+        var familiar_name = attacker.get_display_name()
+        if current_action.who == "enemy":
+            familiar_name = "Enemy " + familiar_name
+        battle_dialog.open_and_wait(familiar_name + "'s attack missed!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func execute_switch():
     if current_action.who == "player":

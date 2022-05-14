@@ -51,3 +51,6 @@ func on_apply(_familiar):
 
 func on_remove(_familiar):
     pass
+
+func on_perform_action(_action, _familiar) -> String:
+    return ""
