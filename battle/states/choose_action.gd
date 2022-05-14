@@ -22,11 +22,7 @@ func begin(_params):
 
     open_prompt()
 
-    var familiar_moves = current_familiar.moves
-    for condition in current_familiar.conditions:
-        if condition.type == Conditions.Condition.TRAPPING:
-            familiar_moves = [load("res://data/moves/trap_release.tres")]
-    action_select.open(familiar_moves, current_familiar.mana, current_familiar.is_burnedout)
+    action_select.open(current_familiar.moves, current_familiar.mana, current_familiar.is_burnedout)
 
 func open_prompt():
     current_familiar = director.player_party.familiars[get_parent().get_choosing_familiar_index()]

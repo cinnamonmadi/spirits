@@ -50,9 +50,14 @@ _global_script_classes=[ {
 "path": "res://battle/states/choose_target.gd"
 }, {
 "base": "Reference",
-"class": "Conditions",
+"class": "Condition",
 "language": "GDScript",
 "path": "res://data/condition.gd"
+}, {
+"base": "Reference",
+"class": "Conditions",
+"language": "GDScript",
+"path": "res://data/conditions.gd"
 }, {
 "base": "Node",
 "class": "EvaluateMove",
@@ -158,6 +163,7 @@ _global_script_class_icons={
 "BeginTurn": "",
 "ChooseAction": "",
 "ChooseTarget": "",
+"Condition": "",
 "Conditions": "",
 "EvaluateMove": "",
 "ExecuteMove": "",

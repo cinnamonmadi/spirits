@@ -23,6 +23,6 @@ export var cost: int
 export(int, 0, 100) var power: int
 export var priority: int = 2
 export(MoveTargets) var targets
-export(Array, Conditions.Condition) var conditions
+export(Array, Condition.Type) var conditions
 export(Array, float) var condition_rates
 export(Array, ConditionTargets) var condition_targets

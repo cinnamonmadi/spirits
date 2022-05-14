@@ -136,27 +136,24 @@ func countdown_temporary_conditions():
 func countdown_conditions_for_familiar(familiar, who, familiar_index):
     if not familiar.is_living():
         return
-    for condition_index in range(0, familiar.conditions.size()):
-        if familiar.conditions[condition_index].duration == Conditions.DURATION_INDEFINITE:
-            continue
-        familiar.conditions[condition_index].duration -= 1
-        if familiar.conditions[condition_index].duration == 0:
-            todos.append({
-                "todo": Todo.CURE_CONDITION,
-                "who": who,
-                "familiar": familiar_index,
-                "condition": condition_index,
-            })
+    var expired_conditions = familiar.tick_conditions()
+    for condition in expired_conditions:
+        todos.append({
+            "todo": Todo.CURE_CONDITION,
+            "who": who,
+            "familiar": familiar_index,
+            "condition": condition,
+        })
 
-func cure_condition(who: String, familiar_index: int, condition_index: int):
+func cure_condition(who: String, familiar_index: int, condition: Condition):
     var familiar
     if who == "player":
         familiar = director.player_party.familiars[familiar_index]
     else:
         familiar = get_parent().enemy_party.familiars[familiar_index]
-    var message = familiar.get_display_name() + Conditions.CONDITION_INFO[familiar.conditions[condition_index].type].expire_message
-    familiar.conditions.remove(condition_index)
-    battle_dialog.open_and_wait(message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+    familiar.conditions.erase(condition)
+    if condition.expire_message != "":
+        battle_dialog.open_and_wait(familiar.get_display_name() + condition.expire_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func end_state():
     if director.player_party.get_living_familiar_count() == 0 or get_parent().get_enemy_living_familiar_count() == 0:

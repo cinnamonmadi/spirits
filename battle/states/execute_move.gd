@@ -39,9 +39,7 @@ func _ready():
 func begin(_params):
     current_action = get_parent().actions[0]
 
-    if get_parent().get_acting_familiar(current_action).conditions.has(Conditions.Condition.PARALYZED):
-        execute_paralyzed()
-    elif current_action.action == Action.USE_MOVE:
+    if current_action.action == Action.USE_MOVE:
         execute_use_move()
     elif current_action.action == Action.SWITCH:
         execute_switch()
@@ -130,7 +128,6 @@ func execute_use_move():
 func execute_next_move_effect():
     var next = move_effects[0]
     move_effects.remove(0)
-    print(move_effects)
 
     if next.effect == MoveEffect.CONDITION:
         execute_move_effect_condition(next.defender, next.condition, next.rate)
@@ -168,47 +165,17 @@ func execute_move_effect_damage(defender):
     sprite_effect.begin(SpriteEffect.SpriteEffectType.FLICKER, target_familiar_sprite, current_action.target_who == "enemy")
     battle_sound_player.play_sound(battle_sound_player.HIT_NORMAL)
 
-func execute_move_effect_condition(defender, condition, rate):
+func execute_move_effect_condition(defender, condition_type, rate):
     if not defender.is_living():
         return
 
-    var condition_extended = false
-    var defender_already_has_condition = false
-    var reverse_condition_index = -1
-    for condition_index in range(0, defender.conditions.size()):
-        if condition == defender.conditions[condition_index].type:
-            var condition_info = Conditions.CONDITION_INFO[defender.conditions[condition_index].type]
-            if condition_info.is_extendable and defender.conditions[condition_index].duration != condition_info.duration:
-                condition_extended = true
-                defender.conditions[condition_index].duration = condition_info.duration
-            else:
-                defender_already_has_condition = true
-            break
-        if condition == Conditions.CONDITION_INFO[defender.conditions[condition_index].type].reverse:
-            reverse_condition_index = condition_index
-            break
-    var condition_info = Conditions.CONDITION_INFO[condition]
-
-    if condition_extended:
-        battle_dialog.open_and_wait(defender.get_display_name() + condition_info.extend_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
-    if defender_already_has_condition:
-        if current_action.move.power == 0:
-            battle_dialog.open_and_wait(defender.get_display_name() + condition_info.failure_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
-        return
-    if reverse_condition_index != -1:
-        defender.conditions.remove(reverse_condition_index)
-        if current_action.move.power == 0:
-            battle_dialog.open_and_wait(defender.get_display_name() + condition_info.expire_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
-        return
-
     var apply_condition_value = director.rng.randf_range(0.0, 1.0)
+    var response_message = ""
     if apply_condition_value <= rate:
-        defender.conditions.append({
-            "type": condition,
-            "duration": condition_info.duration,
-            "value": 0, # Value is used in certain conditions, like Bide
-        })
-        battle_dialog.open_and_wait(defender.get_display_name() + condition_info.success_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
+        response_message = defender.apply_condition(condition_type, current_action.move.power == 0)
+
+    if response_message != "":
+        battle_dialog.open_and_wait(defender.get_display_name() + response_message, get_parent().BATTLE_DIALOG_WAIT_TIME)
     elif current_action.move.power == 0:
         battle_dialog.open_and_wait(attacker.get_display_name() + "'s attack missed!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 

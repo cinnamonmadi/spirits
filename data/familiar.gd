@@ -1,3 +1,4 @@
+extends Reference
 class_name Familiar
 
 const MAX_LEVEL = 100
@@ -18,6 +19,11 @@ var attack: int
 var defense: int
 var speed: int
 var focus: int
+
+var attack_mod: float = 1.0
+var defense_mod: float = 1.0
+var speed_mod: float = 1.0
+var focus_mod: float = 1.0
 
 var moves = []
 
@@ -121,54 +127,59 @@ func get_level_up_moves(for_level):
             returned_level_up_moves.append(species.levelup_moves[i])
     return returned_level_up_moves
 
-func get_attack():
-    var attack_mod = 1
-    for condition in conditions:
-        if condition.type == Conditions.Condition.ATTACK_BUFF:
-            attack_mod = 2
-            break
-        if condition.type == Conditions.Condition.ATTACK_DEBUFF:
-            attack_mod = 0.5
-            break
-    return attack * attack_mod
+func get_attack() -> int:
+    return int(attack * attack_mod)
 
-func get_defense():
-    var defense_mod = 1
-    for condition in conditions:
-        if condition.type == Conditions.Condition.DEFENSE_BUFF:
-            defense_mod = 2
-            break
-        if condition.type == Conditions.Condition.DEFENSE_DEBUFF:
-            defense_mod = 0.5
-            break
-    return defense * defense_mod
+func get_defense() -> int:
+    return int(defense * defense_mod)
 
-func get_focus():
-    var focus_mod = 1
-    for condition in conditions:
-        if condition.type == Conditions.Condition.FOCUS_BUFF:
-            focus_mod = 2
-            break
-        if condition.type == Conditions.Condition.FOCUS_DEBUFF:
-            focus_mod = 0.5
-            break
-    return focus * focus_mod
+func get_focus() -> int:
+    return int(focus * focus_mod)
 
-func get_speed():
-    var speed_mod = 1
+func get_speed() -> int:
+    return int(speed * speed_mod)
+
+func apply_condition(condition_type: int, skip_fail_message: bool = false) -> String:
+    var condition = Conditions.new_condition(condition_type)
+
+    for existing_condition in conditions:
+        if existing_condition.type == condition_type:
+            if existing_condition.duration_type == Condition.DurationType.EXTENDABLE and existing_condition.ttl != existing_condition.duration:
+                existing_condition.ttl = existing_condition.duration
+                return existing_condition.extend_message
+            else:
+                if skip_fail_message:
+                    return ""
+                else:
+                    return existing_condition.failure_message
+        elif existing_condition.type == condition.reverse:
+            remove_condition(existing_condition)
+            return existing_condition.expire_message
+    condition.on_apply(self)
+    if condition.duration_type != Condition.DurationType.INSTANT:
+        conditions.append(condition)
+    return condition.success_message
+
+func remove_condition(condition: Condition):
+    condition.on_remove(self)
+    conditions.erase(condition)
+
+func tick_conditions():
+    var expired_conditions = []
+
     for condition in conditions:
-        if condition.type == Conditions.Condition.SPEED_BUFF:
-            speed_mod = 2
-            break
-        if condition.type == Conditions.Condition.SPEED_DEBUFF:
-            speed_mod = 0.5
-            break
-    return speed * speed_mod
+        if condition.duration_type == Condition.DurationType.INDEFINITE:
+            continue
+        condition.ttl -= 1
+        if condition.ttl == 0:
+            expired_conditions.append(condition)
+
+    return expired_conditions
 
 func clear_temporary_conditions():
     var conditions_to_remove = []
-    for i in range(0, conditions.size()):
-        if conditions[i].duration != Conditions.DURATION_INDEFINITE:
-            conditions_to_remove.append(i)
-    for condition_index in conditions_to_remove:
-        conditions.remove(condition_index)
+    for condition in conditions:
+        if condition.duration_type != Condition.DurationType.INDEFINITE:
+            conditions_to_remove.append(condition)
+    for condition in conditions_to_remove:
+        remove_condition(condition)

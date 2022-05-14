@@ -11,6 +11,6 @@ cost = 2
 power = 0
 priority = 2
 targets = 3
-conditions = [ 1 ]
+conditions = [ 2 ]
 condition_rates = [ 1.0 ]
 condition_targets = [ 0 ]
