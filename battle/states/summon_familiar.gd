@@ -51,6 +51,7 @@ func handle_timer_timeout():
     pass
 
 func summon_player_familiar(i):
-    player_sprites.get_child(i).texture = load(director.player_party.familiars[i].get_portrait_path())
+    player_sprites.get_child(i).config(director.player_party.familiars[i], true)
     player_sprites.get_child(i).visible = true
+    player_sprites.get_child(i).start_animation(FamiliarSprite.Animation.ENTER)
     get_parent().update_player_label(i)

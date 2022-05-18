@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=4 format=2]
+
+[ext_resource path="res://data/species.gd" type="Script" id=1]
+[ext_resource path="res://data/moves/growl.tres" type="Resource" id=2]
+[ext_resource path="res://data/moves/tackle.tres" type="Resource" id=3]
+
+[resource]
+script = ExtResource( 1 )
+name = "SLIME"
+types = [ 8 ]
+base_health = 50
+base_mana = 20
+base_attack = 75
+base_defense = 85
+base_speed = 40
+base_focus = 20
+catch_rate = 0.75
+base_exp_yield = 50.0
+levelup_moves = [ ExtResource( 2 ), ExtResource( 3 ) ]
+levelup_move_levels = [ 1, 1 ]

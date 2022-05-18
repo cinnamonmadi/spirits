@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/healthbars.png-bb5af1fb6ca5e7352c6f0d1982892323.stex"
+path="res://.import/cloudsnake.png-2207207c16b0b18da2d974bf39393a5c.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://battle/healthbars.png"
-dest_files=[ "res://.import/healthbars.png-bb5af1fb6ca5e7352c6f0d1982892323.stex" ]
+source_file="res://battle/familiars/cloudsnake.png"
+dest_files=[ "res://.import/cloudsnake.png-2207207c16b0b18da2d974bf39393a5c.stex" ]
 
 [params]
 

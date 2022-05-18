@@ -8,6 +8,7 @@ name = "GROWL"
 desc = "Lower target's attack"
 type = 8
 cost = 2
+damage_type = 1
 power = 0
 priority = 2
 targets = 3

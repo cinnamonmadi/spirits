@@ -100,6 +100,7 @@ func begin_animate_attack():
                                 animate_move_start_position + Vector2(move_direction * ANIMATE_MOVE_DISTANCE, 0),
                                 ANIMATE_MOVE_DURATION / 2)
     tween.start()
+    animating_sprite.start_animation(FamiliarSprite.Animation.ATTACK)
 
 func begin_animate_switch():
     battle_dialog.close()

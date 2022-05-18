@@ -1,0 +1,104 @@
+Date : 2022-05-14 18:57:55
+Directory : /Users/madi/Dropbox/Mac/Documents/spirits
+Total : 61 files,  3930 codes, 104 comments, 752 blanks, all 4786 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| GDScript   |         60 |      3,618 |         97 |        735 |      4,450 |
+| GDResource |          1 |        312 |          7 |         17 |        336 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                            | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                               |         61 |      3,930 |        104 |        752 |      4,786 |
+| actors                                                                          |          6 |        354 |          4 |         76 |        434 |
+| actors/monsters                                                                 |          1 |        104 |          0 |         18 |        122 |
+| actors/npc                                                                      |          1 |         13 |          1 |          5 |         19 |
+| actors/player                                                                   |          2 |        109 |          3 |         23 |        135 |
+| battle                                                                          |         21 |      1,489 |         52 |        321 |      1,862 |
+| battle/effects                                                                  |          4 |        135 |          0 |         32 |        167 |
+| battle/effects/catch                                                            |          1 |         57 |          0 |         11 |         68 |
+| battle/sfx                                                                      |          1 |         13 |          0 |          4 |         17 |
+| battle/states                                                                   |         15 |      1,216 |         49 |        258 |      1,523 |
+| data                                                                            |         21 |        767 |          6 |        154 |        927 |
+| data/conditions                                                                 |         13 |        213 |          0 |         53 |        266 |
+| ui                                                                              |          7 |        836 |         33 |        145 |      1,014 |
+| ui/battle_menus                                                                 |          2 |        118 |          7 |         28 |        153 |
+| ui/choice_menu                                                                  |          1 |         64 |          1 |         14 |         79 |
+| ui/dialog                                                                       |          1 |        132 |         11 |         27 |        170 |
+| ui/healthbars                                                                   |          1 |        101 |          0 |         18 |        119 |
+| ui/item_menu                                                                    |          1 |        227 |          5 |         35 |        267 |
+| ui/party_menu                                                                   |          1 |        194 |          9 |         23 |        226 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                        | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| /Users/madi/Dropbox/Mac/Documents/spirits/actors/actor.gd                       | GDScript   |         46 |          0 |         12 |         58 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/actors/monsters/monster.gd            | GDScript   |        104 |          0 |         18 |        122 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/actors/npc.gd                         | GDScript   |         82 |          0 |         18 |        100 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/actors/npc/talker.gd                  | GDScript   |         13 |          1 |          5 |         19 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/actors/player/player_attack_effect.gd | GDScript   |         28 |          0 |         10 |         38 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/actors/player/tris.gd                 | GDScript   |         81 |          3 |         13 |         97 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/battle.gd                      | GDScript   |        125 |          3 |         27 |        155 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/effects/catch/catch_effect.gd  | GDScript   |         57 |          0 |         11 |         68 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/effects/effect.gd              | GDScript   |         20 |          0 |          8 |         28 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/effects/effect_factory.gd      | GDScript   |         20 |          0 |          5 |         25 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/effects/sprite_effect.gd       | GDScript   |         38 |          0 |          8 |         46 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/sfx/battle_sound_player.gd     | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/action.gd               | GDScript   |          8 |          0 |          0 |          8 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/animate_move.gd         | GDScript   |        106 |          1 |         27 |        134 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/announce_winner.gd      | GDScript   |         99 |          9 |         27 |        135 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/begin_turn.gd           | GDScript   |         48 |          0 |         13 |         61 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/choose_action.gd        | GDScript   |         61 |         12 |         12 |         85 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/choose_target.gd        | GDScript   |        128 |          6 |         23 |        157 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/evaluate_move.gd        | GDScript   |        175 |          2 |         30 |        207 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/execute_move.gd         | GDScript   |        239 |          9 |         53 |        301 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/item_menu.gd            | GDScript   |         35 |          4 |         11 |         50 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/learn_move.gd           | GDScript   |        105 |          0 |         17 |        122 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/name_familiar.gd        | GDScript   |         69 |          0 |         13 |         82 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/party_menu.gd           | GDScript   |         42 |          2 |         10 |         54 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/sprites_entering.gd     | GDScript   |         39 |          4 |         11 |         54 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/states.gd               | GDScript   |         16 |          0 |          0 |         16 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/battle/states/summon_familiar.gd      | GDScript   |         46 |          0 |         11 |         57 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/condition.gd                     | GDScript   |         63 |          0 |         12 |         75 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions.gd                    | GDScript   |          3 |          0 |          1 |          4 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/attack_buff.gd        | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/attack_debuff.gd      | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/defense_buff.gd       | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/defense_debuff.gd     | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/focus_buff.gd         | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/focus_debuff.gd       | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/paralyzed.gd          | GDScript   |         16 |          0 |          3 |         19 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/speed_buff.gd         | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/speed_debuff.gd       | GDScript   |         13 |          0 |          4 |         17 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/trap.gd               | GDScript   |         20 |          0 |          3 |         23 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/trap_release.gd       | GDScript   |         13 |          0 |          3 |         16 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/trapped.gd            | GDScript   |         17 |          0 |          3 |         20 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/conditions/trapping.gd           | GDScript   |         43 |          0 |          9 |         52 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/familiar.gd                      | GDScript   |        146 |          3 |         37 |        186 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/inventory.gd                     | GDScript   |        112 |          1 |         19 |        132 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/move.gd                          | GDScript   |         29 |          0 |          7 |         36 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/party.gd                         | GDScript   |         64 |          2 |         16 |         82 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/species.gd                       | GDScript   |         14 |          0 |          6 |         20 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/data/type.gd                          | GDScript   |        123 |          0 |          3 |        126 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/director.gd                           | GDScript   |         44 |          0 |         11 |         55 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/map.gd                                | GDScript   |         24 |          2 |          7 |         33 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/project.godot                         | GDResource |        312 |          7 |         17 |        336 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/transition.gd                         | GDScript   |         18 |          0 |          4 |         22 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/battle_menus/action_select.gd      | GDScript   |        108 |          7 |         24 |        139 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/battle_menus/move_info.gd          | GDScript   |         10 |          0 |          4 |         14 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/choice_menu/choice_menu.gd         | GDScript   |         64 |          1 |         14 |         79 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/dialog/dialog.gd                   | GDScript   |        132 |         11 |         27 |        170 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/healthbars/player_healthbar.gd     | GDScript   |        101 |          0 |         18 |        119 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/item_menu/item_menu.gd             | GDScript   |        227 |          5 |         35 |        267 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/ui/party_menu/party_menu.gd           | GDScript   |        194 |          9 |         23 |        226 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/util.gd                               | GDScript   |          7 |          0 |          1 |          8 |
+| /Users/madi/Dropbox/Mac/Documents/spirits/world.gd                              | GDScript   |         79 |          0 |         16 |         95 |
+| Total                                                                           |            |      3,930 |        104 |        752 |      4,786 |
++---------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

@@ -3,7 +3,7 @@
 [ext_resource path="res://ui/healthbars/player_healthbar.tscn" type="PackedScene" id=1]
 [ext_resource path="res://battle/battle.gd" type="Script" id=2]
 [ext_resource path="res://ui/font.tres" type="DynamicFont" id=3]
-[ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=4]
+[ext_resource path="res://ui/familiar_sprites/familiar_sprite.tscn" type="PackedScene" id=4]
 [ext_resource path="res://ui/frame.png" type="Texture" id=5]
 [ext_resource path="res://ui/battle_menus/action_select.tscn" type="PackedScene" id=6]
 [ext_resource path="res://battle/effects/catch/catch_effect.tscn" type="PackedScene" id=7]
@@ -44,17 +44,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="1" type="Sprite" parent="enemy_sprites"]
+[node name="1" parent="enemy_sprites" instance=ExtResource( 4 )]
 visible = false
 position = Vector2( 420, 64 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 4 )
 
-[node name="2" type="Sprite" parent="enemy_sprites"]
+[node name="2" parent="enemy_sprites" instance=ExtResource( 4 )]
 visible = false
 position = Vector2( 560, 64 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 4 )
 
 [node name="player_sprites" type="Control" parent="."]
 margin_right = 40.0
@@ -63,17 +59,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="1" type="Sprite" parent="player_sprites"]
+[node name="1" parent="player_sprites" instance=ExtResource( 4 )]
 visible = false
-position = Vector2( 64, 262 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 4 )
+position = Vector2( 81, 260 )
 
-[node name="2" type="Sprite" parent="player_sprites"]
+[node name="2" parent="player_sprites" instance=ExtResource( 4 )]
 visible = false
-position = Vector2( 204, 262 )
-scale = Vector2( 2, 2 )
-texture = ExtResource( 4 )
+position = Vector2( 221, 260 )
 
 [node name="ui" type="CanvasLayer" parent="."]
 
@@ -107,17 +99,17 @@ __meta__ = {
 
 [node name="1" parent="ui/enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 426.0
+margin_left = 408.0
 margin_top = 144.0
-margin_right = 426.0
+margin_right = 408.0
 margin_bottom = 144.0
 is_player_healthbar = false
 
 [node name="2" parent="ui/enemy_labels" instance=ExtResource( 16 )]
 visible = false
-margin_left = 566.0
+margin_left = 548.0
 margin_top = 144.0
-margin_right = 566.0
+margin_right = 548.0
 margin_bottom = 144.0
 is_player_healthbar = false
 

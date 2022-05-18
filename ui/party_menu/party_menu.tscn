@@ -5,7 +5,7 @@
 [ext_resource path="res://ui/party_menu/party_menu.gd" type="Script" id=3]
 [ext_resource path="res://ui/cursor.png" type="Texture" id=4]
 [ext_resource path="res://ui/party_menu/party_select_menu.tscn" type="PackedScene" id=5]
-[ext_resource path="res://battle/familiars/sphynx.png" type="Texture" id=6]
+[ext_resource path="res://battle/familiars/mimic.png" type="Texture" id=6]
 [ext_resource path="res://ui/item_menu/item_menu.tscn" type="PackedScene" id=7]
 [ext_resource path="res://ui/frame.png" type="Texture" id=8]
 
