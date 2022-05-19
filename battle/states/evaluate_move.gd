@@ -45,21 +45,21 @@ func begin(params):
             if director.player_party.familiars[current_action.familiar].burnout != 0:
                 todos.append({ "todo": Todo.BURNOUT_PLAYER, "familiar": current_action.familiar })
         if current_action.who == "enemy":
-            if get_parent().enemy_party.familiars[current_action.familiar].burnout != 0:
+            if director.enemy_party.familiars[current_action.familiar].burnout != 0:
                 todos.append({ "todo": Todo.BURNOUT_ENEMY, "familiar": current_action.familiar })
 
         # Check if target familiar died
         if current_action.target_who == "player":
             var dead_familiars = []
             for i in range(0, min(2, director.player_party.familiars.size())):
-                if not director.player_party.familiars[i].is_living():
+                if not director.player_party.familiars[i].is_living() and get_parent().player_sprites.get_child(i).visible:
                     dead_familiars.append(i)
             if dead_familiars.size() != 0:
                 todos.append({ "todo": Todo.FAINT_PLAYER, "familiars": dead_familiars })
         if current_action.target_who == "enemy":
             var dead_familiars = []
-            for i in range(0, min(2, get_parent().enemy_party.familiars.size())):
-                if not get_parent().enemy_party.familiars[i].is_living():
+            for i in range(0, min(2, director.enemy_party.familiars.size())):
+                if not director.enemy_party.familiars[i].is_living() and get_parent().enemy_sprites.get_child(1 - i).visible:
                     dead_familiars.append(i)
             if dead_familiars.size() != 0:
                 todos.append({ "todo": Todo.FAINT_ENEMY, "familiars": dead_familiars })
@@ -80,9 +80,9 @@ func burnout_player_familiar(familiar_index: int):
     battle_dialog.open_and_wait(familiar.get_display_name() + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
 func burnout_enemy_familiar(familiar_index: int):
-    var familiar = get_parent().enemy_party.familiars[familiar_index]
+    var familiar = director.enemy_party.familiars[familiar_index]
     burnout_familiar(familiar)
-    if not get_parent().enemy_party.familiars[current_action.familiar].is_living():
+    if not director.enemy_party.familiars[current_action.familiar].is_living():
         todos.push_front({ "todo": Todo.FAINT_ENEMY, "familiar": current_action.familiar })
     battle_dialog.open_and_wait("Enemy " + familiar.get_display_name() + " burned out!", get_parent().BATTLE_DIALOG_WAIT_TIME)
 
@@ -112,7 +112,7 @@ func faint_enemy_familiar(familiars):
         create_death_effect(enemy_sprites.get_child(1 - familiar_index).position)
         todos.insert(0, {
             "todo": Todo.ANNOUNCE,
-            "message": "Enemy " + get_parent().enemy_party.familiars[familiar_index].get_display_name() + " fainted!"
+            "message": "Enemy " + director.enemy_party.familiars[familiar_index].get_display_name() + " fainted!"
         })
     enemy_familiar_died = true
 
@@ -129,8 +129,8 @@ func countdown_temporary_conditions():
     for familiar_index in range(0, min(2, director.player_party.get_living_familiar_count())):
         var familiar = director.player_party.familiars[familiar_index]
         countdown_conditions_for_familiar(familiar, "player", familiar_index)
-    for familiar_index in range(0, min(2, get_parent().enemy_party.get_living_familiar_count())):
-        var familiar = get_parent().enemy_party.familiars[familiar_index]
+    for familiar_index in range(0, min(2, director.enemy_party.get_living_familiar_count())):
+        var familiar = director.enemy_party.familiars[familiar_index]
         countdown_conditions_for_familiar(familiar, "enemy", familiar_index)
 
 func countdown_conditions_for_familiar(familiar, who, familiar_index):
@@ -150,7 +150,7 @@ func cure_condition(who: String, familiar_index: int, condition: Condition):
     if who == "player":
         familiar = director.player_party.familiars[familiar_index]
     else:
-        familiar = get_parent().enemy_party.familiars[familiar_index]
+        familiar = director.enemy_party.familiars[familiar_index]
     familiar.conditions.erase(condition)
     if condition.expire_message != "":
         battle_dialog.open_and_wait(familiar.get_display_name() + condition.expire_message, get_parent().BATTLE_DIALOG_WAIT_TIME)

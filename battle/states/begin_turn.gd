@@ -45,10 +45,10 @@ func handle_timer_timeout():
     pass
 
 func enemy_choose_actions():
-    for i in range(0, min(get_parent().enemy_party.familiars.size(), 2)):
-        if not get_parent().enemy_party.familiars[i].is_living():
+    for i in range(0, min(director.enemy_party.familiars.size(), 2)):
+        if not director.enemy_party.familiars[i].is_living():
             continue
-        var moves = get_parent().enemy_party.familiars[i].moves
+        var moves = director.enemy_party.familiars[i].moves
         var enemy_chosen_move = moves[director.rng.randi_range(0, moves.size() - 1)]
         get_parent().actions.append({
             "who": "enemy",

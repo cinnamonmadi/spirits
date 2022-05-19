@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://tileset.png" type="Texture" id=1]
 [ext_resource path="res://actors/player/tris.tscn" type="PackedScene" id=2]
+[ext_resource path="res://encounter_zone.gd" type="Script" id=3]
+[ext_resource path="res://data/species/mimic.tres" type="Resource" id=4]
 [ext_resource path="res://ui/dialog/dialog.tscn" type="PackedScene" id=5]
 [ext_resource path="res://ui/pause_menu/pause_menu.tscn" type="PackedScene" id=7]
 [ext_resource path="res://world.gd" type="Script" id=8]
@@ -99,6 +101,9 @@ points = PoolVector2Array( 32, 32, 0, 32, 0, 0, 32, 0 )
 } ]
 4/z_index = 0
 
+[sub_resource type="RectangleShape2D" id=4]
+extents = Vector2( 61.5, 48 )
+
 [node name="world" type="Node2D"]
 script = ExtResource( 8 )
 
@@ -124,3 +129,14 @@ visible = false
 
 [node name="timer" type="Timer" parent="."]
 one_shot = true
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2( 192, 80 )
+script = ExtResource( 3 )
+species = [ ExtResource( 4 ) ]
+rate = [ 1.0 ]
+level_low = 2
+level_high = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource( 4 )

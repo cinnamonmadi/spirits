@@ -97,7 +97,7 @@ func execute_use_move():
     if current_action.target_who == "player":
         defending_party = director.player_party
     else:
-        defending_party = get_parent().enemy_party
+        defending_party = director.enemy_party
     defenders = []
     if current_action.move.targets == Move.MoveTargets.TARGETS_ONE_ALLY or current_action.move.targets == Move.MoveTargets.TARGETS_ONE_ENEMY:
         var target_familiar_index = current_action.target_familiar
@@ -232,7 +232,7 @@ func execute_use_item():
             try_to_catch_familiar(item_info)
             return
         else:
-            target_familiar = get_parent().enemy_party.familiars[current_action.familiar]
+            target_familiar = director.enemy_party.familiars[current_action.familiar]
 
     if target_familiar != null:
         director.player_inventory.use_item(current_action.item, target_familiar)
@@ -242,14 +242,14 @@ func execute_use_item():
 
 func try_to_catch_familiar(gem_info):
     if get_parent().enemy_captured[current_action.target_familiar]:
-        battle_dialog.open("Wild " + get_parent().enemy_party.familiars[current_action.target_familiar].get_display_name() + " is already caught!")
+        battle_dialog.open("Wild " + director.enemy_party.familiars[current_action.target_familiar].get_display_name() + " is already caught!")
         return
 
-    var target_familiar = get_parent().enemy_party.familiars[current_action.target_familiar]
+    var target_familiar = director.enemy_party.familiars[current_action.target_familiar]
 
     # Calculate the catch rate
     var health_mod = float(((3.0 * target_familiar.max_health) - (2.0 * target_familiar.health)) / (3.0 * target_familiar.max_health)) # (3max_health - 2health) / 3max_health
-    var ally_mod = 1.0 - (float(get_parent().enemy_party.get_living_familiar_count() - 1) * 0.25) # 1 - (0.25 * num_allies)
+    var ally_mod = 1.0 - (float(director.enemy_party.get_living_familiar_count() - 1) * 0.25) # 1 - (0.25 * num_allies)
     var gem_mod = 1.0 + (float(gem_info.value) * 0.5) # 1 + (0.5 * gem_grade)
     var catch_rate = health_mod * ally_mod * gem_mod * target_familiar.get_catch_rate()
 
@@ -282,7 +282,7 @@ func _on_catch_hide_enemy():
     enemy_labels.get_child(1 - current_action.target_familiar).visible = false
 
 func _on_catch_effect_finished():
-    var dialog_message = "Wild " + get_parent().enemy_party.familiars[current_action.target_familiar].get_display_name() 
+    var dialog_message = "Wild " + director.enemy_party.familiars[current_action.target_familiar].get_display_name() 
     if catch_successful:
         dialog_message += " was caught!"
     else:
@@ -293,4 +293,4 @@ func execute_rest():
     if current_action.who == "player":
         director.player_party.familiars[current_action.familiar].is_resting = true
     elif current_action.who == "enemy":
-        get_parent().enemy_party.familiars[current_action.familiar].is_resting = true
+        director.enemy_party.familiars[current_action.familiar].is_resting = true

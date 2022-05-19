@@ -9,6 +9,7 @@ var transition_instance
 
 var player_party = Party.new()
 var player_inventory = Inventory.new()
+var enemy_party = Party.new()
 
 enum State {
     WORLD,

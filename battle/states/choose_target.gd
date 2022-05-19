@@ -44,9 +44,9 @@ func begin(params):
             can_navigate = false
         elif chosen_move.targets == Move.MoveTargets.TARGETS_ALL_ENEMIES:
             target_who = "enemy"
-            if get_parent().enemy_party.familiars[0].is_living():
+            if director.enemy_party.familiars[0].is_living():
                 set_target_cursor(target_cursor, target_who, 0)
-            if get_parent().enemy_party.familiars.size() > 1 and get_parent().enemy_party.familiars[1].is_living():
+            if director.enemy_party.familiars.size() > 1 and director.enemy_party.familiars[1].is_living():
                 set_target_cursor(target_cursor_2, target_who, 1)
             can_navigate = false
     elif targeting_action == Action.USE_ITEM:
@@ -134,7 +134,7 @@ func wrap_target_cursor(wrap_direction: int):
     if target_who == "player" and director.player_party.familiars.size() == 1:
         target_index_max = 1
     if target_who == "enemy":
-        target_index_max = get_parent().enemy_party.familiars.size()
+        target_index_max = director.enemy_party.familiars.size()
 
     if target_index >= target_index_max:
         target_index = 0
@@ -151,6 +151,6 @@ func wrap_target_cursor(wrap_direction: int):
 func target_cursor_has_valid_target():
     if target_who == "player" and director.player_party.familiars[target_index].is_living():
         return true
-    elif target_who == "enemy" and get_parent().enemy_party.familiars[target_index].is_living():
+    elif target_who == "enemy" and director.enemy_party.familiars[target_index].is_living():
         return true
     return false

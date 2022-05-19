@@ -83,7 +83,7 @@ func message_familiar_name():
     if current_action.who == "player":
         return director.player_party.familiars[current_action.familiar].get_display_name()
     if current_action.who == "enemy":
-        return "Enemy " + get_parent().enemy_party.familiars[current_action.familiar].get_display_name()
+        return "Enemy " + director.enemy_party.familiars[current_action.familiar].get_display_name()
 
 func begin_animate_attack():
     var battle_dialog_message = message_familiar_name() + " used " + current_action.move.name + "!"

@@ -61,10 +61,10 @@ func handle_win():
 
     # Count experience from defeated monsters
     var total_exp = 0
-    for familiar_index in range(0, get_parent().enemy_party.familiars.size()):
+    for familiar_index in range(0, director.enemy_party.familiars.size()):
         if get_parent().enemy_captured[familiar_index]:
             continue
-        total_exp += get_parent().enemy_party.familiars[familiar_index].get_experience_yield()
+        total_exp += director.enemy_party.familiars[familiar_index].get_experience_yield()
         
     dialog.open("Gained " + String(total_exp) + " experience!")
 
@@ -90,8 +90,8 @@ func handle_win():
     for i in range(0, get_parent().enemy_captured.size()):
         # TODO, change the < 6 rule to allow stoage familiars
         if get_parent().enemy_captured[i] and director.player_party.familiars.size() < 6:
-            director.player_party.add_familiar(get_parent().enemy_party.familiars[i])
-            todos.append({ "type": "capture", "familiar": get_parent().enemy_party.familiars[i] })
+            director.player_party.add_familiar(director.enemy_party.familiars[i])
+            todos.append({ "type": "capture", "familiar": director.enemy_party.familiars[i] })
 
 func handle_loss():
     dialog.open_with("All spirits were defeated! You lose!")

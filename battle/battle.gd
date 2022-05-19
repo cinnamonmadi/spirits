@@ -48,7 +48,6 @@ var states = [SpritesEntering.new(),
               NameFamiliar.new(),
               LearnMove.new()]
 
-var enemy_party = Party.new()
 var enemy_captured = []
 var actions = []
 var chosen_item = 0
@@ -61,11 +60,7 @@ func _ready():
     for state_node in states:
         add_child(state_node)
 
-    enemy_party.familiars.append(Familiar.new(load("res://data/species/mimic.tres"), 3))
-    enemy_party.familiars.append(Familiar.new(load("res://data/species/slime.tres"), 3))
-    # for familiar in enemy_party.familiars:
-        # familiar.health = 1
-    for _i in range(0, enemy_party.familiars.size()):
+    for _i in range(0, director.enemy_party.familiars.size()):
         enemy_captured.append(false)
 
     battle_dialog.ROW_CHAR_LEN = 18
@@ -74,13 +69,13 @@ func _ready():
 
     close_all_menus()
     director.player_party.pre_battle_setup()
-    enemy_party.pre_battle_setup()
+    director.enemy_party.pre_battle_setup()
     set_state(State.SPRITES_ENTERING, {})
 
 func get_enemy_living_familiar_count():
     var count = 0
-    for i in range(0, enemy_party.familiars.size()):
-        if not enemy_captured[i] and enemy_party.familiars[i].is_living():
+    for i in range(0, director.enemy_party.familiars.size()):
+        if not enemy_captured[i] and director.enemy_party.familiars[i].is_living():
             count += 1
     return count
 
@@ -111,7 +106,7 @@ func get_acting_familiar(action):
     if action.who == "player":
         return director.player_party.familiars[action.familiar]
     else:
-        return enemy_party.familiars[action.familiar]
+        return director.enemy_party.familiars[action.familiar]
 
 func get_choosing_familiar_index():
     var index = actions.size()
@@ -129,13 +124,13 @@ func hide_all_enemy_labels():
 
 func update_enemy_label(i):
     var child_index = enemy_labels.get_child_count() - 1 - i
-    enemy_labels.get_child(child_index).set_familiar(enemy_party.familiars[i])
+    enemy_labels.get_child(child_index).set_familiar(director.enemy_party.familiars[i])
     enemy_labels.get_child(child_index).visible = true
 
 func recharge_energy():
     for familiar in director.player_party.familiars:
         recharge_familiar_energy(familiar)
-    for familiar in enemy_party.familiars:
+    for familiar in director.enemy_party.familiars:
         recharge_familiar_energy(familiar)
 
 func recharge_familiar_energy(familiar: Familiar):
