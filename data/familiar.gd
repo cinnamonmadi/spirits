@@ -139,6 +139,12 @@ func get_focus() -> int:
 func get_speed() -> int:
     return int(speed * speed_mod)
 
+func has_condition(condition_type: int) -> bool:
+    for condition in conditions:
+        if condition.type == condition_type:
+            return true
+    return false
+
 func apply_condition(condition_type: int, params, skip_fail_message: bool = false) -> String:
     var condition = Conditions.new_condition(condition_type)
 
