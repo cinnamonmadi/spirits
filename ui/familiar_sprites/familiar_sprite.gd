@@ -6,7 +6,7 @@ enum Animation {
     IDLE,
     LOW,
     ATTACK,
-    STUN,
+    HURT,
     DEATH
 }
 
@@ -27,7 +27,7 @@ const ANIM_INFO = {
         "start": 6,
         "end": 6,
     },
-    Animation.STUN: {
+    Animation.HURT: {
         "start": 7,
         "end": 7,
     },
