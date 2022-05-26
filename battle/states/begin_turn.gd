@@ -96,7 +96,6 @@ func enemy_choose_action(enemy_index: int):
     var move_prudence_difference = []
     var unique_prudence_differences = []
     for move in enemy.moves:
-        print("considering ", move.name)
         var ignore_this_move = false
         # Check to make sure target does not already have the move's condition
         if move.power == 0:
@@ -106,11 +105,9 @@ func enemy_choose_action(enemy_index: int):
                     target_has_conditions = true
                     break
             if target_has_conditions:
-                print("target has condition!")
                 ignore_this_move = true
         # Check to make sure the enemy has enough mana
         if move.cost > enemy.mana:
-            print("too much cost! ", move.cost, " vs ", enemy.mana)
             ignore_this_move = true
 
         if ignore_this_move:
@@ -121,7 +118,6 @@ func enemy_choose_action(enemy_index: int):
         move_prudence_difference.append(prudence_difference)
         if not unique_prudence_differences.has(prudence_difference):
             unique_prudence_differences.append(prudence_difference)
-    print('move prudence difference', move_prudence_difference)
     
     # Swap the values so that moves with lower prudence have a higher preference
     unique_prudence_differences.sort()
@@ -137,7 +133,6 @@ func enemy_choose_action(enemy_index: int):
 
         move_preferences.append(move_preference)
         sum_of_move_preferences += move_preference
-    print('move preferences ', move_preferences)
 
     # Sort the moves with their preferences
     var moves_with_preferences = []
@@ -149,9 +144,6 @@ func enemy_choose_action(enemy_index: int):
             "preference": move_preferences[i],
         })
     moves_with_preferences.sort_custom(self, "move_sorter")
-    for move in moves_with_preferences:
-        print(move.move.name, ': ', move.preference)
-    print("----")
 
     # If there's no moves to chose, then rest
     if moves_with_preferences.size() == 0:

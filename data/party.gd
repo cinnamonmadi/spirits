@@ -11,6 +11,13 @@ func get_living_familiar_count() -> int:
             count += 1
     return count
 
+func get_live_fighter_indeces():
+    var indeces = []
+    for i in range(0, min(2, familiars.size())):
+        if familiars[i].is_living():
+            indeces.append(i)
+    return indeces
+
 func is_wiped() -> bool:
     return get_living_familiar_count() == 0
 

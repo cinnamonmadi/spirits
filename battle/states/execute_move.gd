@@ -107,9 +107,8 @@ func execute_use_move():
     elif current_action.move.targets == Move.MoveTargets.TARGETS_SELF:
         defenders.append(attacker)
     elif current_action.move.targets == Move.MoveTargets.TARGETS_ALL_ALLIES or current_action.move.targets == Move.MoveTargets.TARGETS_ALL_ENEMIES:
-        for i in range(0, min(2, defending_party.familiars.size())):
-            if defending_party.familiars[i].is_living():
-                defenders.append(defending_party.familiars[i])
+        for i in defending_party.get_live_fighter_indeces():
+            defenders.append(defending_party.familiars[i])
 
     move_effects = []
 
@@ -191,9 +190,13 @@ func execute_move_effect_damage(defender):
 
     var target_familiar_sprite: Sprite
     if current_action.target_who == "player":
-        target_familiar_sprite = player_sprites.get_child(current_action.target_familiar)
+        for i in range(0, min(2, director.player_party.familiars.size())):
+            if director.player_party.familiars[i] == defender:
+                target_familiar_sprite = player_sprites.get_child(i)
     else:
-        target_familiar_sprite = enemy_sprites.get_child(1 - current_action.target_familiar)
+        for i in range(0, min(2, director.enemy_party.familiars.size())):
+            if director.enemy_party.familiars[i] == defender:
+                target_familiar_sprite = enemy_sprites.get_child(1 - i)
     sprite_effect.begin(SpriteEffect.SpriteEffectType.FLICKER, target_familiar_sprite, current_action.target_who == "enemy")
     battle_sound_player.play_sound(battle_sound_player.HIT_NORMAL)
 

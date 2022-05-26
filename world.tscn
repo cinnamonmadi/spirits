@@ -136,8 +136,7 @@ position = Vector2( 192, 80 )
 script = ExtResource( 3 )
 species = [ ExtResource( 4 ), ExtResource( 6 ) ]
 rate = [ 0.5, 0.5 ]
-level_low = 2
-level_high = 3
+level = [ "2,3", "2,3" ]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource( 4 )

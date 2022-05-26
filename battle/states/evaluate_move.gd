@@ -126,10 +126,10 @@ func create_death_effect(death_position: Vector2):
     effect.start()
 
 func countdown_temporary_conditions():
-    for familiar_index in range(0, min(2, director.player_party.get_living_familiar_count())):
+    for familiar_index in director.player_party.get_live_fighter_indeces():
         var familiar = director.player_party.familiars[familiar_index]
         countdown_conditions_for_familiar(familiar, "player", familiar_index)
-    for familiar_index in range(0, min(2, director.enemy_party.get_living_familiar_count())):
+    for familiar_index in director.enemy_party.get_live_fighter_indeces():
         var familiar = director.enemy_party.familiars[familiar_index]
         countdown_conditions_for_familiar(familiar, "enemy", familiar_index)
 
